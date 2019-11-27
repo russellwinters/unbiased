@@ -6,17 +6,27 @@ const sportsArticles = require("./helpers/api-mongo/sports");
 const scienceArticles = require("./helpers/api-mongo/science");
 const politicsArticles = require("./helpers/api-mongo/politics");
 
-//!Below functions will post to database from API I'm using.
+//!Below functions will post most recent articles from News API to my database
 // businessArticles.newArticles();
 // sportsArticles.newArticles();
 // scienceArticles.newArticles();
 // politicsArticles.newArticles();
 
+//!Below section is for the API endpoints
+app.use("/politics", require("./routes/politicsRoute.js"));
+app.use("/business", require("./routes/businessRoute.js"));
+app.use("/sports", require("./routes/sportsRoute.js"));
+app.use("/science", require("./routes/scienceRoute.js"));
+
 //Connect to MongoDB
 const mongoURL = "mongodb://localhost:27017/unbiased";
-mongoose.connect(mongoURL, { useNewUrlParser: true }, () => {
-  console.log("Connected to MongoDB!");
-});
+mongoose.connect(
+  mongoURL,
+  { useCreateIndex: true, useUnifiedTopology: true, useNewUrlParser: true },
+  () => {
+    console.log("Connected to MongoDB!");
+  }
+);
 
 //Listen to LocalHost
 const PORT = process.env.PORT || 5000;

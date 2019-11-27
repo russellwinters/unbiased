@@ -24,6 +24,14 @@ const newArticles = () => {
   });
 };
 
+// const sortArticles = () => {
+//   const checkDisplay = politicsModel.find({
+//     author: { $eq: "Alexandra Schwartz" }
+//   });
+//   console.log(checkDisplay);
+// };
+
 module.exports = {
   newArticles
+  // sortArticles
 };

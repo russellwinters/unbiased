@@ -15,6 +15,7 @@
     "axios": "^0.19.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.12",
+    "mongoose-unique-validator": "^2.0.3",
     "nodemon": "^2.0.1"
   }
 }

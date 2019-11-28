@@ -1,7 +1,23 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import MapArticles from "../MapArticles";
+import axios from "axios";
 
-export default class ScienceNews extends Component {
-  render() {
-    return <div>Hi Science</div>;
-  }
+export default function ScienceNews() {
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    console.log(articles.length);
+    if (articles.length === 0) {
+      axios.get("http://localhost:5000/science").then(response => {
+        console.log(response.data);
+        setArticles(response.data);
+      });
+    }
+  });
+
+  return (
+    <>
+      <MapArticles articles={articles} />
+    </>
+  );
 }

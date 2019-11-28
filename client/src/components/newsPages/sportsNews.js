@@ -14,5 +14,9 @@ export default function SportsNews() {
       });
     }
   });
-  return <>{<MapArticles articles={articles} />}</>;
+  return (
+    <>
+      <MapArticles articles={articles} />
+    </>
+  );
 }

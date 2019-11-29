@@ -80,5 +80,4 @@ const newArticles = () => {
 
 module.exports = {
   newArticles
-  // sortArticles
 };

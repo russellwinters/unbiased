@@ -8,10 +8,9 @@ import ScienceNews from "./components/newsPages/scienceNews";
 import SportsNews from "./components/newsPages/sportsNews";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("Home");
   return (
     <div className="App">
-      <Header state={currentPage} setState={setCurrentPage} />
+      <Header />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/business" component={BusinessNews} />

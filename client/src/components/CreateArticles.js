@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 export default function CreateArticles(props) {
   const [clicked, setClicked] = useState(false);
-  //   console.log(props);
+  const { obj } = props;
+
   if (clicked === false) {
     return (
       <div>

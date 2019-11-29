@@ -20,7 +20,7 @@ export default function BusinessNews() {
   } else
     return (
       <>
-        {/* <MapArticles articles={articles[currentPage]} /> */}
+        <MapArticles articles={articles[currentPage]} />
         <PageCounter setPage={setCurrentPage} />
       </>
     );

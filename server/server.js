@@ -11,7 +11,7 @@ app.use(CORS());
 
 //!Below functions will post most recent articles from News API to my database
 // businessArticles.newArticles();
-sportsArticles.newArticles();
+// sportsArticles.newArticles();
 // scienceArticles.newArticles();
 // politicsArticles.newArticles();
 

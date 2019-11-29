@@ -1,15 +1,12 @@
 import React from "react";
+import CreateArticles from "./CreateArticles";
 
 export default function MapArticles(props) {
   const articles = props.articles;
   console.log(props);
-  const mapFunction = articles.map(obj => {
-    return (
-      <div>
-        <p>{obj.title}</p>
-        {/* <p>{obj.description}</p> */}
-      </div>
-    );
+  const createSection = articles.map(obj => {
+    return <CreateArticles obj={obj} />;
   });
-  return <>{mapFunction}</>;
+
+  return <>{createSection}</>;
 }

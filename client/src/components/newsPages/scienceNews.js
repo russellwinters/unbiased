@@ -21,7 +21,7 @@ export default function ScienceNews() {
   } else
     return (
       <>
-        {/* <MapArticles articles={articles[currentPage]} /> */}
+        <MapArticles articles={articles[currentPage]} />
         <PageCounter setPage={setCurrentPage} />
       </>
     );

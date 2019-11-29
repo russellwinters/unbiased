@@ -6,24 +6,36 @@ export default function Header() {
   const navbar = (
     <>
       <button
+        className="header-button"
         onClick={() => {
           setNav(false);
         }}
       >
         |||
       </button>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/sports">Sports</Link>
-        <Link to="/science">Science</Link>
-        <Link to="/politics">Politics</Link>
-        <Link to="/business">Business</Link>
+      <nav className="header-nav">
+        <Link className="header-nav__link" to="/">
+          Home
+        </Link>
+        <Link className="header-nav__link" to="/sports">
+          Sports
+        </Link>
+        <Link className="header-nav__link" to="/science">
+          Science
+        </Link>
+        <Link className="header-nav__link" to="/politics">
+          Politics
+        </Link>
+        <Link className="header-nav__link" to="/business">
+          Business
+        </Link>
       </nav>
     </>
   );
 
   const navbutton = (
     <button
+      className="header-button"
       onClick={() => {
         setNav(true);
       }}
@@ -34,9 +46,9 @@ export default function Header() {
 
   console.log(nav);
   return (
-    <div>
-      <h1>Unbiased</h1>
+    <header className="header">
+      <h1 className="header-title">Unbiased</h1>
       {nav === true ? navbar : navbutton}
-    </div>
+    </header>
   );
 }

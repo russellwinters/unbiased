@@ -3,8 +3,9 @@ import React from "react";
 export default function PageCounter(props) {
   const { setPage } = props;
   return (
-    <div>
+    <div className="counter">
       <button
+        className="counter-button"
         onClick={() => {
           setPage(0);
         }}
@@ -12,6 +13,7 @@ export default function PageCounter(props) {
         1
       </button>
       <button
+        className="counter-button"
         onClick={() => {
           setPage(1);
         }}
@@ -19,6 +21,7 @@ export default function PageCounter(props) {
         2
       </button>
       <button
+        className="counter-button"
         onClick={() => {
           setPage(2);
         }}
@@ -26,6 +29,7 @@ export default function PageCounter(props) {
         3
       </button>
       <button
+        className="counter-button"
         onClick={() => {
           setPage(3);
         }}
@@ -33,6 +37,7 @@ export default function PageCounter(props) {
         4
       </button>
       <button
+        className="counter-button"
         onClick={() => {
           setPage(4);
         }}
@@ -40,6 +45,7 @@ export default function PageCounter(props) {
         5
       </button>
       <button
+        className="counter-button"
         onClick={() => {
           setPage(5);
         }}

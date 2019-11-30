@@ -2,18 +2,13 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const CORS = require("cors");
-const businessArticles = require("./helpers/api-mongo/business");
-const sportsArticles = require("./helpers/api-mongo/sports");
-const scienceArticles = require("./helpers/api-mongo/science");
-const politicsArticles = require("./helpers/api-mongo/politics");
+const helper = require("./helpers/helper");
+
 //!This is to enable CORS on all API requests
 app.use(CORS());
 
-//!Below functions will post most recent articles from News API to my database
-// businessArticles.newArticles();
-// sportsArticles.newArticles();
-// scienceArticles.newArticles();
-// politicsArticles.newArticles();
+//Below function updates all Mongo Collections
+helper.updatePosts();
 
 //!Below section is for the API endpoints
 app.use("/politics", require("./routes/politicsRoute.js"));

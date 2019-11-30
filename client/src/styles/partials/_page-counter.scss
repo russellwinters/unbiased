@@ -1,0 +1,17 @@
+.counter {
+  width: 70%;
+  padding: 16px 0 24px 0;
+  margin: $center;
+  display: flex;
+  justify-content: space-around;
+
+  &-button {
+    font-size: 24px;
+    font-weight: bold;
+    color: $green;
+    padding: 4px;
+    background-color: $alabaster;
+    border: 2px solid $green;
+    border-radius: 4px;
+  }
+}

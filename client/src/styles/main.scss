@@ -1,0 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@import "./partials/_vairables.scss";
+@import "./partials/_header.scss";
+@import "./partials/_article-section.scss";
+@import "./partials/_article-cards.scss";
+@import "./partials/page-counter";

@@ -20,9 +20,9 @@ export default function PoliticsNews() {
     return <h1>Nothing</h1>;
   } else
     return (
-      <>
+      <section className="main-page">
         <MapArticles articles={articles[currentPage]} />
         <PageCounter setPage={setCurrentPage} />
-      </>
+      </section>
     );
 }

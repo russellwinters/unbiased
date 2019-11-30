@@ -15,7 +15,7 @@ export default function CreateArticles(props) {
     obj.source.id === "reuters" ||
     obj.source.id === "usa-today"
   ) {
-    bias = "minimal-bias";
+    bias = "minimal";
   } else if (
     obj.source.id === "fox-news" ||
     obj.source.id === "the-wall-street-journal" ||
@@ -29,28 +29,38 @@ export default function CreateArticles(props) {
 
   if (clicked === false) {
     return (
-      <div className="article">
+      <div className={`article article-${bias}`}>
         <h3 className="article-title">{obj.title}</h3>
-        <h1>{bias}</h1>
-        <button onClick={() => setClicked(true)}>Expand</button>
+        <button
+          className={`article-button button-${bias}`}
+          onClick={() => setClicked(true)}
+        >
+          Show More
+        </button>
       </div>
     );
   } else
     return (
-      <div className="article">
+      <div className={`article article-${bias}`}>
         <h3 className="article-title">{obj.title}</h3>
         <p className="article-description">{obj.description}</p>
-        <span className="article-source">{obj.source.name}</span>
+        <span className={`article-source article-source__${bias}`}>
+          {obj.source.name}
+        </span>
         <a
-          className="article-link"
+          className={`article-link article-link__${bias}`}
           href={obj.url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Full Article
+          Full Article Here
         </a>
-        <h1>{bias}</h1>
-        <button onClick={() => setClicked(false)}>Retract</button>
+        <button
+          className={`article-button button-${bias}`}
+          onClick={() => setClicked(false)}
+        >
+          Hide
+        </button>
       </div>
     );
 }

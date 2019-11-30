@@ -1,22 +1,18 @@
-const shortid = require("shortid");
-const fs = require("fs");
+const businessArticles = require("./api-mongo/business");
+const sportsArticles = require("./api-mongo/sports");
+const scienceArticles = require("./api-mongo/science");
+const politicsArticles = require("./api-mongo/politics");
 
-function writeJSONFile(filename, content) {
-  console.log(filename, content);
-  fs.writeFileSync(filename, JSON.stringify(content), "utf8", err => {
-    if (err) {
-      console.log(err);
-    }
-  });
-  console.log(`changes saved to file ${filename}....`);
-}
-
-//Function from InStock, but might need it here.
-function createID() {
-  return shortid.generate();
+function updatePosts() {
+  const today = new Date();
+  if ((today.getHours() === 16 && today.getMinutes() <= 30) || (today.getHours() === 8 && today.getMinutes() <= 30)) {
+    businessArticles.newArticles();
+    sportsArticles.newArticles();
+    scienceArticles.newArticles();
+    politicsArticles.newArticles();
+  }
 }
 
 module.exports = {
-  createID,
-  writeJSONFile
+  updatePosts
 };

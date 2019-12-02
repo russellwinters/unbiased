@@ -5,7 +5,10 @@ const politicsArticles = require("./api-mongo/politics");
 
 function updatePosts() {
   const today = new Date();
-  if (today.getHours() < 16 && today.getMinutes() >= 30) {
+  if (
+    (today.getHours() === 16 && today.getMinutes() <= 30) ||
+    (today.getHours() === 9 && today.getMinutes() <= 30)
+  ) {
     businessArticles.newArticles();
     sportsArticles.newArticles();
     scienceArticles.newArticles();

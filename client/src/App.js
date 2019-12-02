@@ -6,6 +6,7 @@ import BusinessNews from "./components/newsPages/businessNews";
 import PoliticsNews from "./components/newsPages/politicsNews";
 import ScienceNews from "./components/newsPages/scienceNews";
 import SportsNews from "./components/newsPages/sportsNews";
+import SearchNews from "./components/newsPages/searchNews";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route exact path="/politics" component={PoliticsNews} />
         <Route exact path="/science" component={ScienceNews} />
         <Route exact path="/sports" component={SportsNews} />
+        <Route exact path="/search" component={SearchNews} />
       </Switch>
     </div>
   );

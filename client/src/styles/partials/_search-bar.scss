@@ -1,0 +1,32 @@
+.search {
+  width: calc(100vw - 32px);
+  margin: $center;
+  padding: 12px;
+
+  &-container {
+    width: 80%;
+    height: 48px;
+    margin: $center;
+    background-color: $alabaster;
+    border: 1px solid $black;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    &__icon {
+      height: 20px;
+      padding: 0 16px;
+    }
+
+    &__input {
+      width: 200px;
+      border: none;
+      background-color: $alabaster;
+      height: 46px;
+    }
+    &-input::placeholder {
+      color: $black;
+    }
+  }
+}

@@ -1,54 +1,40 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import SearchIcon from "../assets/search-icon.svg";
 
 export default function Header() {
-  const [nav, setNav] = useState(false);
-  const navbar = (
-    <div className="header-nav">
-      <button
-        className="header-nav__button"
-        onClick={() => {
-          setNav(false);
-        }}
-      >
-        |||
-      </button>
-      <nav className="header-nav__list">
-        <Link className="header-nav__list-link" to="/">
-          Home
-        </Link>
-        <Link className="header-nav__list-link" to="/sports">
-          Sports
-        </Link>
-        <Link className="header-nav__list-link" to="/science">
-          Science
-        </Link>
-        <Link className="header-nav__list-link" to="/politics">
-          Politics
-        </Link>
-        <Link className="header-nav__list-link" to="/business">
-          Business
-        </Link>
-      </nav>
-    </div>
+  const navLinks = (
+    <nav className="header-nav">
+      <Link className="header-nav-link" to="/sports">
+        Sports
+      </Link>
+      <Link className="header-nav-link" to="/science">
+        Science
+      </Link>
+      <Link className="header-nav-link" to="/politics">
+        Politics
+      </Link>
+      <Link className="header-nav-link" to="/business">
+        Business
+      </Link>
+    </nav>
   );
 
-  const navbutton = (
-    <button
-      className="header-button"
-      onClick={() => {
-        setNav(true);
-      }}
-    >
-      |||
-    </button>
-  );
-
-  console.log(nav);
   return (
     <header className="header">
-      <h1 className="header-title">Unbiased</h1>
-      {nav === true ? navbar : navbutton}
+      <div className="header-main">
+        <Link className="header-main__title" to="/">
+          <h1>Unbiased</h1>
+        </Link>
+        <Link className="header-main__search" to="/search">
+          <img
+            alt="search"
+            className="header-main__search-icon"
+            src={SearchIcon}
+          />
+        </Link>
+      </div>
+      {navLinks}
     </header>
   );
 }

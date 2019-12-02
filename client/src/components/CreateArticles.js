@@ -16,8 +16,10 @@ export default function CreateArticles(props) {
         onClick={() => setClicked(true)}
       >
         <h3 className="article-title">{obj.title}</h3>
-        <h3>{obj.imageType}</h3>
-        <img className="article-image" src={obj.imageURL} />
+        <img
+          className={`article-image article-image__${obj.imageType}`}
+          src={obj.imageURL}
+        />
       </div>
     );
   } else

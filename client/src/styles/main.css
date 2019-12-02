@@ -80,13 +80,14 @@
   margin-top: 24px;
 }
 
-.article {
+.article,
+.open-article {
   width: 100%;
+  min-height: 250px;
   padding: 8px;
   margin: 12px 0;
-  border: 2px solid #3a4d3f;
-  background-color: #fafaf8;
-  color: #3e3d3c;
+  border: 4px solid #3a4d3f;
+  color: #fafaf8;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -97,62 +98,94 @@
   -webkit-box-align: end;
       -ms-flex-align: end;
           align-items: flex-end;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.article a {
+.article .open-article-image,
+.open-article .open-article-image {
+  width: 70%;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.article .open-article-title,
+.article .open-article-description,
+.open-article .open-article-title,
+.open-article .open-article-description {
+  color: #3e3d3c;
+}
+
+.article a,
+.open-article a {
   text-decoration: none;
   color: #3e3d3c;
 }
 
-.article-title {
+.article-title,
+.open-article-title {
   font-size: 1.3em;
   text-align: center;
 }
 
-.article-description {
+.article-description,
+.open-article-description {
   padding: 12px 0 8px 0px;
 }
 
-.article-source, .article-link {
+.article-source, .article-link,
+.open-article-source,
+.open-article-link {
   color: #3e3d3c;
   font-size: 1.1em;
   padding: 12px 0 0 0;
 }
 
-.article-link {
+.article-link,
+.open-article-link {
   font-weight: bold;
+  z-index: 1;
 }
 
-.article .article-link__minimal {
+.article .article-link__minimal,
+.open-article .article-link__minimal {
   color: #3a4d3f;
 }
 
-.article .article-link__left-leaning {
+.article .article-link__left-leaning,
+.open-article .article-link__left-leaning {
   color: #1f487e;
 }
 
-.article .article-link__right-leaning {
+.article .article-link__right-leaning,
+.open-article .article-link__right-leaning {
   color: #a30000;
 }
 
-.article-button {
-  margin: 8px 8px 4px;
-  border: unset;
-  color: #fafaf8;
-  padding: 4px 12px;
-  border-radius: 6px;
+.article {
+  background-color: rgba(0, 0, 0, 0.4);
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
-.article .button-minimal {
-  background-color: #3a4d3f;
+.article-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: -1;
+  height: 100%;
+  opacity: 0.8;
 }
 
-.article .button-left-leaning {
-  background-color: #1f487e;
+.article-left-leaning {
+  border: 4px solid #1f487e;
 }
 
-.article .button-right-leaning {
-  background-color: #a30000;
+.article-right-leaning {
+  border: 4px solid #a30000;
 }
 
 .counter {

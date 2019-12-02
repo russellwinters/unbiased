@@ -29,38 +29,35 @@ export default function CreateArticles(props) {
 
   if (clicked === false) {
     return (
-      <div className={`article article-${bias}`}>
+      <div
+        className={`article article-${bias}`}
+        onClick={() => setClicked(true)}
+      >
         <h3 className="article-title">{obj.title}</h3>
-        <button
-          className={`article-button button-${bias}`}
-          onClick={() => setClicked(true)}
-        >
-          Show More
-        </button>
+        <img className="article-image" src={obj.imageURL} />
       </div>
     );
   } else
     return (
-      <div className={`article article-${bias}`}>
-        <h3 className="article-title">{obj.title}</h3>
-        <p className="article-description">{obj.description}</p>
-        <span className={`article-source article-source__${bias}`}>
+      <div
+        className={`open-article article-${bias}`}
+        onClick={() => setClicked(false)}
+      >
+        <h3 className="open-article-title">{obj.title}</h3>
+        <p className="open-article-description">{obj.description}</p>
+        <img className="open-article-image" src={obj.imageURL} />
+        <span className={`open-article-source article-source__${bias}`}>
           {obj.source.name}
         </span>
+
         <a
-          className={`article-link article-link__${bias}`}
+          className={`open-article-link article-link__${bias}`}
           href={obj.url}
           target="_blank"
           rel="noopener noreferrer"
         >
           Full Article Here
         </a>
-        <button
-          className={`article-button button-${bias}`}
-          onClick={() => setClicked(false)}
-        >
-          Hide
-        </button>
       </div>
     );
 }

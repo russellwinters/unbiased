@@ -23,6 +23,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article
@@ -40,6 +41,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article

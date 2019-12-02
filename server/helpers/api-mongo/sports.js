@@ -27,6 +27,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "tall-image",
         publishedAt: obj.publishedAt
       });
       article
@@ -44,6 +45,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "tall-image",
         publishedAt: obj.publishedAt
       });
       article
@@ -61,6 +63,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "tall-image",
         publishedAt: obj.publishedAt
       });
       article
@@ -78,6 +81,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "tall-image",
         publishedAt: obj.publishedAt
       });
       article

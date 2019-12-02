@@ -8,6 +8,7 @@ const scienceSchema = mongoose.Schema({
   description: { type: String, unique: true, dropDups: true },
   url: { type: String, unique: true, dropDups: true },
   imageURL: String,
+  imageType: String,
   publishedAt: Date
 });
 

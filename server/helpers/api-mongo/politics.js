@@ -27,9 +27,11 @@ const newArticles = () => {
         source: obj.source,
         author: obj.author,
         title: obj.title,
+        bias: "left-leaning",
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -42,9 +44,11 @@ const newArticles = () => {
         source: obj.source,
         author: obj.author,
         title: obj.title,
+        bias: "right-leaning",
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -57,9 +61,11 @@ const newArticles = () => {
         source: obj.source,
         author: obj.author,
         title: obj.title,
+        bias: "minimal",
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -75,6 +81,7 @@ const newArticles = () => {
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,
+        imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));

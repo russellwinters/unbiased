@@ -15,6 +15,7 @@ app.use("/politics", require("./routes/politicsRoute.js"));
 app.use("/business", require("./routes/businessRoute.js"));
 app.use("/sports", require("./routes/sportsRoute.js"));
 app.use("/science", require("./routes/scienceRoute.js"));
+app.use("/search", require("./routes/searchRoute.js"));
 
 //Connect to MongoDB
 const mongoURL = "mongodb://localhost:27017/unbiased";

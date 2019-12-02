@@ -7,6 +7,7 @@ const sportsSchema = mongoose.Schema({
   title: String,
   description: { type: String, unique: true, dropDups: true },
   url: { type: String, unique: true, dropDups: true },
+  imageURL: String,
   publishedAt: Date
 });
 

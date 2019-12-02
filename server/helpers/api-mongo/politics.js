@@ -29,6 +29,7 @@ const newArticles = () => {
         title: obj.title,
         description: obj.description,
         url: obj.url,
+        imageURL: obj.urlToImage,
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -43,6 +44,7 @@ const newArticles = () => {
         title: obj.title,
         description: obj.description,
         url: obj.url,
+        imageURL: obj.urlToImage,
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -57,6 +59,7 @@ const newArticles = () => {
         title: obj.title,
         description: obj.description,
         url: obj.url,
+        imageURL: obj.urlToImage,
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));
@@ -71,6 +74,7 @@ const newArticles = () => {
         title: obj.title,
         description: obj.description,
         url: obj.url,
+        imageURL: obj.urlToImage,
         publishedAt: obj.publishedAt
       });
       article.save().then(data => console.log(data));

@@ -3,7 +3,7 @@ const scienceModel = require("../../models/scienceModel");
 const mongoose = require("mongoose");
 const axios = require("axios");
 
-let capKey = "cb4bfe6e9f074ed48426d8448833f7e3";
+let capKey = `${process.env.CAP_KEY}`;
 let many = "pageSize=80";
 //Strings for scientific news sources
 const healthNews = "medical-news-today";
@@ -30,7 +30,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(healthURL).then(response => {
@@ -48,7 +49,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(earthURL).then(response => {
@@ -66,7 +68,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
 };

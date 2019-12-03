@@ -3,7 +3,7 @@ const sportsModel = require("../../models/sportsModel");
 const mongoose = require("mongoose");
 const axios = require("axios");
 
-let capKey = "cb4bfe6e9f074ed48426d8448833f7e3";
+let capKey = `${process.env.CAP_KEY}`;
 let many = "pageSize=100";
 let some = "pageSize=50;";
 //Strings for sport sources
@@ -32,7 +32,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(espnURL).then(response => {
@@ -50,7 +51,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(footballURL).then(response => {
@@ -68,7 +70,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(hockeyURL).then(response => {
@@ -86,7 +89,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
 };

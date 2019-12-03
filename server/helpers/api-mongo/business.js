@@ -2,8 +2,9 @@ const express = require("express");
 const businessModel = require("../../models/businessModel");
 const mongoose = require("mongoose");
 const axios = require("axios");
+require("dotenv").config();
 
-let capKey = "cb4bfe6e9f074ed48426d8448833f7e3";
+let capKey = `${process.env.CAP_KEY}`;
 let many = "pageSize=100";
 //strings for sources
 const business = "fortune";
@@ -28,7 +29,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
   axios.get(moreBusinessURL).then(response => {
@@ -46,7 +48,8 @@ const newArticles = () => {
       });
       article
         .save()
-        .then(data => console.log("Data was sucessfully entered!!"));
+        .then(data => console.log("Data was sucessfully entered!!"))
+        .catch(err => console.log(err));
     });
   });
 };

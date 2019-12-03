@@ -3,7 +3,7 @@ const politicsModel = require("../../models/politicsModel");
 const mongoose = require("mongoose");
 const axios = require("axios");
 
-let capKey = "cb4bfe6e9f074ed48426d8448833f7e3";
+let capKey = `${process.env.CAP_KEY}`;
 let many = "pageSize=40";
 let NYTimes = "pageSize=15";
 //strings for everything query in below URLS
@@ -34,7 +34,10 @@ const newArticles = () => {
         imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
-      article.save().then(data => console.log(data));
+      article
+        .save()
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
     });
   });
   axios.get(conservativeURL).then(response => {
@@ -51,7 +54,10 @@ const newArticles = () => {
         imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
-      article.save().then(data => console.log(data));
+      article
+        .save()
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
     });
   });
   axios.get(splitURL).then(response => {
@@ -68,7 +74,10 @@ const newArticles = () => {
         imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
-      article.save().then(data => console.log(data));
+      article
+        .save()
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
     });
   });
   axios.get(timesURL).then(response => {
@@ -84,7 +93,10 @@ const newArticles = () => {
         imageType: "wide-image",
         publishedAt: obj.publishedAt
       });
-      article.save().then(data => console.log(data));
+      article
+        .save()
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
     });
   });
 };

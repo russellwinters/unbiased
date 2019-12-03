@@ -20,6 +20,16 @@ export default function BusinessNews() {
   } else
     return (
       <section className="main-page">
+        <div>
+          <h3>Business</h3>
+          <p>
+            The Business section of Unbiased is drawing from Fortune, Business
+            Insider, and Reuters. Each source had it's content filtered based on
+            a simply query for "business" articles - to be safe. These are
+            sources that are quite reliable overall, therefore worth the input
+            for there categories.
+          </p>
+        </div>
         <MapArticles articles={articles[currentPage]} />
         <PageCounter setPage={setCurrentPage} />
       </section>

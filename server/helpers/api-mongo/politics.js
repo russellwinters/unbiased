@@ -87,6 +87,7 @@ const newArticles = () => {
         source: obj.source,
         author: obj.author,
         title: obj.title,
+        bias: "left-leaning",
         description: obj.description,
         url: obj.url,
         imageURL: obj.urlToImage,

@@ -25,8 +25,8 @@ export default function ScienceNews() {
           <h3>Science</h3>
           <p>
             Science is a section that should have zero bias. With that in mind,
-            the selection of sources was picked based on a selection of Medical,
-            Nature, and "Science" news sources. Most of these outlets come in
+            the selection of sources was picked based on a selection of medical,
+            nature, and scientific news sources. Most of these outlets come in
             the form of Journals or Magazines!
           </p>
         </div>

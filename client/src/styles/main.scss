@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  font-family: "Roboto Condensed", sans-serif;
+}
+
 @import "./partials/_vairables.scss";
 @import "./partials/_header.scss";
 @import "./partials/_article-section.scss";

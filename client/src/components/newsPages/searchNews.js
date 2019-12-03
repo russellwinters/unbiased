@@ -3,6 +3,7 @@ import MapArticles from "../MapArticles";
 import PageCounter from "../PageCounter";
 import axios from "axios";
 import SearchIcon from "../../assets/search-icon.svg";
+import CreateArticles from "../CreateArticles";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
@@ -28,10 +29,7 @@ export default function SearchNews() {
   const NoResult = (
     <div>
       <h1>Oops...</h1>
-      <span>
-        There's currently no active search. Enter to the searchbar to filter
-        through articles!
-      </span>
+      <span>There's currently no active search.</span>
     </div>
   );
 

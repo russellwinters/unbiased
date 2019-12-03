@@ -11,10 +11,12 @@ Router.get("/", async (req, res) => {
   const scienceArticles = await Science.find().sort({ publishedAt: -1 });
   const businessArticles = await Business.find().sort({ publishedAt: -1 });
   const politicsArticles = await Politics.find().sort({ publishedAt: -1 });
-  returnArr = sportsArticles
-    .concat(scienceArticles)
-    .concat(businessArticles)
-    .concat(politicsArticles);
+  returnArr = [
+    ...politicsArticles,
+    ...businessArticles,
+    ...scienceArticles,
+    ...sportsArticles
+  ];
   res.status(200).json(returnArr);
 });
 

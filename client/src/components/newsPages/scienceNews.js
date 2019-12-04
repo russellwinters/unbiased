@@ -6,15 +6,26 @@ import axios from "axios";
 export default function ScienceNews() {
   const [articles, setArticles] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentArticles, setCurrentArticles] = useState([]);
 
   useEffect(() => {
     if (articles === null) {
       axios.get("http://localhost:5000/science").then(response => {
         console.log(response.data);
         setArticles(response.data);
+        setCurrentArticles(response.data[0]);
       });
     }
   });
+
+  window.onscroll = function(ev) {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      console.log("Bottom of Page");
+      setCurrentPage(currentPage + 1);
+      console.log(currentPage);
+      setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+    }
+  };
 
   if (articles === null) {
     return <></>;
@@ -30,8 +41,8 @@ export default function ScienceNews() {
             the form of Journals or Magazines!
           </p>
         </div>
-        <MapArticles articles={articles[currentPage]} />
-        <PageCounter setPage={setCurrentPage} />
+        <MapArticles articles={currentArticles} />
+        {/* <PageCounter setPage={setCurrentPage} /> */}
       </section>
     );
 }

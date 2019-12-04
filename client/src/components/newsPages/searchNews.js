@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
-import PageCounter from "../PageCounter";
 import axios from "axios";
-import SearchIcon from "../../assets/search-icon.svg";
-import CreateArticles from "../CreateArticles";
+import SearchIcon from "../../assets/search-icon-b.svg";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
@@ -60,7 +58,7 @@ export default function SearchNews() {
         {searchField}
         <section className="main-page">
           <MapArticles articles={articles} />
-          <PageCounter setPage={setCurrentPage} />
+          {/* <PageCounter setPage={setCurrentPage} /> */}
         </section>
       </>
     );

@@ -10,7 +10,6 @@ export default function SportsNews() {
   useEffect(() => {
     if (articles === null) {
       axios.get("http://localhost:5000/sports").then(response => {
-        console.log(response.data);
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });
@@ -19,9 +18,9 @@ export default function SportsNews() {
 
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      if (currentPage < 5) {
+      if (currentPage < 5 && articles !== null) {
+        setCurrentArticles([...currentArticles, ...articles[currentPage + 1]]);
         setCurrentPage(currentPage + 1);
-        setCurrentArticles([...currentArticles, ...articles[currentPage]]);
       }
     }
   };

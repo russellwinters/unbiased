@@ -40,7 +40,9 @@ export default function BusinessNews() {
             for there categories.
           </p>
         </div>
-        <MapArticles articles={currentArticles} />
+        <div className="category-content">
+          <MapArticles articles={currentArticles} />
+        </div>
       </section>
     );
 }

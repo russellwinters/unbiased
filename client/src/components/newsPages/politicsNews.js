@@ -45,7 +45,9 @@ export default function PoliticsNews() {
             views that are commonly held OR read.
           </p>
         </div>
-        <MapArticles articles={currentArticles} />
+        <div className="category-content">
+          <MapArticles articles={currentArticles} />
+        </div>
       </section>
     );
 }

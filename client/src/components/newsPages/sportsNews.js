@@ -39,7 +39,9 @@ export default function SportsNews() {
             News.
           </p>
         </div>
-        <MapArticles articles={currentArticles} />
+        <div className="category-content">
+          <MapArticles articles={currentArticles} />
+        </div>
       </section>
     );
 }

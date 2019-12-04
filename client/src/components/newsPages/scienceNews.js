@@ -39,7 +39,9 @@ export default function ScienceNews() {
             the form of Journals or Magazines!
           </p>
         </div>
-        <MapArticles articles={currentArticles} />
+        <div className="category-content">
+          <MapArticles articles={currentArticles} />
+        </div>
       </section>
     );
 }

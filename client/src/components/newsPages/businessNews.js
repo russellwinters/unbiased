@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
-import PageCounter from "../PageCounter";
 import axios from "axios";
 
 export default function BusinessNews() {
@@ -20,10 +19,10 @@ export default function BusinessNews() {
 
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      console.log("Bottom of Page");
-      setCurrentPage(currentPage + 1);
-      console.log(currentPage);
-      setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      if (currentPage < 5) {
+        setCurrentPage(currentPage + 1);
+        setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      }
     }
   };
 
@@ -32,9 +31,9 @@ export default function BusinessNews() {
   } else
     return (
       <section className="main-page">
-        <div>
-          <h3>Business</h3>
-          <p>
+        <div className="category-description">
+          <h3 className="category-description__title">Business</h3>
+          <p className="category-description__content">
             The Business section of Unbiased is drawing from Fortune, Business
             Insider, and Reuters. Each source had it's content filtered based on
             a simply query for "business" articles - to be safe. These are
@@ -43,7 +42,6 @@ export default function BusinessNews() {
           </p>
         </div>
         <MapArticles articles={currentArticles} />
-        {/* <PageCounter setPage={setCurrentPage} /> */}
       </section>
     );
 }

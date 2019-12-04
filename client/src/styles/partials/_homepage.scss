@@ -1,0 +1,34 @@
+.home {
+  width: calc(100vw - 32px);
+  margin: $center;
+
+  &-title {
+    margin: 24px 0;
+    font-weight: bold;
+    font-size: 2em;
+  }
+
+  &-quote {
+    margin: 16px 0;
+
+    &__content {
+      margin-bottom: 12px;
+      text-indent: 1em;
+      font-weight: bold;
+    }
+
+    &__reference {
+      margin-left: 16px;
+      font-weight: bold;
+    }
+  }
+
+  &-about {
+    margin: 32px 0;
+
+    &__content {
+      margin: 8px 0;
+      text-indent: 1em;
+    }
+  }
+}

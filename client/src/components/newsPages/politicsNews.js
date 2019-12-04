@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
-import PageCounter from "../PageCounter";
 import axios from "axios";
 
 export default function PoliticsNews() {
@@ -20,10 +19,10 @@ export default function PoliticsNews() {
 
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      console.log("Bottom of Page");
-      setCurrentPage(currentPage + 1);
-      console.log(currentPage);
-      setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      if (currentPage < 5) {
+        setCurrentPage(currentPage + 1);
+        setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      }
     }
   };
 
@@ -32,9 +31,9 @@ export default function PoliticsNews() {
   } else
     return (
       <section className="main-page">
-        <div>
-          <h3>Politics</h3>
-          <p>
+        <div className="category-description">
+          <h3 className="category-description__title">Politics</h3>
+          <p className="category-description__content">
             This is the category that is at the heart of Unbiased. To give the
             most credibility to the articles, the sources were filtered based on
             multiple charts that designated these sources to have the highest
@@ -48,7 +47,6 @@ export default function PoliticsNews() {
           </p>
         </div>
         <MapArticles articles={currentArticles} />
-        {/* <PageCounter setPage={setCurrentPage} /> */}
       </section>
     );
 }

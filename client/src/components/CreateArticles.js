@@ -19,6 +19,7 @@ export default function CreateArticles(props) {
         <img
           className={`article-image article-image__${obj.imageType}`}
           src={obj.imageURL}
+          alt="Photograph From Source"
         />
       </div>
     );
@@ -30,7 +31,11 @@ export default function CreateArticles(props) {
       >
         <h3 className="open-article-title">{obj.title}</h3>
         <p className="open-article-description">{obj.description}</p>
-        <img className="open-article-image" src={obj.imageURL} />
+        <img
+          className="open-article-image"
+          src={obj.imageURL}
+          alt="Photograph From Source"
+        />
         <span
           className={`open-article-source article-source__${politicalBias}`}
         >

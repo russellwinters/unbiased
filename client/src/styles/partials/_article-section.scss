@@ -2,4 +2,16 @@
   width: calc(100vw - 32px);
   margin: $center;
   margin-top: 24px;
+
+  .category-description {
+    margin-bottom: 32px;
+    &__title {
+      font-size: 2em;
+      margin-bottom: 16px;
+    }
+
+    &__content {
+      text-indent: 1em;
+    }
+  }
 }

@@ -2,6 +2,7 @@
   width: calc(100vw - 32px);
   margin: $center;
   padding: 12px;
+  margin-top: 16px;
 
   &-container {
     width: 80%;
@@ -28,5 +29,14 @@
     &-input::placeholder {
       color: $black;
     }
+  }
+}
+
+.search-status {
+  width: calc(100vw - 32px);
+  margin: $center;
+
+  &__heading {
+    margin: 16px 0;
   }
 }

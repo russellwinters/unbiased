@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
-import PageCounter from "../PageCounter";
 import axios from "axios";
 
 export default function ScienceNews() {
@@ -20,10 +19,10 @@ export default function ScienceNews() {
 
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      console.log("Bottom of Page");
-      setCurrentPage(currentPage + 1);
-      console.log(currentPage);
-      setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      if (currentPage < 5) {
+        setCurrentPage(currentPage + 1);
+        setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      }
     }
   };
 
@@ -32,9 +31,9 @@ export default function ScienceNews() {
   } else
     return (
       <section className="main-page">
-        <div>
-          <h3>Science</h3>
-          <p>
+        <div className="category-description">
+          <h3 className="category-description__title">Science</h3>
+          <p className="category-description__content">
             Science is a section that should have zero bias. With that in mind,
             the selection of sources was picked based on a selection of medical,
             nature, and scientific news sources. Most of these outlets come in
@@ -42,7 +41,6 @@ export default function ScienceNews() {
           </p>
         </div>
         <MapArticles articles={currentArticles} />
-        {/* <PageCounter setPage={setCurrentPage} /> */}
       </section>
     );
 }

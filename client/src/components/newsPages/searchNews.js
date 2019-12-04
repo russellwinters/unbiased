@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MapArticles from "../MapArticles";
 import axios from "axios";
 import SearchIcon from "../../assets/search-icon-b.svg";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
 
   const filterSearch = event => {
     event.preventDefault();
@@ -25,9 +24,20 @@ export default function SearchNews() {
   };
 
   const NoResult = (
-    <div>
-      <h1>Oops...</h1>
-      <span>There's currently no active search.</span>
+    <div className="search-status">
+      <h1 className="search-status__heading">Oops!</h1>
+      <span className="search-status__message">
+        Nothing was found for that search...
+      </span>
+    </div>
+  );
+
+  const PreSearch = (
+    <div className="search-status">
+      <h1 className="search-status__heading">Waiting...</h1>
+      <span className="search-status__message">
+        We're waiting for your search
+      </span>
     </div>
   );
 
@@ -49,6 +59,13 @@ export default function SearchNews() {
     return (
       <>
         {searchField}
+        {PreSearch}
+      </>
+    );
+  } else if (articles.length === 0) {
+    return (
+      <>
+        {searchField}
         {NoResult}
       </>
     );
@@ -58,7 +75,6 @@ export default function SearchNews() {
         {searchField}
         <section className="main-page">
           <MapArticles articles={articles} />
-          {/* <PageCounter setPage={setCurrentPage} /> */}
         </section>
       </>
     );

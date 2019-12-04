@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
-import PageCounter from "../PageCounter";
 import axios from "axios";
 
 export default function SportsNews() {
@@ -20,10 +19,10 @@ export default function SportsNews() {
 
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      console.log("Bottom of Page");
-      setCurrentPage(currentPage + 1);
-      console.log(currentPage);
-      setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      if (currentPage < 5) {
+        setCurrentPage(currentPage + 1);
+        setCurrentArticles([...currentArticles, ...articles[currentPage]]);
+      }
     }
   };
 
@@ -32,9 +31,9 @@ export default function SportsNews() {
   } else
     return (
       <section className="main-page">
-        <div>
-          <h3>Sports</h3>
-          <p>
+        <div className="category-description">
+          <h3 className="category-description__title">Sports</h3>
+          <p className="category-description__content">
             Sports are naturally unbiased, and that's how we like it! With that
             being said, the feed below pulls mostly from ESPN and
             BleacherReport, but also includes articles from NFL News and NHL
@@ -42,7 +41,6 @@ export default function SportsNews() {
           </p>
         </div>
         <MapArticles articles={currentArticles} />
-        {/* <PageCounter setPage={setCurrentPage} /> */}
       </section>
     );
 }

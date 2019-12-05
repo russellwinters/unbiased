@@ -388,23 +388,23 @@ body {
   margin: 0 auto;
 }
 
-.home-title {
+.home-page__title {
   margin: 24px 0;
   font-weight: bold;
   font-size: 2em;
 }
 
-.home-quote {
+.home-page__quote {
   margin: 16px 0;
 }
 
-.home-quote__content {
+.home-page__quote-content {
   margin-bottom: 12px;
   text-indent: 1em;
   font-weight: bold;
 }
 
-.home-quote__reference {
+.home-page__quote-reference {
   margin-left: 16px;
   font-weight: bold;
 }
@@ -416,5 +416,29 @@ body {
 .home-about__content {
   margin: 8px 0;
   text-indent: 1em;
+}
+
+@media only screen and (min-width: 768px) {
+  .home {
+    width: calc(100vw - 48px);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+  }
+  .home-page {
+    width: 25%;
+  }
+  .home-about {
+    width: 70%;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .home {
+    width: calc(100vw - 360px);
+  }
 }
 /*# sourceMappingURL=main.css.map */

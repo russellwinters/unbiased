@@ -2,24 +2,26 @@
   width: calc(100vw - 32px);
   margin: $center;
 
-  &-title {
-    margin: 24px 0;
-    font-weight: bold;
-    font-size: 2em;
-  }
-
-  &-quote {
-    margin: 16px 0;
-
-    &__content {
-      margin-bottom: 12px;
-      text-indent: 1em;
+  &-page {
+    &__title {
+      margin: 24px 0;
       font-weight: bold;
+      font-size: 2em;
     }
 
-    &__reference {
-      margin-left: 16px;
-      font-weight: bold;
+    &__quote {
+      margin: 16px 0;
+
+      &-content {
+        margin-bottom: 12px;
+        text-indent: 1em;
+        font-weight: bold;
+      }
+
+      &-reference {
+        margin-left: 16px;
+        font-weight: bold;
+      }
     }
   }
 
@@ -30,5 +32,26 @@
       margin: 8px 0;
       text-indent: 1em;
     }
+  }
+}
+
+@include medium {
+  .home {
+    width: calc(100vw - 48px);
+    display: flex;
+    justify-content: space-between;
+    &-page {
+      width: 25%;
+    }
+
+    &-about {
+      width: 70%;
+    }
+  }
+}
+
+@include large {
+  .home {
+    width: calc(100vw - 360px);
   }
 }

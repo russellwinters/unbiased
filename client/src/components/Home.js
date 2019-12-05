@@ -3,15 +3,17 @@ import React from "react";
 export default function Home() {
   return (
     <section className="home">
-      <h2 className="home-title">Home</h2>
-      <div className="home-quote">
-        <p className="home-quote__content">
-          Confrontation focuses our emotional energies on the singular goal of
-          winning over the other side. As we become consumed in this mindset, we
-          reenact partisan patterns of conflict that may comfort our fears but
-          undermine cooperation.
-        </p>
-        <span className="home-quote__reference">- Daniel Shapiro</span>
+      <div className="home-page">
+        <h2 className="home-page__title">Home</h2>
+        <div className="home-page__quote">
+          <p className="home-page__quote-content">
+            Confrontation focuses our emotional energies on the singular goal of
+            winning over the other side. As we become consumed in this mindset,
+            we reenact partisan patterns of conflict that may comfort our fears
+            but undermine cooperation.
+          </p>
+          <span className="home-page__quote-content">- Daniel Shapiro</span>
+        </div>
       </div>
       <div className="home-about">
         <p className="home-about__content">

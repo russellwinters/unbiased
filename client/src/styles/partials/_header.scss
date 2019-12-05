@@ -1,5 +1,5 @@
 .header {
-  width: 100vw;
+  width: 100%;
   background-color: $black;
   color: $alabaster;
   padding: 0 16px;
@@ -42,6 +42,40 @@
     &-link:hover {
       text-decoration: underline;
       font-weight: bold;
+    }
+  }
+}
+
+@include medium {
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    &-main {
+      width: calc(100vw - 48px);
+      margin: $center;
+    }
+
+    &-nav {
+      width: 70%;
+      padding-right: 24px;
+      padding-left: 12px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@include large {
+  .header {
+    &-main {
+      width: calc(100vw - 360px);
+    }
+
+    &-nav {
+      width: 52.7%;
+      margin-right: 180px;
+      padding-right: 12px;
     }
   }
 }

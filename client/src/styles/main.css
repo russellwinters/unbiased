@@ -441,4 +441,46 @@ body {
     width: calc(100vw - 360px);
   }
 }
+
+@media only screen and (min-width: 768px) {
+  .search-page {
+    width: calc(100vw - 48x);
+    margin: 0 auto;
+  }
+  .search-page .search {
+    width: 25%;
+    margin: 24px;
+  }
+  .search-page .search-status {
+    width: 100%;
+    text-align: center;
+  }
+  .search-page .search-results {
+    width: calc(70vw - 48px);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    float: right;
+    margin: 0 36px 0 0;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .search-page {
+    width: calc(100vw - 360px);
+  }
+  .search-page .search {
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .search-page .search .search-container {
+    margin-left: 0;
+  }
+  .search-page .search-results {
+    width: 70%;
+    margin-right: 0;
+  }
+}
 /*# sourceMappingURL=main.css.map */

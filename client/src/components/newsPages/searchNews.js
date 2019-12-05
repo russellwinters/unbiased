@@ -57,26 +57,26 @@ export default function SearchNews() {
 
   if (articles === null) {
     return (
-      <>
+      <section className="search-page">
         {searchField}
         {PreSearch}
-      </>
+      </section>
     );
   } else if (articles.length === 0) {
     return (
-      <>
+      <section className="search-page">
         {searchField}
         {NoResult}
-      </>
+      </section>
     );
   } else {
     return (
-      <>
+      <section className="search-page">
         {searchField}
-        <section className="main-page">
+        <section className="main-page search-results">
           <MapArticles articles={articles} />
         </section>
-      </>
+      </section>
     );
   }
 }

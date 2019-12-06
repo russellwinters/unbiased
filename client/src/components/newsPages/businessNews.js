@@ -16,7 +16,8 @@ export default function BusinessNews() {
           // axios.get("http://localhost:5000/business").then(response => {
           setArticles(response.data);
           setCurrentArticles(response.data[0]);
-        });
+        })
+        .catch(err => console.log(err));
     }
   });
 

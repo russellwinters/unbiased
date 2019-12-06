@@ -10,7 +10,7 @@ export default function BusinessNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("http://localhost:5000/business").then(response => {
+      axios.get("/business").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });

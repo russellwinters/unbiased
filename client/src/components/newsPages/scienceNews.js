@@ -10,7 +10,7 @@ export default function ScienceNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("http://localhost:5000/science").then(response => {
+      axios.get("/science").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });

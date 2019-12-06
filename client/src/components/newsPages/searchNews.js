@@ -14,7 +14,7 @@ export default function SearchNews() {
   const filterSearch = event => {
     event.preventDefault();
     event.persist();
-    axios.get("http://localhost:5000/search").then(response => {
+    axios.get("/search").then(response => {
       const searchArticles = response.data;
       const formInput = event.target.search.value;
       console.log(formInput);

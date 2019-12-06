@@ -10,7 +10,7 @@ export default function PoliticsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("http://localhost:5000/politics").then(response => {
+      axios.get("/politics").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });
@@ -31,7 +31,7 @@ export default function PoliticsNews() {
   };
 
   if (articles === null) {
-    return <h1>Nothing</h1>;
+    return <h1></h1>;
   } else
     return (
       <>

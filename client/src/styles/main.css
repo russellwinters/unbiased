@@ -452,7 +452,7 @@
 
 @media only screen and (min-width: 768px) {
   .search-page {
-    width: calc(100vw - 48x);
+    width: calc(100vw - 48px);
     margin: 0 auto;
   }
   .search-page .search {

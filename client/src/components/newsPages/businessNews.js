@@ -13,7 +13,7 @@ export default function BusinessNews() {
       axios
         .get("https://floating-springs-05247.herokuapp.com:5000/business")
         .then(response => {
-          // axios.get("http://localhost:5000/business").then(response => {
+          console.log(response.data);
           setArticles(response.data);
           setCurrentArticles(response.data[0]);
         })

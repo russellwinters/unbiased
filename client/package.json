@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://fierce-mesa.herokuapp.com:5000",
+  "proxy": "https://floating-springs-05247.herokuapp.com/",
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.0",
     "axios": "^0.19.0",

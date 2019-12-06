@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
 import axios from "axios";
+import Footer from "../Footer";
 
 export default function PoliticsNews() {
   const [articles, setArticles] = useState(null);
@@ -16,8 +17,12 @@ export default function PoliticsNews() {
     }
   });
 
+  //Constant for infinite scroll
+  const idSelector = document.querySelector("#articleHeight");
+  //Listening if height of the element is less than the window height plus distance we've scrolled
   window.onscroll = function(ev) {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    if (window.innerHeight + window.scrollY >= idSelector.offsetHeight) {
+      // console.log(true);
       if (currentPage < 5 && articles !== null) {
         setCurrentArticles([...currentArticles, ...articles[currentPage + 1]]);
         setCurrentPage(currentPage + 1);
@@ -29,25 +34,29 @@ export default function PoliticsNews() {
     return <h1>Nothing</h1>;
   } else
     return (
-      <section className="main-page">
-        <div className="category-description">
-          <h3 className="category-description__title">Politics</h3>
-          <p className="category-description__content">
-            This is the category that is at the heart of Unbiased. To give the
-            most credibility to the articles, the sources were filtered based on
-            multiple charts that designated these sources to have the highest
-            rating for "original fact reporting", with as little opinion
-            reporting as possible. To remain impartial, there is a source or two
-            that are considered more persuasive than the others, but popularity
-            in American society pushed them in because a significant purpose of
-            Unbiased is to allow readers access to common content. There is no
-            direct intend to push political ideology, just an attempt to share
-            views that are commonly held OR read.
-          </p>
-        </div>
-        <div className="category-content">
-          <MapArticles articles={currentArticles} />
-        </div>
-      </section>
+      <>
+        <section className="main-page">
+          <div className="category-description">
+            <h3 className="category-description__title">Politics</h3>
+            <p className="category-description__content">
+              This is the category that is at the heart of Unbiased. To give the
+              most credibility to the articles, the sources were filtered based
+              on multiple charts that designated these sources to have the
+              highest rating for "original fact reporting", with as little
+              opinion reporting as possible. To remain impartial, there is a
+              source or two that are considered more persuasive than the others,
+              but popularity in American society pushed them in because a
+              significant purpose of Unbiased is to allow readers access to
+              common content. There is no direct intend to push political
+              ideology, just an attempt to share views that are commonly held OR
+              read.
+            </p>
+          </div>
+          <div id="articleHeight" className="category-content">
+            <MapArticles articles={currentArticles} />
+          </div>
+        </section>
+        <Footer />
+      </>
     );
 }

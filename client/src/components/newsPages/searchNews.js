@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MapArticles from "../MapArticles";
 import axios from "axios";
 import SearchIcon from "../../assets/search-icon-b.svg";
+import Footer from "../Footer";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
@@ -57,26 +58,35 @@ export default function SearchNews() {
 
   if (articles === null) {
     return (
-      <section className="search-page">
-        {searchField}
-        {PreSearch}
-      </section>
+      <>
+        <section className="search-page">
+          {searchField}
+          {PreSearch}
+        </section>
+        <Footer />
+      </>
     );
   } else if (articles.length === 0) {
     return (
-      <section className="search-page">
-        {searchField}
-        {NoResult}
-      </section>
+      <>
+        <section className="search-page">
+          {searchField}
+          {NoResult}
+        </section>
+        <Footer />
+      </>
     );
   } else {
     return (
-      <section className="search-page">
-        {searchField}
-        <section className="main-page search-results">
-          <MapArticles articles={articles} />
+      <>
+        <section className="search-page">
+          {searchField}
+          <section className="main-page search-results">
+            <MapArticles articles={articles} />
+          </section>
         </section>
-      </section>
+        <Footer />
+      </>
     );
   }
 }

@@ -40,13 +40,23 @@
     width: calc(100vw - 48px);
     display: flex;
     justify-content: space-between;
+
     &-page {
       width: 25%;
+      font-size: 1.2em;
     }
 
     &-about {
       width: 70%;
+      font-size: 1.2em;
+      padding: 64px 0;
     }
+  }
+
+  .home-footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
   }
 }
 

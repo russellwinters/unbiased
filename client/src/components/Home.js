@@ -36,7 +36,10 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <Footer />
+      <div className="home-footer">
+        <Footer />
+      </div>
+      {/* <Footer /> */}
     </>
   );
 }

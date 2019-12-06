@@ -17,3 +17,17 @@
     }
   }
 }
+
+@include medium {
+  .footer {
+    height: 60px;
+    font-size: 1.2em;
+    padding: 0 24px;
+  }
+}
+
+@include large {
+  .footer {
+    padding: 0 180px;
+  }
+}

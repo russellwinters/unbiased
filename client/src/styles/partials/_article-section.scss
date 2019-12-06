@@ -24,6 +24,7 @@
 
     .category-description {
       width: 20%;
+      font-size: 1.1em;
     }
 
     .category-content {
@@ -38,5 +39,9 @@
 @include large {
   .main-page {
     width: calc(100vw - 360px);
+
+    .category-description {
+      font-size: 1.2em;
+    }
   }
 }

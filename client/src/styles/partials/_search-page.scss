@@ -1,3 +1,9 @@
+.fixed-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+
 @include medium {
   .search-page {
     width: calc(100vw - 48x);

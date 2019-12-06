@@ -7,6 +7,10 @@ import Footer from "../Footer";
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
 
+  const cancelCourse = () => {
+    document.querySelector("#search-form").reset();
+  };
+
   const filterSearch = event => {
     event.preventDefault();
     event.persist();
@@ -21,30 +25,46 @@ export default function SearchNews() {
       );
       console.log(returnArr);
       setArticles(returnArr);
+      cancelCourse();
+      window.getSelection().removeAllRanges();
     });
   };
 
   const NoResult = (
-    <div className="search-status">
-      <h1 className="search-status__heading">Oops!</h1>
-      <span className="search-status__message">
-        Nothing was found for that search...
-      </span>
-    </div>
+    <>
+      <div className="search-status">
+        <h1 className="search-status__heading">Oops!</h1>
+        <span className="search-status__message">
+          Nothing was found for that search...
+        </span>
+      </div>
+      <div className="fixed-footer">
+        <Footer />
+      </div>
+    </>
   );
 
   const PreSearch = (
-    <div className="search-status">
-      <h1 className="search-status__heading">Waiting...</h1>
-      <span className="search-status__message">
-        We're waiting for your search
-      </span>
-    </div>
+    <>
+      <div className="search-status">
+        <h1 className="search-status__heading">Waiting...</h1>
+        <span className="search-status__message">
+          We're waiting for your search
+        </span>
+      </div>
+      <div className="fixed-footer">
+        <Footer />
+      </div>
+    </>
   );
 
   const searchField = (
     <div className="search">
-      <form className="search-container" onSubmit={filterSearch}>
+      <form
+        id="search-form"
+        className="search-container"
+        onSubmit={filterSearch}
+      >
         <img alt="search" className="search-container__icon" src={SearchIcon} />
         <input
           name="search"
@@ -63,7 +83,6 @@ export default function SearchNews() {
           {searchField}
           {PreSearch}
         </section>
-        <Footer />
       </>
     );
   } else if (articles.length === 0) {
@@ -73,7 +92,6 @@ export default function SearchNews() {
           {searchField}
           {NoResult}
         </section>
-        <Footer />
       </>
     );
   } else {
@@ -85,6 +103,7 @@ export default function SearchNews() {
             <MapArticles articles={articles} />
           </section>
         </section>
+
         <Footer />
       </>
     );

@@ -82,6 +82,7 @@ body {
 
 @media only screen and (min-width: 768px) {
   .header {
+    font-size: 1.2em;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -105,6 +106,7 @@ body {
         -ms-flex-pack: justify;
             justify-content: space-between;
     margin-bottom: 16px;
+    font-weight: bold;
   }
 }
 
@@ -150,6 +152,7 @@ body {
   }
   .main-page .category-description {
     width: 20%;
+    font-size: 1.1em;
   }
   .main-page .category-content {
     width: 70%;
@@ -167,6 +170,9 @@ body {
 @media only screen and (min-width: 1440px) {
   .main-page {
     width: calc(100vw - 360px);
+  }
+  .main-page .category-description {
+    font-size: 1.2em;
   }
 }
 
@@ -430,9 +436,17 @@ body {
   }
   .home-page {
     width: 25%;
+    font-size: 1.2em;
   }
   .home-about {
     width: 70%;
+    font-size: 1.2em;
+    padding: 64px 0;
+  }
+  .home-footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
   }
 }
 
@@ -440,6 +454,12 @@ body {
   .home {
     width: calc(100vw - 360px);
   }
+}
+
+.fixed-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
 }
 
 @media only screen and (min-width: 768px) {
@@ -508,5 +528,19 @@ body {
 .footer-text__link {
   text-decoration: none;
   color: #fdfffc;
+}
+
+@media only screen and (min-width: 768px) {
+  .footer {
+    height: 60px;
+    font-size: 1.2em;
+    padding: 0 24px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .footer {
+    padding: 0 180px;
+  }
 }
 /*# sourceMappingURL=main.css.map */

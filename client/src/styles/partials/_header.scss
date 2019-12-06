@@ -48,6 +48,7 @@
 
 @include medium {
   .header {
+    font-size: 1.2em;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -62,6 +63,7 @@
       padding-left: 12px;
       justify-content: space-between;
       margin-bottom: 16px;
+      font-weight: bold;
     }
   }
 }

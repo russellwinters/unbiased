@@ -10,7 +10,7 @@ export default function PoliticsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/politics").then(response => {
+      axios.get("/politics/api").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });

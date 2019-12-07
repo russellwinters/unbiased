@@ -10,13 +10,10 @@ export default function BusinessNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios
-        .get("/business")
-        .then(response => {
-          setArticles(response.data);
-          setCurrentArticles(response.data[0]);
-        })
-        .catch(err => console.log(err));
+      axios.get("/business/api").then(response => {
+        setArticles(response.data);
+        setCurrentArticles(response.data[0]);
+      });
     }
   });
 

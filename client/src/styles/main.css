@@ -380,6 +380,7 @@
 .home {
   width: calc(100vw - 32px);
   margin: 0 auto;
+  margin-bottom: 64px;
 }
 
 .home-page__title {
@@ -516,6 +517,12 @@
 .footer-text__link {
   text-decoration: none;
   color: #fdfffc;
+}
+
+.home-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
 }
 
 @media only screen and (min-width: 768px) {

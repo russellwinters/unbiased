@@ -22,6 +22,7 @@ export default function SportsNews() {
 
   //Constant for infinite scroll
   const idSelector = document.querySelector("#articleHeight");
+  // const footerScroll = document.querySelector(".home-footer");
   //Listening if height of the element is less than the window height plus distance we've scrolled
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= idSelector.offsetHeight) {
@@ -32,6 +33,26 @@ export default function SportsNews() {
       }
     }
   };
+
+  const footerScroll = document.querySelector(".home-footer");
+  var timer = null;
+  window.addEventListener(
+    "scroll",
+    function() {
+      if (timer !== null) {
+        clearTimeout(timer);
+        if (footerScroll) {
+          footerScroll.style.bottom = "-100px";
+        }
+      }
+      timer = setTimeout(function() {
+        if (footerScroll) {
+          footerScroll.style.bottom = "0px";
+        }
+      }, 150);
+    },
+    false
+  );
 
   if (articles === null) {
     return <></>;
@@ -52,7 +73,9 @@ export default function SportsNews() {
             <MapArticles articles={currentArticles} />
           </div>
         </section>
-        <Footer />
+        <div className="home-footer">
+          <Footer />
+        </div>
       </>
     );
 }

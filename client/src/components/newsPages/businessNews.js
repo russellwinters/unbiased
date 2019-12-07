@@ -33,6 +33,28 @@ export default function BusinessNews() {
     }
   };
 
+  const footerScroll = document.querySelector(".home-footer");
+  var timer = null;
+  window.addEventListener(
+    "scroll",
+    function() {
+      if (timer !== null) {
+        clearTimeout(timer);
+        if (footerScroll) {
+          footerScroll.style.bottom = "-100px";
+        }
+      }
+      timer = setTimeout(function() {
+        if (footerScroll) {
+          footerScroll.style.bottom = "0px";
+        }
+
+        // console.log("done scrolling");
+      }, 150);
+    },
+    false
+  );
+
   if (articles === null) {
     return <></>;
   } else
@@ -53,7 +75,9 @@ export default function BusinessNews() {
             <MapArticles articles={currentArticles} />
           </div>
         </section>
-        <Footer />
+        <div className="home-footer">
+          <Footer />
+        </div>
       </>
     );
 }

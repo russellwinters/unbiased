@@ -33,6 +33,29 @@ export default function SearchNews() {
       });
   };
 
+  //Oddly doesn't work on this page.
+  const footerScroll = document.querySelector(".home-footer");
+  var timer = null;
+  window.addEventListener(
+    "scroll",
+    function() {
+      if (timer !== null) {
+        clearTimeout(timer);
+        if (footerScroll) {
+          footerScroll.style.bottom = "-100px";
+        }
+      }
+      timer = setTimeout(function() {
+        if (footerScroll) {
+          footerScroll.style.bottom = "0px";
+        }
+
+        // console.log("done scrolling");
+      }, 150);
+    },
+    false
+  );
+
   const NoResult = (
     <>
       <div className="search-status">
@@ -107,7 +130,9 @@ export default function SearchNews() {
           </section>
         </section>
 
-        <Footer />
+        <div className="home-footer">
+          <Footer />
+        </div>
       </>
     );
   }

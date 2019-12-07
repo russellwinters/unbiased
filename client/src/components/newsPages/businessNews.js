@@ -11,9 +11,8 @@ export default function BusinessNews() {
   useEffect(() => {
     if (articles === null) {
       axios
-        .get("https://floating-springs-05247.herokuapp.com:5000/business")
+        .get("/business")
         .then(response => {
-          console.log(response.data);
           setArticles(response.data);
           setCurrentArticles(response.data[0]);
         })

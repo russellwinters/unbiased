@@ -5,7 +5,7 @@ const Sports = require("../models/sportsModel");
 const Politics = require("../models/politicsModel");
 const Business = require("../models/businessModel");
 
-Router.get("/", async (req, res) => {
+Router.get("/api", async (req, res) => {
   let returnArr = [];
   const sportsArticles = await Sports.find().sort({ publishedAt: -1 });
   const scienceArticles = await Science.find().sort({ publishedAt: -1 });

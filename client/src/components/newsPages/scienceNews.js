@@ -10,7 +10,7 @@ export default function ScienceNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/science").then(response => {
+      axios.get("/science/api").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });

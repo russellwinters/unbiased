@@ -10,7 +10,7 @@ export default function SportsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/sports").then(response => {
+      axios.get("/sports/api").then(response => {
         setArticles(response.data);
         setCurrentArticles(response.data[0]);
       });

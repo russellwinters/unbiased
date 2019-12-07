@@ -18,6 +18,12 @@
   }
 }
 
+.home-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+
 @include medium {
   .footer {
     height: 60px;

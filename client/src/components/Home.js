@@ -26,7 +26,7 @@ export default function Home() {
           </p>
           <p className="home-about__content">
             The goal of Unbiased is not to persuade anybody that one political
-            side is correct. Instead, it's intention is to present each side of
+            side is correct. Instead, its intention is to present each side of
             the media.
           </p>
           <p className="home-about__content">
@@ -39,7 +39,6 @@ export default function Home() {
       <div className="home-footer">
         <Footer />
       </div>
-      {/* <Footer /> */}
     </>
   );
 }

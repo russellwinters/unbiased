@@ -14,20 +14,23 @@ export default function SearchNews() {
   const filterSearch = event => {
     event.preventDefault();
     event.persist();
-    axios.get("/search/api").then(response => {
-      const searchArticles = response.data;
-      const formInput = event.target.search.value;
-      console.log(formInput);
-      const returnArr = searchArticles.filter(
-        obj =>
-          obj.title.toLowerCase().includes(formInput.toLowerCase()) ||
-          obj.description.toLowerCase().includes(formInput.toLowerCase())
-      );
-      console.log(returnArr);
-      setArticles(returnArr);
-      cancelCourse();
-      window.getSelection().removeAllRanges();
-    });
+    // axios.get("/search/api").then(response => {
+    axios
+      .get("https://floating-springs-05247.herokuapp.com/search/api")
+      .then(response => {
+        const searchArticles = response.data;
+        const formInput = event.target.search.value;
+        console.log(formInput);
+        const returnArr = searchArticles.filter(
+          obj =>
+            obj.title.toLowerCase().includes(formInput.toLowerCase()) ||
+            obj.description.toLowerCase().includes(formInput.toLowerCase())
+        );
+        console.log(returnArr);
+        setArticles(returnArr);
+        cancelCourse();
+        window.getSelection().removeAllRanges();
+      });
   };
 
   const NoResult = (

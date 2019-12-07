@@ -10,10 +10,13 @@ export default function ScienceNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/science/api").then(response => {
-        setArticles(response.data);
-        setCurrentArticles(response.data[0]);
-      });
+      // axios.get("/science/api").then(response => {
+      axios
+        .get("https://floating-springs-05247.herokuapp.com/science/api")
+        .then(response => {
+          setArticles(response.data);
+          setCurrentArticles(response.data[0]);
+        });
     }
   });
 

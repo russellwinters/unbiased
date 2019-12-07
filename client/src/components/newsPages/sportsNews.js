@@ -10,10 +10,13 @@ export default function SportsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/sports/api").then(response => {
-        setArticles(response.data);
-        setCurrentArticles(response.data[0]);
-      });
+      // axios.get("/sports/api").then(response => {
+      axios
+        .get("https://floating-springs-05247.herokuapp.com/sports/api")
+        .then(response => {
+          setArticles(response.data);
+          setCurrentArticles(response.data[0]);
+        });
     }
   });
 

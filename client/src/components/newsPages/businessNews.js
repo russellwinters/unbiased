@@ -10,10 +10,13 @@ export default function BusinessNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/business/api").then(response => {
-        setArticles(response.data);
-        setCurrentArticles(response.data[0]);
-      });
+      // axios.get("/business/api").then(response => {
+      axios
+        .get("https://floating-springs-05247.herokuapp.com/business/api")
+        .then(response => {
+          setArticles(response.data);
+          setCurrentArticles(response.data[0]);
+        });
     }
   });
 

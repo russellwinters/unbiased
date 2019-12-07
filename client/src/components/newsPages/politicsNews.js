@@ -10,10 +10,13 @@ export default function PoliticsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      axios.get("/politics/api").then(response => {
-        setArticles(response.data);
-        setCurrentArticles(response.data[0]);
-      });
+      // axios.get("/politics/api").then(response => {
+      axios
+        .get("https://floating-springs-05247.herokuapp.com/politics/api")
+        .then(response => {
+          setArticles(response.data);
+          setCurrentArticles(response.data[0]);
+        });
     }
   });
 

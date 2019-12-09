@@ -1,7 +1,11 @@
-.fixed-footer {
-  position: fixed;
-  bottom: 0px;
-  width: 100%;
+.search-status {
+  margin: $center;
+  text-align: center;
+
+  .spinning-load {
+    width: 250px;
+    margin: $center;
+  }
 }
 
 @include medium {

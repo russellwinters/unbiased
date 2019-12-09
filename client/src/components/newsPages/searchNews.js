@@ -3,6 +3,7 @@ import MapArticles from "../MapArticles";
 import axios from "axios";
 import SearchIcon from "../../assets/search-icon-b.svg";
 import Footer from "../Footer";
+import spinner from "../../assets/loading-spinner.gif";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
@@ -62,9 +63,6 @@ export default function SearchNews() {
           Nothing was found for that search...
         </span>
       </div>
-      <div className="fixed-footer">
-        <Footer />
-      </div>
     </>
   );
 
@@ -75,9 +73,6 @@ export default function SearchNews() {
         <span className="search-status__message">
           We're waiting for your search
         </span>
-      </div>
-      <div className="fixed-footer">
-        <Footer />
       </div>
     </>
   );
@@ -107,6 +102,9 @@ export default function SearchNews() {
           {searchField}
           {PreSearch}
         </section>
+        <div className="home-footer">
+          <Footer />
+        </div>
       </>
     );
   } else if (search === true) {
@@ -114,7 +112,10 @@ export default function SearchNews() {
       <>
         <section className="search-page">
           {searchField}
-          <h1>Loading</h1>
+          <div className="search-status">
+            <h1 className="search-status__heading">Loading</h1>
+            <img className="spinning-load" src={spinner} alt="loading" />
+          </div>
         </section>
       </>
     );
@@ -125,6 +126,9 @@ export default function SearchNews() {
           {searchField}
           {NoResult}
         </section>
+        <div className="home-footer">
+          <Footer />
+        </div>
       </>
     );
   } else {

@@ -72,7 +72,7 @@ export default function PoliticsNews() {
               source or two that are considered more persuasive than the others,
               but popularity in American society pushed them in because a
               significant purpose of Unbiased is to allow readers access to
-              common content. There is no direct intend to push political
+              common content. There is no direct intent to push political
               ideology, just an attempt to share views that are commonly held OR
               read.
             </p>

@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const CORS = require("cors");
 const helper = require("./helpers/helper");
+const path = require("path");
 
 //!This is to enable CORS on all API requests
 app.use(CORS());

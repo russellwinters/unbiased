@@ -6,6 +6,7 @@ import Footer from "../Footer";
 
 export default function SearchNews() {
   const [articles, setArticles] = useState(null);
+  const [search, setSearch] = useState(false);
 
   const cancelCourse = () => {
     document.querySelector("#search-form").reset();
@@ -14,19 +15,18 @@ export default function SearchNews() {
   const filterSearch = event => {
     event.preventDefault();
     event.persist();
-    // axios.get("/search/api").then(response => {
+    setSearch(true);
     axios
       .get("https://floating-springs-05247.herokuapp.com/search/api")
       .then(response => {
         const searchArticles = response.data;
         const formInput = event.target.search.value;
-        console.log(formInput);
         const returnArr = searchArticles.filter(
           obj =>
             obj.title.toLowerCase().includes(formInput.toLowerCase()) ||
             obj.description.toLowerCase().includes(formInput.toLowerCase())
         );
-        console.log(returnArr);
+        setSearch(false);
         setArticles(returnArr);
         cancelCourse();
         window.getSelection().removeAllRanges();
@@ -49,8 +49,6 @@ export default function SearchNews() {
         if (footerScroll) {
           footerScroll.style.bottom = "0px";
         }
-
-        // console.log("done scrolling");
       }, 150);
     },
     false
@@ -108,6 +106,15 @@ export default function SearchNews() {
         <section className="search-page">
           {searchField}
           {PreSearch}
+        </section>
+      </>
+    );
+  } else if (search === true) {
+    return (
+      <>
+        <section className="search-page">
+          {searchField}
+          <h1>Loading</h1>
         </section>
       </>
     );

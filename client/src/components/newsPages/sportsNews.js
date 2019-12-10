@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MapArticles from "../MapArticles";
 import axios from "axios";
 import Footer from "../Footer";
+import spinner from "../../assets/loading-spinner.gif";
 
 export default function SportsNews() {
   const [articles, setArticles] = useState(null);
@@ -10,7 +11,6 @@ export default function SportsNews() {
 
   useEffect(() => {
     if (articles === null) {
-      // axios.get("/sports/api").then(response => {
       axios
         .get("https://floating-springs-05247.herokuapp.com/sports/api")
         .then(response => {
@@ -22,11 +22,9 @@ export default function SportsNews() {
 
   //Constant for infinite scroll
   const idSelector = document.querySelector("#articleHeight");
-  // const footerScroll = document.querySelector(".home-footer");
   //Listening if height of the element is less than the window height plus distance we've scrolled
   window.onscroll = function(ev) {
     if (window.innerHeight + window.scrollY >= idSelector.offsetHeight) {
-      // console.log(true);
       if (currentPage < 5 && articles !== null) {
         setCurrentArticles([...currentArticles, ...articles[currentPage + 1]]);
         setCurrentPage(currentPage + 1);
@@ -55,7 +53,12 @@ export default function SportsNews() {
   );
 
   if (articles === null) {
-    return <></>;
+    return (
+      <section className="loading">
+        <h1 className="loading-title">Loading</h1>
+        <img className="loading-img" src={spinner} alt="loading" />
+      </section>
+    );
   } else
     return (
       <>

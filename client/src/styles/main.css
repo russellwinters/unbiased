@@ -1,3 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: "Roboto Condensed", sans-serif;
+}
+
 .header {
   width: 100%;
   background-color: #202020;
@@ -542,15 +554,23 @@
   }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+.loading {
+  width: 80%;
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 64px;
 }
 
-html,
-body {
-  font-family: "Roboto Condensed", sans-serif;
+.loading-title {
+  font-size: 2em;
 }
 /*# sourceMappingURL=main.css.map */

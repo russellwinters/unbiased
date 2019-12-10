@@ -1,13 +1,3 @@
-@import "./partials/_vairables.scss";
-@import "./partials/_header.scss";
-@import "./partials/_article-section.scss";
-@import "./partials/_article-cards.scss";
-@import "./partials/page-counter";
-@import "./partials/search-bar";
-@import "./partials/homepage";
-@import "./partials/search-page";
-@import "./partials//footer";
-
 * {
   margin: 0;
   padding: 0;
@@ -18,3 +8,14 @@ html,
 body {
   font-family: "Roboto Condensed", sans-serif;
 }
+
+@import "./partials/_vairables.scss";
+@import "./partials/_header.scss";
+@import "./partials/_article-section.scss";
+@import "./partials/_article-cards.scss";
+@import "./partials/page-counter";
+@import "./partials/search-bar";
+@import "./partials/homepage";
+@import "./partials/search-page";
+@import "./partials//footer";
+@import "./partials/loading";

@@ -7,7 +7,6 @@ import PoliticsNews from "./components/newsPages/politicsNews";
 import ScienceNews from "./components/newsPages/scienceNews";
 import SportsNews from "./components/newsPages/sportsNews";
 import SearchNews from "./components/newsPages/searchNews";
-import Footer from "./components/Footer";
 
 function App() {
   //Footer scroll doesn't want to listen on this page

@@ -229,7 +229,6 @@
 .article-link,
 .open-article-link {
   font-weight: bold;
-  z-index: 1;
 }
 
 .article .article-link__minimal,

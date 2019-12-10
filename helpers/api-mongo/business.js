@@ -13,6 +13,7 @@ const moreBusiness = "business-insider,reuters";
 const businessURL = `https://newsapi.org/v2/everything?language=en&sources=${business}&q=business&${many}&apiKey=${capKey}`;
 const moreBusinessURL = `https://newsapi.org/v2/everything?language=en&sources=${moreBusiness}q=business&${many}&apiKey=${capKey}`;
 
+//Pushing all articles into database after each axios call
 const newArticles = () => {
   axios.get(businessURL).then(response => {
     tempArr = response.data.articles;

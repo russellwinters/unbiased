@@ -66,10 +66,9 @@ export default function ScienceNews() {
           <div className="category-description">
             <h3 className="category-description__title">Science</h3>
             <p className="category-description__content">
-              Science is a section that should have zero bias. With that in
-              mind, the selection of sources was picked based on a selection of
-              medical, nature, and scientific news sources. Most of these
-              outlets come in the form of Journals or Magazines!
+              Unbiased pulls science articles from a variety of sources through
+              a number of scientific communities. Each source is rated highly
+              for factual content.
             </p>
           </div>
           <div id="articleHeight" className="category-content">

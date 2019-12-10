@@ -16,6 +16,7 @@ const espnURL = `https://newsapi.org/v2/top-headlines?language=en&sources=espn&$
 const footballURL = `https://newsapi.org/v2/everything?language=en&sources=${football}&${some}&apiKey=${capKey}`;
 const hockeyURL = `https://newsapi.org/v2/everything?language=en&sources=${hockey}&${many}&apiKey=${capKey}`;
 
+//Pushing all articles into database after each axios call
 const newArticles = () => {
   axios.get(sportsURL).then(response => {
     tempArr = response.data.articles;

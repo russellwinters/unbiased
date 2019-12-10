@@ -13,5 +13,6 @@ const politicsSchema = mongoose.Schema({
   publishedAt: Date
 });
 
+//uniqueValidator makes sure there's no duplicates when posting new articles
 politicsSchema.plugin(uniqueValidator);
 module.exports = mongoose.model("politicsArticle", politicsSchema);

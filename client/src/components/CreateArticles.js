@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function CreateArticles(props) {
   const [clicked, setClicked] = useState(false);
   const { obj } = props;
-  //Make this a switch instead of if else
+
   let politicalBias = "";
   if (obj.bias) {
     politicalBias = `${obj.bias}`;

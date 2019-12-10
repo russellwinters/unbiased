@@ -11,6 +11,7 @@ Router.get("/api", async (req, res) => {
   const scienceArticles = await Science.find().sort({ publishedAt: -1 });
   const businessArticles = await Business.find().sort({ publishedAt: -1 });
   const politicsArticles = await Politics.find().sort({ publishedAt: -1 });
+  //spreading each article array into one huge array that will be filtered through when a search is made.
   returnArr = [
     ...politicsArticles,
     ...businessArticles,

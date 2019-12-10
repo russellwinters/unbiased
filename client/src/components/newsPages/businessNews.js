@@ -66,11 +66,9 @@ export default function BusinessNews() {
           <div className="category-description">
             <h3 className="category-description__title">Business</h3>
             <p className="category-description__content">
-              The Business section of Unbiased is drawing from Fortune, Business
-              Insider, and Reuters. Each source had its content filtered based
-              on a simply query for "business" articles - to be safe. These are
-              sources that are quite reliable overall, therefore worth the input
-              for there categories.
+              Unbiased pulls business articles from Fortune, Business Insider,
+              and Reuters. These are sources that are rated highly for factual
+              reporting, with minimal partisan bias.
             </p>
           </div>
           <div id="articleHeight" className="category-content">

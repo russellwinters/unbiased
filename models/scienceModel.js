@@ -12,5 +12,6 @@ const scienceSchema = mongoose.Schema({
   publishedAt: Date
 });
 
+//uniqueValidator makes sure there's no duplicates when posting new articles
 scienceSchema.plugin(uniqueValidator);
 module.exports = mongoose.model("scienceArticle", scienceSchema);

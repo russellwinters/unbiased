@@ -18,7 +18,7 @@ const conservativeURL = `https://newsapi.org/v2/everything?language=en&sources=$
 const splitURL = `https://newsapi.org/v2/everything?language=en&sources=${minimalBias}&q=politics&${many}&apiKey=${capKey}`;
 const timesURL = `https://newsapi.org/v2/everything?language=en&sources=${theTimes}&q=politics&${NYTimes}&apiKey=${capKey}`;
 
-//split up
+//Pushing all articles into database after each axios call
 const newArticles = () => {
   axios.get(liberalURL).then(response => {
     tempArr = response.data.articles;

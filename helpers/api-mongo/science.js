@@ -14,6 +14,7 @@ const healthURL = `https://newsapi.org/v2/everything?language=en&sources=${healt
 const scienceURL = `https://newsapi.org/v2/everything?language=en&sources=${scienceNews}&q=science&${many}&apiKey=${capKey}`;
 const earthURL = `https://newsapi.org/v2/everything?language=en&sources=${earthNews}&${many}&apiKey=${capKey}`;
 
+//Pushing all articles into database after each axios call
 const newArticles = () => {
   axios.get(scienceURL).then(response => {
     tempArr = response.data.articles;

@@ -12,5 +12,6 @@ const sportsSchema = mongoose.Schema({
   publishedAt: Date
 });
 
+//uniqueValidator makes sure there's no duplicates when posting new articles
 sportsSchema.plugin(uniqueValidator);
 module.exports = mongoose.model("sportsArticle", sportsSchema);

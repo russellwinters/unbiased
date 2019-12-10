@@ -66,17 +66,12 @@ export default function PoliticsNews() {
           <div className="category-description">
             <h3 className="category-description__title">Politics</h3>
             <p className="category-description__content">
-              This is the category that is at the heart of Unbiased. To give the
-              most credibility to the articles, the sources were filtered based
-              on multiple charts that designated these sources to have the
-              highest rating for "original fact reporting", with as little
-              opinion reporting as possible. To remain impartial, there is a
-              source or two that are considered more persuasive than the others,
-              but popularity in American society pushed them in because a
-              significant purpose of Unbiased is to allow readers access to
-              common content. There is no direct intent to push political
-              ideology, just an attempt to share views that are commonly held OR
-              read.
+              The politics articles for Unbiased are carefully curated based on
+              factual reporting, media bias, and popularity. All of the sources
+              were rated as highly factual, and only one or two have any
+              significant political leaning. Exceptions were made for those
+              articles because their popularity make them significant sources to
+              political reporting in the U.S.
             </p>
           </div>
           <div id="articleHeight" className="category-content">

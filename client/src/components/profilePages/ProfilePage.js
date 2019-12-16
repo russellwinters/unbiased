@@ -12,7 +12,7 @@ export default function ProfilePage() {
   } else if (!signedIn && !hasAccount) {
     return (
       <>
-        <SignupForm />
+        <SignupForm setHasAccount={setHasAccount} />
       </>
     );
   }

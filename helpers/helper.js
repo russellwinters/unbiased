@@ -8,7 +8,7 @@ function updatePosts() {
   const today = new Date();
   if (
     (today.getHours() === 16 && today.getMinutes() <= 30) ||
-    (today.getHours() === 8 && today.getMinutes() <= 30)
+    (today.getHours() === 6 && today.getMinutes() >= 30)
   ) {
     businessArticles.newArticles();
     sportsArticles.newArticles();

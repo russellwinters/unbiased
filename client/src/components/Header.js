@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import SearchIcon from "../assets/search-icon.svg";
+import NavProfile from "./profilePages/NavProfile";
 
 export default function Header() {
   const navLinks = (
@@ -26,6 +27,7 @@ export default function Header() {
         <Link className="header-main__title" to="/">
           <h1>Unbiased</h1>
         </Link>
+        <NavProfile />
         <Link className="header-main__search" to="/search">
           <img
             alt="search"

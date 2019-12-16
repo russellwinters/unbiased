@@ -7,6 +7,7 @@ import PoliticsNews from "./components/newsPages/politicsNews";
 import ScienceNews from "./components/newsPages/scienceNews";
 import SportsNews from "./components/newsPages/sportsNews";
 import SearchNews from "./components/newsPages/searchNews";
+import ProfilePage from "./components/profilePages/ProfilePage";
 
 function App() {
   //Footer scroll doesn't want to listen on this page
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/science" component={ScienceNews} />
         <Route exact path="/sports" component={SportsNews} />
         <Route exact path="/search" component={SearchNews} />
+        <Route path="/profile" component={ProfilePage} />
       </Switch>
     </div>
   );

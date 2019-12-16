@@ -18,9 +18,6 @@ app.use("/sports", require("./routes/sportsRoute.js"));
 app.use("/science", require("./routes/scienceRoute.js"));
 app.use("/search", require("./routes/searchRoute.js"));
 
-//Connect to MongoDB Compass - Local Database
-// const mongoURL = "mongodb://localhost:27017/unbiased";
-
 //Connect to MongoDB Atlas
 const mongoURL = `${process.env.DB_KEY}`;
 

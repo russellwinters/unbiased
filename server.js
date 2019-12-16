@@ -7,6 +7,7 @@ const path = require("path");
 
 //!This is to enable CORS on all API requests
 app.use(CORS());
+app.use(express.json());
 
 //Below function updates all Mongo Collections
 helper.updatePosts();
@@ -17,6 +18,7 @@ app.use("/business", require("./routes/businessRoute.js"));
 app.use("/sports", require("./routes/sportsRoute.js"));
 app.use("/science", require("./routes/scienceRoute.js"));
 app.use("/search", require("./routes/searchRoute.js"));
+app.use("/register", require("./routes/registration.js"));
 
 //Connect to MongoDB Atlas
 const mongoURL = `${process.env.DB_KEY}`;

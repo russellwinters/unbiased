@@ -1,6 +1,8 @@
 import React from "react";
+import Axios from "axios";
 
 export default function LoginForm(props) {
+  const setSignedIn = props.setSignedIn;
   const setHasAccount = props.setHasAccount;
   const changeAccountStatus = () => {
     setHasAccount(false);
@@ -13,7 +15,15 @@ export default function LoginForm(props) {
       username: event.target.username.value,
       password: event.target.password.value
     };
-    console.log(user);
+    Axios({
+      method: "post",
+      url: "http://localhost:5000/login/api",
+      data: user
+    }).then(response => {
+      localStorage.setItem("token", response.data.token);
+    });
+    setSignedIn(true);
+    window.location.reload();
   };
 
   return (
@@ -21,7 +31,7 @@ export default function LoginForm(props) {
       <h1>Login</h1>
       <form onSubmit={login}>
         <input type="text" name="username" placeholder="Username" />
-        <input type="text" name="password" placeholder="Password" />
+        <input type="password" name="password" placeholder="Password" />
         <button>Login</button>
       </form>
       <button onClick={changeAccountStatus}>Don't Have an account yet?</button>

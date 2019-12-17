@@ -2,6 +2,7 @@ import React from "react";
 import Axios from "axios";
 
 export default function LoginForm(props) {
+  const setSignedIn = props.setSignedIn;
   const setHasAccount = props.setHasAccount;
   const changeAccountStatus = () => {
     setHasAccount(false);
@@ -18,8 +19,11 @@ export default function LoginForm(props) {
       method: "post",
       url: "http://localhost:5000/login/api",
       data: user
-    }).then(response => console.log("success"));
-    console.log(user);
+    }).then(response => {
+      localStorage.setItem("token", response.data.token);
+    });
+    setSignedIn(true);
+    window.location.reload();
   };
 
   return (

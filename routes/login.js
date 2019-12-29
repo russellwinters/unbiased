@@ -14,7 +14,7 @@ Router.post("/api", async (req, res) => {
   const returnUser = db_users[currentUserIndex]; //User that's logging in
   if (returnUser.password === currentUser.password) {
     const userID = returnUser.id;
-    jwt.sign({ id: `${userID}` }, "unbiasedkeys", (err, token) => {
+    jwt.sign({ id: `${userID}`, username: `${returnUser.username}` }, "unbiasedkeys", (err, token) => {
       res.json({ token });
     });
     console.log(userID);

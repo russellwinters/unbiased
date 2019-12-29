@@ -23,7 +23,10 @@ export default function LoginForm(props) {
       localStorage.setItem("token", response.data.token);
     });
     setSignedIn(true);
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000)
+ 
   };
 
   return (

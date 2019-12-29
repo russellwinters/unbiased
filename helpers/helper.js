@@ -7,8 +7,8 @@ function updatePosts() {
   //This function is going to post new articles to my DB
   const today = new Date();
   if (
-    (today.getHours() === 13 && today.getMinutes() <= 30) ||
-    (today.getHours() === 6 && today.getMinutes() >= 30)
+    (today.getHours() === 16 && today.getMinutes() <= 30) ||
+    (today.getHours() === 10 && today.getMinutes() >= 30)
   ) {
     businessArticles.newArticles();
     sportsArticles.newArticles();

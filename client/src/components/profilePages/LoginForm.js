@@ -1,5 +1,6 @@
 import React from "react";
 import Axios from "axios";
+import crypto from "crypto";
 
 export default function LoginForm(props) {
   const setSignedIn = props.setSignedIn;
@@ -8,25 +9,30 @@ export default function LoginForm(props) {
     setHasAccount(false);
   };
 
-  const login = event => {
+  const login = (event) => {
     event.preventDefault();
     event.persist();
+
+    let encrypted = crypto
+      .createHash("sha256")
+      .update(event.target.password.value)
+      .digest("hex");
+
     const user = {
       username: event.target.username.value,
-      password: event.target.password.value
+      password: encrypted,
     };
     Axios({
       method: "post",
       url: "http://localhost:5000/login/api",
-      data: user
-    }).then(response => {
+      data: user,
+    }).then((response) => {
       localStorage.setItem("token", response.data.token);
     });
     setSignedIn(true);
     setTimeout(() => {
       window.location.reload();
-    }, 1000)
- 
+    }, 1000);
   };
 
   return (

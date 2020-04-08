@@ -20,6 +20,7 @@ app.use("/science", require("./routes/scienceRoute.js"));
 app.use("/search", require("./routes/searchRoute.js"));
 app.use("/register", require("./routes/registration.js"));
 app.use("/login", require("./routes/login.js"));
+app.use("/api/bookmark", require("./routes/bookmark.js"));
 
 //Connect to MongoDB Atlas
 const mongoURL = `${process.env.DB_KEY}`;

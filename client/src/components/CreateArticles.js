@@ -1,13 +1,37 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function CreateArticles(props) {
   const [clicked, setClicked] = useState(false);
   const { obj } = props;
 
+  //Determine source Bias if there is any
   let politicalBias = "";
   if (obj.bias) {
     politicalBias = `${obj.bias}`;
   }
+
+  //onCLick function to handle bookmark
+  const referenceID = () => {
+    if (localStorage.getItem("token")) {
+      let TOKEN = localStorage.getItem("token");
+      let ARTICLE_ID = obj._id;
+
+      //Sending post with user token and ID of Article
+      let postObj = {
+        TOKEN,
+        ARTICLE_ID,
+      };
+
+      axios({
+        method: "post",
+        url: "http://localhost:5000/api/bookmark/add",
+        data: postObj,
+      }).then((res) => {
+        console.log(res.data);
+      });
+    } else alert("You must have an account to bookmark an article");
+  };
 
   if (clicked === false) {
     return (
@@ -42,6 +66,7 @@ export default function CreateArticles(props) {
           {obj.source.name}
         </span>
 
+        <button onClick={referenceID}>Bookmark</button>
         <a
           className={`open-article-link article-link__${politicalBias}`}
           href={obj.url}

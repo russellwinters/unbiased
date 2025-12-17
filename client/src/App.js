@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./components/Header";
-import { Route, Switch } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import BusinessNews from "./components/newsPages/businessNews";
 import PoliticsNews from "./components/newsPages/politicsNews";
@@ -14,15 +14,15 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/business" component={BusinessNews} />
-        <Route exact path="/politics" component={PoliticsNews} />
-        <Route exact path="/science" component={ScienceNews} />
-        <Route exact path="/sports" component={SportsNews} />
-        <Route exact path="/search" component={SearchNews} />
-        <Route path="/profile" component={ProfilePage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/business" element={<BusinessNews />} />
+        <Route path="/politics" element={<PoliticsNews />} />
+        <Route path="/science" element={<ScienceNews />} />
+        <Route path="/sports" element={<SportsNews />} />
+        <Route path="/search" element={<SearchNews />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
     </div>
   );
 }

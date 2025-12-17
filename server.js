@@ -25,12 +25,12 @@ app.use("/login", require("./routes/login.js"));
 const mongoURL = `${process.env.DB_KEY}`;
 
 mongoose.connect(
-  process.env.MONGODB_URI || mongoURL,
-  { useCreateIndex: true, useUnifiedTopology: true, useNewUrlParser: true },
-  () => {
-    console.log("Connected to MongoDB!");
-  }
-);
+  process.env.MONGODB_URI || mongoURL
+).then(() => {
+  console.log("Connected to MongoDB!");
+}).catch((err) => {
+  console.error("MongoDB connection error:", err);
+});
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));

@@ -1,1 +1,13 @@
 /node_modules
+
+# V1 application
+V1/node_modules/
+V1/client/node_modules/
+V1/client/build/
+
+# V2 application (when created)
+V2/node_modules/
+V2/.next/
+V2/out/
+V2/.env.local
+V2/.env.production.local

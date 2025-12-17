@@ -1,32 +1,28 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "unbiased-monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "V1",
+    "V2"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "client": "npm start --prefix ./client",
-    "server": "nodemon server.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "dev:v1": "npm run dev --workspace=V1",
+    "dev:v2": "npm run dev --workspace=V2",
+    "build:v1": "npm run build --workspace=V1",
+    "build:v2": "npm run build --workspace=V2",
+    "server:v1": "npm run server --workspace=V1",
+    "client:v1": "npm run client --workspace=V1",
+    "start:v1": "npm start --workspace=V1",
+    "start:v2": "npm start --workspace=V2"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^1.7.9",
-    "concurrently": "^9.1.2",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^9.0.2",
-    "mongoose-unique-validator": "^5.0.1"
+  "description": "Unbiased news aggregator - V1 (legacy) and V2 (modern)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/russellwinters/unbiased.git"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
-  },
+  "author": "Russell Winters",
+  "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"

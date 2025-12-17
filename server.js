@@ -30,6 +30,7 @@ mongoose.connect(
   console.log("Connected to MongoDB!");
 }).catch((err) => {
   console.error("MongoDB connection error:", err);
+  process.exit(1);
 });
 
 if (process.env.NODE_ENV === "production") {

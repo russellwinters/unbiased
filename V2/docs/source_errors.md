@@ -10,6 +10,8 @@ This document investigates parsing errors observed with four RSS feed sources: M
 
 **Key Finding:** All four sources have known issues related to feed availability, access restrictions, or URL changes that commonly affect RSS parsers.
 
+> **⚠️ Important Note:** This document contains research findings and suggested solutions. All code examples are proposals for future implementation and have not been tested or integrated into the codebase. Interface modifications and new properties mentioned in examples would require corresponding updates to TypeScript definitions in the actual implementation files.
+
 ---
 
 ## Problematic Sources Overview
@@ -44,7 +46,7 @@ This document investigates parsing errors observed with four RSS feed sources: M
 **Option A: Alternative MSNBC Feed URLs to Try**
 ```typescript
 // Try these alternative MSNBC feed URLs:
-const alternativeMsnbcFeeds = [
+const alternativeMsnbcFeeds: string[] = [
   'https://www.msnbc.com/feeds/msnbctv', // TV content feed
   'https://www.nbcnews.com/rss/nbcnews/public/news', // NBC News as alternative
 ];
@@ -209,31 +211,34 @@ const usaTodayFeed = {
 };
 ```
 
-**Option B: Check Protocol (HTTP vs HTTPS)**
+**Option B: Protocol Troubleshooting**
+
+⚠️ **SECURITY WARNING**: Some older RSS feed URLs may use HTTP instead of HTTPS. HTTP connections are insecure and transmit data in plain text, making them vulnerable to man-in-the-middle attacks.
+
+**Recommended Approach:**
+1. Always prefer HTTPS URLs when available
+2. Check the news site's RSS discovery page for official feed URLs
+3. If only HTTP is available, consider:
+   - Using a secure proxy service that converts HTTP to HTTPS
+   - Replacing the source with a more secure alternative
+   - Only using HTTP feeds for development/testing, never in production
+
 ```typescript
-// ⚠️ SECURITY WARNING: HTTP is insecure and should be avoided
-// Only use HTTP as a last resort for testing purposes
-// Never use in production without implementing HTTPS redirect or proxy
-
-const usaTodayFeedHttp = {
-  name: 'USA Today',
-  url: 'http://rssfeeds.usatoday.com/usatoday-NewsTopStories',
-  biasRating: 'lean-right'
-};
-
-// RECOMMENDED: Implement automatic protocol fallback with security warning
-async function parseWithProtocolFallback(source: RSSSource): Promise<ParsedArticle[]> {
-  try {
-    // Try HTTPS first
-    return await parseRSSFeed(source);
-  } catch (error) {
-    if (source.url.startsWith('https://')) {
-      console.warn(`HTTPS failed for ${source.name}, attempting HTTP (INSECURE)`);
-      const httpSource = { ...source, url: source.url.replace('https://', 'http://') };
-      return await parseRSSFeed(httpSource);
-    }
-    throw error;
+// SECURE ALTERNATIVE: Always validate HTTPS is available
+async function validateSecureFeed(url: string): Promise<boolean> {
+  if (!url.startsWith('https://')) {
+    console.error(`Insecure feed URL detected: ${url}`);
+    return false;
   }
+  return true;
+}
+
+// Only accept HTTPS feeds in production
+async function parseSecureRSSFeed(source: RSSSource): Promise<ParsedArticle[]> {
+  if (!await validateSecureFeed(source.url)) {
+    throw new Error(`Feed ${source.name} uses insecure HTTP protocol. HTTPS required.`);
+  }
+  return await parseRSSFeed(source);
 }
 ```
 
@@ -610,10 +615,11 @@ If the problematic sources cannot be fixed, consider these replacements:
 
 ### Success Criteria
 
-- All 15 RSS sources successfully parse articles
-- Less than 10% error rate across all feeds
-- Average feed fetch time < 5 seconds
-- Graceful handling of temporary outages
+- All RSS sources (currently 15 total, including the 4 problematic ones) successfully parse articles
+- Less than 10% error rate across all feeds in production
+- Average feed fetch time < 5 seconds per source
+- Graceful handling of temporary outages without affecting other sources
+- At least 3 sources per bias category (left, lean-left, center, lean-right, right) functioning reliably
 
 ---
 

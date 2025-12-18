@@ -1,7 +1,6 @@
 import Parser from 'rss-parser';
 import { RSSSource } from './rss-sources';
 
-// Define the structure of a parsed article
 export interface ParsedArticle {
   title: string;
   description: string | null;
@@ -14,19 +13,16 @@ export interface ParsedArticle {
   };
 }
 
-// Define the structure for feed errors
 export interface FeedError {
   sourceName: string;
   error: string;
 }
 
-// Define the result structure for parsing multiple feeds
 export interface ParseMultipleFeedsResult {
   articles: ParsedArticle[];
   errors: FeedError[];
 }
 
-// Custom RSS parser with additional fields
 interface CustomFeed {
   [key: string]: unknown;
 }
@@ -127,7 +123,7 @@ function extractDescription(item: CustomItem): string | null {
       .replace(/&gt;/g, '>')
       .replace(/&quot;/g, '"')
       .trim();
-    
+
     return cleaned || null;
   }
 
@@ -140,7 +136,7 @@ function extractDescription(item: CustomItem): string | null {
 export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> {
   try {
     const feed = await parser.parseURL(source.url);
-    
+
     const articles: ParsedArticle[] = feed.items
       .filter((item) => item.title && item.link)
       .map((item) => {
@@ -160,6 +156,8 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
 
     return articles;
   } catch (error) {
+    // TODO: figure out why we're seeing errors parsing from MSNBC, Reuters, Associated Press, and USA Today
+
     console.error(`Error parsing RSS feed for ${source.name}:`, error);
     throw new Error(`Failed to parse RSS feed for ${source.name}`);
   }
@@ -175,13 +173,13 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
 
   const allArticles: ParsedArticle[] = [];
   const errors: FeedError[] = [];
-  
+
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {
       allArticles.push(...result.value);
     } else {
-      const errorMessage = result.reason instanceof Error 
-        ? result.reason.message 
+      const errorMessage = result.reason instanceof Error
+        ? result.reason.message
         : String(result.reason);
       errors.push({
         sourceName: sources[index].name,

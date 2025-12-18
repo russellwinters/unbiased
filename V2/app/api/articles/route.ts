@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllSources, parseMultipleFeeds } from '@/lib/news';
+import { getAllSources, parseMultipleFeeds, ParseMultipleFeedsResult, RSSSource, FeedError } from '@/lib/news';
 import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
 
 /**
@@ -19,84 +19,117 @@ import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
  *   count: number,
  *   sources: string[],
  *   usedMockData: boolean,
+ *   errors: FeedError[],
  *   timestamp: string
  * }
  */
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const sourceFilter = searchParams.get('source');
-    const limitParam = searchParams.get('limit');
-    const forceMock = searchParams.get('mock') === 'true';
-    const limit = limitParam ? parseInt(limitParam, 10) : 50;
-
-    let articles;
-    let usedMockData = false;
-    let sources: string[] = [];
-
-    if (forceMock) {
-      // Use mock data if explicitly requested
-      articles = sourceFilter
-        ? getMockArticlesBySource(sourceFilter, limit)
-        : getMockArticles(limit);
-      usedMockData = true;
-      sources = getAllSources().map((s) => s.name);
-    } else {
-      // Try to fetch real RSS feeds
-      const allSources = getAllSources();
-      const sourcesToFetch = sourceFilter
-        ? allSources.filter((s) => s.name.toLowerCase() === sourceFilter.toLowerCase())
-        : allSources;
-
-      if (sourcesToFetch.length === 0) {
-        return NextResponse.json(
-          { error: 'No valid sources found' },
-          { status: 400 }
-        );
-      }
-
-      try {
-        articles = await parseMultipleFeeds(sourcesToFetch);
-        sources = sourcesToFetch.map((s) => s.name);
-
-        // If no articles were fetched, fallback to mock data
-        if (articles.length === 0) {
-          console.log('No articles fetched from RSS feeds, using mock data');
-          articles = sourceFilter
-            ? getMockArticlesBySource(sourceFilter, limit)
-            : getMockArticles(limit);
-          usedMockData = true;
-        } else {
-          // Apply limit to real data
-          articles = articles.slice(0, limit);
-        }
-      } catch (rssError) {
-        // If RSS parsing fails, fallback to mock data
-        console.log('RSS parsing failed, using mock data:', rssError);
-        articles = sourceFilter
-          ? getMockArticlesBySource(sourceFilter, limit)
-          : getMockArticles(limit);
-        usedMockData = true;
-        sources = allSources.map((s) => s.name);
-      }
-    }
-
-    // Return response with metadata
-    return NextResponse.json({
-      articles,
-      count: articles.length,
-      sources,
-      usedMockData,
-      timestamp: new Date().toISOString()
-    });
+    return await coreLogic(request);
   } catch (error) {
     console.error('Error in /api/articles:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to fetch articles',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    );
+    return respondWith500Error(error);
   }
+}
+
+
+async function coreLogic(request: NextRequest) {
+  const { forceMock, sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
+
+  let articles;
+  let sources: string[] = [];
+  let feedErrors: { sourceName: string; error: string }[] = [];
+
+  if (forceMock) {
+    return respondWithMocks(sourceFilter, limit);
+  }
+
+  const allSources = getAllSources();
+  const sourcesToFetch: RSSSource[] = sourceFilter
+    ? allSources.filter((s) => s.name.toLowerCase() === sourceFilter.toLowerCase())
+    : allSources;
+
+  if (sourcesToFetch.length === 0) {
+    return respondWithNoSources()
+  }
+
+  try {
+    const result: ParseMultipleFeedsResult = await parseMultipleFeeds(sourcesToFetch);
+    articles = result.articles;
+    feedErrors = result.errors;
+    sources = sourcesToFetch.map((s) => s.name);
+
+    if (articles.length === 0) {
+      return respondWithNoArticles(sources, feedErrors);
+    }
+
+    articles = articles.slice(0, limit);
+  } catch (rssError) {
+    console.log('RSS parsing failed, using mock data:', rssError);
+    return respondWithMocks(sourceFilter, limit);
+  }
+
+
+  return NextResponse.json({
+    articles,
+    count: articles.length,
+    sources,
+    usedMockData: false,
+    errors: feedErrors,
+    timestamp: new Date().toISOString()
+  });
+}
+
+function parseQueryParams(params: URLSearchParams) {
+  const forceMock = params.get('mock') === 'true';
+  const sourceFilter = params.get('source');
+  const limitParam = params.get('limit');
+  const limit = limitParam ? parseInt(limitParam, 10) : 50;
+
+  return { forceMock, sourceFilter, limit };
+}
+
+function respondWithMocks(sourceFilter?: string | null, limit?: number) {
+  const articles = sourceFilter
+    ? getMockArticlesBySource(sourceFilter, limit)
+    : getMockArticles(limit);
+  const sources = sourceFilter ? getAllSources().filter((s) => s.name.toLowerCase() === sourceFilter.toLowerCase())
+    : getAllSources();
+
+  return NextResponse.json({
+    articles,
+    count: articles.length,
+    sources,
+    usedMockData: true,
+    errors: [],
+    timestamp: new Date().toISOString()
+  })
+}
+
+function respondWithNoSources() {
+  return NextResponse.json(
+    { error: 'No valid sources found' },
+    { status: 400 }
+  );
+}
+
+function respondWithNoArticles(sources: string[], feedErrors: FeedError[]) {
+  return NextResponse.json({
+    articles: [],
+    count: 0,
+    sources,
+    usedMockData: false,
+    errors: feedErrors,
+    timestamp: new Date().toISOString()
+  });
+}
+
+function respondWith500Error(error: any) {
+  return NextResponse.json(
+    {
+      error: 'Failed to fetch articles',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    },
+    { status: 500 }
+  );
 }

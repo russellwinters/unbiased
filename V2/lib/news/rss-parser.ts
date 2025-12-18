@@ -92,6 +92,8 @@ function extractImageUrl(item: CustomItem): string | null {
 
 /**
  * Extracts clean description text from RSS item
+ * Note: This is for extracting plain text from RSS feeds, not for XSS prevention.
+ * All content must be properly escaped when rendered in the browser.
  */
 function extractDescription(item: CustomItem): string | null {
   // Prefer contentSnippet (cleaned text)
@@ -99,9 +101,22 @@ function extractDescription(item: CustomItem): string | null {
     return item.contentSnippet.trim();
   }
 
-  // Fall back to description, strip HTML tags
+  // Fall back to description, remove HTML tags for plain text extraction
+  // This is not for sanitization - proper escaping must happen at render time
   if (item.description) {
-    return item.description.replace(/<[^>]*>/g, '').trim();
+    // More robust HTML tag removal that handles broken tags
+    const cleaned = item.description
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove style tags
+      .replace(/<[^>]*>/g, '') // Remove remaining HTML tags
+      .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
+      .replace(/&amp;/g, '&') // Decode common entities
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .trim();
+    
+    return cleaned || null;
   }
 
   return null;

@@ -43,7 +43,7 @@ export const rssSources: Record<string, RSSSource> = {
   // Center sources
   'bbc-news': {
     name: 'BBC News',
-    url: 'http://feeds.bbci.co.uk/news/rss.xml',
+    url: 'https://feeds.bbci.co.uk/news/rss.xml',
     biasRating: 'center'
   },
   'reuters': {
@@ -53,7 +53,7 @@ export const rssSources: Record<string, RSSSource> = {
   },
   'associated-press': {
     name: 'Associated Press',
-    url: 'https://apnews.com/hub/world-news',
+    url: 'https://apnews.com/hub/world-news/feed',
     biasRating: 'center'
   },
   
@@ -70,7 +70,7 @@ export const rssSources: Record<string, RSSSource> = {
   },
   'usa-today': {
     name: 'USA Today',
-    url: 'http://rssfeeds.usatoday.com/usatoday-NewsTopStories',
+    url: 'https://rssfeeds.usatoday.com/usatoday-NewsTopStories',
     biasRating: 'lean-right'
   },
   

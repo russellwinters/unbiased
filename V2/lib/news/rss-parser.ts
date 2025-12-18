@@ -14,6 +14,18 @@ export interface ParsedArticle {
   };
 }
 
+// Define the structure for feed errors
+export interface FeedError {
+  sourceName: string;
+  error: string;
+}
+
+// Define the result structure for parsing multiple feeds
+export interface ParseMultipleFeedsResult {
+  articles: ParsedArticle[];
+  errors: FeedError[];
+}
+
 // Custom RSS parser with additional fields
 interface CustomFeed {
   [key: string]: unknown;
@@ -154,19 +166,27 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
 }
 
 /**
- * Parses multiple RSS feeds concurrently
+ * Parses multiple RSS feeds concurrently and tracks errors
  */
-export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParsedArticle[]> {
+export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMultipleFeedsResult> {
   const results = await Promise.allSettled(
     sources.map((source) => parseRSSFeed(source))
   );
 
   const allArticles: ParsedArticle[] = [];
+  const errors: FeedError[] = [];
   
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {
       allArticles.push(...result.value);
     } else {
+      const errorMessage = result.reason instanceof Error 
+        ? result.reason.message 
+        : String(result.reason);
+      errors.push({
+        sourceName: sources[index].name,
+        error: errorMessage
+      });
       console.error(`Failed to fetch from ${sources[index].name}:`, result.reason);
     }
   });
@@ -174,5 +194,8 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParsedAr
   // Sort by published date, newest first
   allArticles.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
-  return allArticles;
+  return {
+    articles: allArticles,
+    errors
+  };
 }

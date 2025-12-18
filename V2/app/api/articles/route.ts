@@ -19,6 +19,7 @@ import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
  *   count: number,
  *   sources: string[],
  *   usedMockData: boolean,
+ *   errors: FeedError[],
  *   timestamp: string
  * }
  */
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest) {
     let articles;
     let usedMockData = false;
     let sources: string[] = [];
+    let feedErrors: { sourceName: string; error: string }[] = [];
 
     if (forceMock) {
       // Use mock data if explicitly requested
@@ -56,7 +58,9 @@ export async function GET(request: NextRequest) {
       }
 
       try {
-        articles = await parseMultipleFeeds(sourcesToFetch);
+        const result = await parseMultipleFeeds(sourcesToFetch);
+        articles = result.articles;
+        feedErrors = result.errors;
         sources = sourcesToFetch.map((s) => s.name);
 
         // If no articles were fetched, fallback to mock data
@@ -87,6 +91,7 @@ export async function GET(request: NextRequest) {
       count: articles.length,
       sources,
       usedMockData,
+      errors: feedErrors,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

@@ -13,7 +13,7 @@ export const mockArticles: ParsedArticle[] = [
     publishedAt: new Date('2024-12-18T10:00:00Z'),
     source: {
       name: 'The Guardian',
-      biasRating: 'lean-left'
+      biasRating: 'left'
     }
   },
   {
@@ -68,7 +68,7 @@ export const mockArticles: ParsedArticle[] = [
     publishedAt: new Date('2024-12-18T07:30:00Z'),
     source: {
       name: 'The Guardian',
-      biasRating: 'lean-left'
+      biasRating: 'left'
     }
   },
   {

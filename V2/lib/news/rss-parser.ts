@@ -156,8 +156,6 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
 
     return articles;
   } catch (error) {
-    // TODO: figure out why we're seeing errors parsing from MSNBC, Reuters, Associated Press, and USA Today
-
     console.error(`Error parsing RSS feed for ${source.name}:`, error);
     throw new Error(`Failed to parse RSS feed for ${source.name}`);
   }

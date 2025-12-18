@@ -16,11 +16,21 @@ The following news sources are configured with their respective RSS feeds:
 
 | Source | Bias Rating | RSS Feed URL |
 |--------|-------------|--------------|
-| The Guardian | lean-left | https://www.theguardian.com/world/rss |
+| The Guardian | left | https://www.theguardian.com/world/rss |
+| NBC News | left | https://www.nbcnews.com/rss/nbcnews/public/news |
+| Huffington Post | left | https://www.huffpost.com/section/front-page/feed |
+| NPR | lean-left | https://feeds.npr.org/1001/rss.xml |
 | The New York Times | lean-left | https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml |
-| Reuters | center | https://www.reutersagency.com/feed/ |
+| Washington Post | lean-left | https://feeds.washingtonpost.com/rss/world |
+| BBC News | center | https://feeds.bbci.co.uk/news/rss.xml |
+| Bloomberg | center | https://feeds.bloomberg.com/politics/news.rss |
+| Axios | center | https://api.axios.com/feed/ |
 | Wall Street Journal | lean-right | https://feeds.a.dj.com/rss/RSSWorldNews.xml |
+| The Hill | lean-right | https://thehill.com/feed/ |
+| The Washington Times | lean-right | https://www.washingtontimes.com/rss/headlines/news/ |
 | Fox News | right | https://moxie.foxnews.com/google-publisher/latest.xml |
+| Breitbart | right | https://www.breitbart.com/feed/ |
+| The Daily Wire | right | https://www.dailywire.com/feeds/rss.xml |
 
 ## Module Structure
 

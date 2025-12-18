@@ -45,7 +45,7 @@ export const mockArticles: ParsedArticle[] = [
     imageUrl: 'https://via.placeholder.com/800x400/FF9800/FFFFFF?text=Trade',
     publishedAt: new Date('2024-12-18T08:30:00Z'),
     source: {
-      name: 'Reuters',
+      name: 'Bloomberg',
       biasRating: 'center'
     }
   },
@@ -100,7 +100,7 @@ export const mockArticles: ParsedArticle[] = [
     imageUrl: 'https://via.placeholder.com/800x400/FFEB3B/333333?text=Energy',
     publishedAt: new Date('2024-12-18T06:00:00Z'),
     source: {
-      name: 'Reuters',
+      name: 'Axios',
       biasRating: 'center'
     }
   },

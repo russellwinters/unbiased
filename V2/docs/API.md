@@ -50,11 +50,21 @@ interface ParsedArticle {
 
 | Source | URL | Bias Rating |
 |--------|-----|-------------|
-| The Guardian | https://www.theguardian.com/world/rss | lean-left |
+| The Guardian | https://www.theguardian.com/world/rss | left |
+| NBC News | https://www.nbcnews.com/rss/nbcnews/public/news | left |
+| Huffington Post | https://www.huffpost.com/section/front-page/feed | left |
+| NPR | https://feeds.npr.org/1001/rss.xml | lean-left |
 | The New York Times | https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml | lean-left |
-| Reuters | https://www.reutersagency.com/feed/ | center |
+| Washington Post | https://feeds.washingtonpost.com/rss/world | lean-left |
+| BBC News | https://feeds.bbci.co.uk/news/rss.xml | center |
+| Bloomberg | https://feeds.bloomberg.com/politics/news.rss | center |
+| Axios | https://api.axios.com/feed/ | center |
 | Wall Street Journal | https://feeds.a.dj.com/rss/RSSWorldNews.xml | lean-right |
+| The Hill | https://thehill.com/feed/ | lean-right |
+| The Washington Times | https://www.washingtontimes.com/rss/headlines/news/ | lean-right |
 | Fox News | https://moxie.foxnews.com/google-publisher/latest.xml | right |
+| Breitbart | https://www.breitbart.com/feed/ | right |
+| The Daily Wire | https://www.dailywire.com/feeds/rss.xml | right |
 
 ### Example Requests
 
@@ -107,10 +117,20 @@ curl "http://localhost:3000/api/articles?mock=true&limit=5"
   "count": 2,
   "sources": [
     "The Guardian",
+    "NBC News",
+    "Huffington Post",
+    "NPR",
     "The New York Times",
-    "Reuters",
+    "Washington Post",
+    "BBC News",
+    "Bloomberg",
+    "Axios",
     "Wall Street Journal",
-    "Fox News"
+    "The Hill",
+    "The Washington Times",
+    "Fox News",
+    "Breitbart",
+    "The Daily Wire"
   ],
   "usedMockData": true,
   "timestamp": "2024-12-18T12:00:00.000Z"

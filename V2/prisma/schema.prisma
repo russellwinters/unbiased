@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// News source model
+model Source {
+  id          String    @id @default(uuid())
+  name        String
+  domain      String    @unique
+  rssUrl      String?
+  biasRating  String    // "left", "lean-left", "center", "lean-right", "right"
+  reliability String    // "very-high", "high", "mixed", "low"
+  articles    Article[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Article model
+model Article {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  url         String    @unique
+  imageUrl    String?
+  publishedAt DateTime
+  fetchedAt   DateTime  @default(now())
+  sourceId    String
+  source      Source    @relation(fields: [sourceId], references: [id])
+  clusterId   String?
+  cluster     Cluster?  @relation(fields: [clusterId], references: [id])
+  keywords    String[]
+  
+  @@index([publishedAt])
+  @@index([sourceId])
+  @@index([clusterId])
+}
+
+// Story cluster model
+model Cluster {
+  id          String    @id @default(uuid())
+  topic       String
+  mainEntity  String    // Primary subject
+  firstSeenAt DateTime
+  articles    Article[]
+  
+  @@index([firstSeenAt])
+}

@@ -9,7 +9,7 @@ This repository is organized as a monorepo containing two versions of Unbiased:
 ```
 unbiased/
 ├── V1/              # Original implementation (preserved for reference)
-├── V2/              # Modern rewrite (coming in Phase 4)
+├── V2/              # Modern rewrite (Phase 4 complete)
 ├── README.md        # This file
 ├── work_plan.md     # Migration work plan
 └── package.json     # Monorepo workspace configuration
@@ -28,9 +28,9 @@ The original Unbiased application, preserved for historical reference and potent
 
 Complete rewrite using modern technologies and improved architecture based on extensive research and planning.
 
-- **Status:** Planned (Phase 4 of work plan)
-- **Tech Stack:** Next.js 14, TypeScript, Prisma, PostgreSQL, Tailwind CSS
-- **Documentation:** See [V2/README.md](V2/README.md) (when Phase 4 is complete)
+- **Status:** Active Development (Phase 4 Complete)
+- **Tech Stack:** Next.js 16, TypeScript, Prisma, PostgreSQL, SCSS/Sass
+- **Documentation:** See [V2/README.md](V2/README.md)
 
 ## 🚀 Quick Start
 
@@ -55,9 +55,9 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 For detailed V1 setup instructions, see [V1/README.md](V1/README.md).
 
-### Running V2 (When Available)
+### Running V2
 
-V2 will be initialized in Phase 4 of the work plan.
+V2 has been initialized and is ready for development.
 
 ```bash
 # Navigate to V2
@@ -68,10 +68,17 @@ npm install
 
 # Set up environment variables
 cp .env.example .env
+# Edit .env with your DATABASE_URL and other configuration
+
+# Set up database
+npx prisma generate
+npx prisma migrate dev --name init
 
 # Run in development mode
 npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## 🎯 Project Goals
 
@@ -90,14 +97,17 @@ npm run dev
 - Source-based filtering
 - User authentication
 
-### V2 Features (Planned)
-- Advanced story clustering with AI
-- Semantic similarity analysis using embeddings
-- Article-level bias analysis (optional)
-- Modern, responsive UI with Tailwind CSS
+### V2 Features (In Development)
+- Modern Next.js 16 App Router architecture
 - PostgreSQL database with Prisma ORM
-- Improved search and filtering
-- Topic-based browsing
+- Type-safe development with TypeScript
+- Responsive UI with SCSS/Sass styling
+- Server-side rendering and API routes
+- Planned: Advanced story clustering with AI
+- Planned: Semantic similarity analysis using embeddings
+- Planned: Article-level bias analysis (optional)
+- Planned: Improved search and filtering
+- Planned: Topic-based browsing
 
 ## 🛠 Development
 
@@ -110,13 +120,13 @@ npm install
 # Run V1 in development mode
 npm run dev:v1
 
-# Run V2 in development mode (when available)
+# Run V2 in development mode
 npm run dev:v2
 
 # Build V1
 npm run build:v1
 
-# Build V2 (when available)
+# Build V2
 npm run build:v2
 
 # Start V1 backend only
@@ -132,7 +142,7 @@ Or navigate to the specific version directory and run commands directly:
 cd V1
 npm run dev
 
-# Or when V2 is ready:
+# Or for V2:
 cd V2
 npm run dev
 ```
@@ -159,20 +169,26 @@ This repository is undergoing a structured reinitialization process. See [work_p
   - Set up workspace configuration
   - V1 application preserved and functional
 
+### Current Phase
+
+- ✅ **Phase 4:** Initialize V2 Directory with Next.js (COMPLETE)
+  - Created modern Next.js 16 application
+  - Set up Prisma and database schema
+  - Implemented SCSS/Sass styling system
+  - Created basic landing page
+
 ### Upcoming Phases
 
-- ⏳ **Phase 4:** Initialize V2 Directory with Next.js
-  - Create modern Next.js 14 application
-  - Set up Prisma and database schema
-  - Initialize shadcn/ui component library
-  - Create basic landing page
+- ⏳ **Phase 5:** Continue V2 Development
+  - Implement RSS feed parser
+  - Build news aggregation logic
+  - Create article browsing UI
+  - Add bias indicators and source ratings
 
-- ⏳ **Phase 5:** Update Root Documentation
-  - Architecture documentation
-  - Migration guides
-
-- ⏳ **Phase 6:** Final Validation & Deployment
-  - Test both versions
+- ⏳ **Phase 6:** Production Features
+  - Story clustering implementation
+  - Search and filtering
+  - Performance optimization
   - Deploy V2 to production
 
 ## 📚 Documentation
@@ -196,36 +212,35 @@ See [SECURITY_UPDATE_SUMMARY.md](SECURITY_UPDATE_SUMMARY.md) for complete detail
 
 ## 🗺 Roadmap
 
-### Phase 4-6: V2 Foundation (Coming Soon)
+### Foundation Phases (Complete)
 - [x] Phase 1: Documentation and security
 - [x] Phase 2: Branch migration
 - [x] Phase 3: V1 directory structure
-- [ ] Phase 4: Initialize Next.js project
-- [ ] Phase 5: Update documentation
-- [ ] Phase 6: Final validation
+- [x] Phase 4: Initialize Next.js project with Prisma
 
-### V2 Development Milestones (After Phase 6)
-1. **Weeks 1-2:** Foundation
-   - Database setup and schema
-   - RSS feed parser implementation
-   - Basic article listing UI
+### V2 Development Milestones (Current)
+1. **Phase 5: Core Features** (Current)
+   - [ ] RSS feed parser implementation
+   - [ ] Database seeding with news sources
+   - [ ] Basic article listing UI
+   - [ ] News aggregation logic
 
-2. **Weeks 3-4:** Bias Analysis
-   - Source bias ratings
-   - Multi-perspective views
-   - Story clustering
-   - Search functionality
+2. **Phase 6: Bias & Multi-Perspective**
+   - [ ] Source bias ratings
+   - [ ] Multi-perspective views
+   - [ ] Story clustering
+   - [ ] Search functionality
 
-3. **Weeks 5-6:** AI Enhancement
-   - OpenAI embeddings integration
-   - Semantic clustering
-   - Article-level bias analysis
+3. **Phase 7: AI Enhancement**
+   - [ ] OpenAI embeddings integration
+   - [ ] Semantic clustering
+   - [ ] Article-level bias analysis
 
-4. **Weeks 7-8:** Polish
-   - Performance optimization
-   - Caching layer
-   - SEO optimization
-   - Production deployment
+4. **Phase 8: Production Ready**
+   - [ ] Performance optimization
+   - [ ] Caching layer
+   - [ ] SEO optimization
+   - [ ] Production deployment
 
 ## 🤝 Contributing
 
@@ -241,6 +256,6 @@ For questions about this project, please open an issue on GitHub.
 
 ---
 
-**Current Status:** Phase 3 Complete - V1 directory structure created, ready for Phase 4 (V2 initialization)
+**Current Status:** Phase 4 Complete - V2 Next.js application initialized with Prisma and SCSS, ready for feature development
 
-**Last Updated:** December 17, 2024
+**Last Updated:** December 18, 2024

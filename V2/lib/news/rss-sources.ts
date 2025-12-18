@@ -27,17 +27,17 @@ export const rssSources: Record<string, RSSSource> = {
   'npr': {
     name: 'NPR',
     url: 'https://feeds.npr.org/1001/rss.xml',
-    biasRating: 'leanLeft'
+    biasRating: 'lean-left'
   },
   'the-new-york-times': {
     name: 'The New York Times',
     url: 'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
-    biasRating: 'leanLeft'
+    biasRating: 'lean-left'
   },
   'washington-post': {
     name: 'Washington Post',
     url: 'https://feeds.washingtonpost.com/rss/world',
-    biasRating: 'leanLeft'
+    biasRating: 'lean-left'
   },
   
   // Center sources
@@ -61,17 +61,17 @@ export const rssSources: Record<string, RSSSource> = {
   'wall-street-journal': {
     name: 'Wall Street Journal',
     url: 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
-    biasRating: 'leanRight'
+    biasRating: 'lean-right'
   },
   'the-hill': {
     name: 'The Hill',
     url: 'https://thehill.com/feed/',
-    biasRating: 'leanRight'
+    biasRating: 'lean-right'
   },
   'usa-today': {
     name: 'USA Today',
     url: 'http://rssfeeds.usatoday.com/usatoday-NewsTopStories',
-    biasRating: 'leanRight'
+    biasRating: 'lean-right'
   },
   
   // Right-leaning sources

@@ -174,8 +174,9 @@ This repository is undergoing a structured reinitialization process. See [work_p
 - ✅ **Phase 4:** Initialize V2 Directory with Next.js (COMPLETE)
   - Created modern Next.js 16 application
   - Set up Prisma and database schema
-  - Implemented SCSS/Sass styling system
+  - Implemented SCSS/Sass styling system (implementation choice differed from original plan)
   - Created basic landing page
+  - Note: See [V2/README.md](V2/README.md) for actual tech stack; work_plan.md reflects original planning
 
 ### Upcoming Phases
 

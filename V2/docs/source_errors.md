@@ -211,13 +211,30 @@ const usaTodayFeed = {
 
 **Option B: Check Protocol (HTTP vs HTTPS)**
 ```typescript
-// If HTTPS fails, try HTTP (with security warning)
+// ⚠️ SECURITY WARNING: HTTP is insecure and should be avoided
+// Only use HTTP as a last resort for testing purposes
+// Never use in production without implementing HTTPS redirect or proxy
+
 const usaTodayFeedHttp = {
   name: 'USA Today',
   url: 'http://rssfeeds.usatoday.com/usatoday-NewsTopStories',
   biasRating: 'lean-right'
-  // NOTE: HTTP is insecure and should be avoided if possible
 };
+
+// RECOMMENDED: Implement automatic protocol fallback with security warning
+async function parseWithProtocolFallback(source: RSSSource): Promise<ParsedArticle[]> {
+  try {
+    // Try HTTPS first
+    return await parseRSSFeed(source);
+  } catch (error) {
+    if (source.url.startsWith('https://')) {
+      console.warn(`HTTPS failed for ${source.name}, attempting HTTP (INSECURE)`);
+      const httpSource = { ...source, url: source.url.replace('https://', 'http://') };
+      return await parseRSSFeed(httpSource);
+    }
+    throw error;
+  }
+}
 ```
 
 **Option C: Use Alternative Lean-Right Sources**
@@ -243,6 +260,27 @@ const usaTodayFeedHttp = {
 - The sandboxed development environment blocks external DNS resolution
 - All RSS feed tests result in `ENOTFOUND` errors regardless of feed validity
 - Testing requires deployment to an environment with unrestricted network access
+
+**Testing in Production/Staging Environments:**
+To properly test these RSS feeds, deploy to an environment with network access:
+
+1. **Deploy to Vercel/Netlify Preview**:
+   ```bash
+   git push origin <branch-name>
+   # Use the preview URL to test: https://preview-url.vercel.app/api/articles
+   ```
+
+2. **Run in Local Development with Network Access**:
+   ```bash
+   npm run dev
+   # Test each source individually
+   curl "http://localhost:3000/api/articles?source=Reuters&limit=5"
+   ```
+
+3. **Use Production API if Available**:
+   ```bash
+   curl "https://production-url.com/api/articles?limit=10"
+   ```
 
 ---
 
@@ -415,6 +453,43 @@ export const rssSources: Record<string, RSSSource> = {
   },
   // ... other sources ...
 };
+
+// Enhanced parseRSSFeed with fallback support
+export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> {
+  try {
+    const feed = await parser.parseURL(source.url);
+    return transformFeedItems(feed, source);
+  } catch (error) {
+    // Try fallback URL if available
+    if (source.fallbackUrl) {
+      console.warn(`Primary feed failed for ${source.name}, trying fallback URL`);
+      try {
+        const feed = await parser.parseURL(source.fallbackUrl);
+        return transformFeedItems(feed, source);
+      } catch (fallbackError) {
+        console.error(`Fallback also failed for ${source.name}`);
+        throw error; // Throw original error for consistency
+      }
+    }
+    throw error;
+  }
+}
+
+function transformFeedItems(feed: any, source: RSSSource): ParsedArticle[] {
+  return feed.items
+    .filter((item: any) => item.title && item.link)
+    .map((item: any) => ({
+      title: item.title!,
+      description: extractDescription(item),
+      url: item.link!,
+      imageUrl: extractImageUrl(item),
+      publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
+      source: {
+        name: source.name,
+        biasRating: source.biasRating
+      }
+    }));
+}
 ```
 
 ### Phase 3: Long-term Improvements (Priority: Low)

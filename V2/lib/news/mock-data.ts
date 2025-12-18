@@ -41,7 +41,7 @@ export const mockArticles: ParsedArticle[] = [
   {
     title: 'International Trade Deal Signed Between Major Economies',
     description: 'A comprehensive trade agreement has been finalized, potentially reshaping global commerce and diplomatic relations.',
-    url: 'https://www.reuters.com/world/trade-deal-signed-2024',
+    url: 'https://www.bloomberg.com/news/articles/trade-deal-signed-2024',
     imageUrl: 'https://via.placeholder.com/800x400/FF9800/FFFFFF?text=Trade',
     publishedAt: new Date('2024-12-18T08:30:00Z'),
     source: {
@@ -96,7 +96,7 @@ export const mockArticles: ParsedArticle[] = [
   {
     title: 'Energy Sector Investments Shift Toward Renewables',
     description: 'Major energy companies announce significant investments in renewable energy infrastructure as market dynamics evolve.',
-    url: 'https://www.reuters.com/business/energy/renewable-investments-2024',
+    url: 'https://www.axios.com/2024/12/18/energy-renewable-investments',
     imageUrl: 'https://via.placeholder.com/800x400/FFEB3B/333333?text=Energy',
     publishedAt: new Date('2024-12-18T06:00:00Z'),
     source: {

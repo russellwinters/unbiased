@@ -47,7 +47,7 @@ const sources = getAllSources();
 ### Parse RSS Feeds
 
 ```typescript
-import { parseRSSFeed, parseMultipleFeeds, getAllSources } from '@/lib/news';
+import { parseRSSFeed, parseMultipleFeeds, getAllSources, getSourceByKey } from '@/lib/news';
 
 // Parse a single feed
 const guardian = getSourceByKey('the-guardian');

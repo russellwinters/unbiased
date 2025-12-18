@@ -27,11 +27,7 @@ interface CustomItem {
   contentSnippet?: string;
   'content:encoded'?: string;
   description?: string;
-  'media:content'?: {
-    $?: {
-      url?: string;
-    };
-  };
+  'media:content'?: unknown;
   enclosure?: {
     url?: string;
   };
@@ -47,13 +43,31 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
   }
 });
 
+interface MediaContent {
+  $?: {
+    url?: string;
+  };
+}
+
+/**
+ * Type guard to check if value is a MediaContent object
+ */
+function isMediaContent(value: unknown): value is MediaContent {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    '$' in value &&
+    typeof (value as MediaContent).$ === 'object'
+  );
+}
+
 /**
  * Extracts image URL from RSS item
  */
 function extractImageUrl(item: CustomItem): string | null {
   // Try media:content
-  if (item['media:content'] && typeof item['media:content'] === 'object') {
-    const mediaContent = item['media:content'] as { $?: { url?: string } };
+  if (item['media:content'] && isMediaContent(item['media:content'])) {
+    const mediaContent = item['media:content'];
     if (mediaContent.$?.url) {
       return mediaContent.$.url;
     }
@@ -103,10 +117,11 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
     const articles: ParsedArticle[] = feed.items
       .filter((item) => item.title && item.link)
       .map((item) => {
+        // Safe to assert non-null because of filter above
         return {
-          title: item.title || 'Untitled',
+          title: item.title!,
           description: extractDescription(item),
-          url: item.link || '',
+          url: item.link!,
           imageUrl: extractImageUrl(item),
           publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
           source: {

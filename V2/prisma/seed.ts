@@ -1,4 +1,7 @@
+import 'dotenv/config'; // Load environment variables from .env file
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -6,7 +9,12 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const prisma = new PrismaClient();
+// Prisma 7 requires an adapter for database connections
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL
+});
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function runSeedScript(scriptName: string) {
   console.log(`\n🚀 Running ${scriptName}...`);

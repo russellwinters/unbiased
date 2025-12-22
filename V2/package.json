@@ -12,16 +12,19 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:sources": "tsx prisma/seed-sources.ts",
     "db:seed:articles": "tsx prisma/seed-articles.ts",
+    "db:seed:mock": "tsx prisma/seed-mock-articles.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && npm run db:seed"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@tanstack/react-query": "^5.90.12",
     "axios": "^1.13.2",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "next": "16.1.0",
+    "pg": "^8.16.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "rss-parser": "^3.13.0"

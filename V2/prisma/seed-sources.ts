@@ -1,7 +1,15 @@
+import 'dotenv/config'; // Load environment variables from .env file
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import { rssSources } from '../lib/news/rss-sources';
 
-const prisma = new PrismaClient();
+// Prisma 7 requires an adapter for database connections
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL
+});
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 // Reliability ratings based on media bias fact check and similar sources
 const reliabilityRatings: Record<string, string> = {

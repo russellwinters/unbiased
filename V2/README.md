@@ -56,7 +56,13 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    - Seed 15+ news sources with bias ratings
    - Fetch and store 100-500 recent articles from RSS feeds
    
-   **Note:** The seed process fetches real articles from RSS feeds and may take 1-2 minutes.
+   **Note:** If RSS feeds are blocked in your environment (common in CI/restricted networks), you can use mock data instead:
+   ```bash
+   npx prisma generate
+   npx prisma migrate deploy
+   npm run db:seed:sources
+   npm run db:seed:mock  # Seeds 25 sample articles for testing
+   ```
 
 5. Run development server:
    ```bash
@@ -84,6 +90,9 @@ npm run db:seed:sources
 
 # Seed articles only (requires sources to be seeded first)
 npm run db:seed:articles
+
+# Seed mock articles for testing (useful when RSS feeds are blocked)
+npm run db:seed:mock
 
 # Reset database completely (drops all data, re-runs migrations, and seeds)
 npm run db:reset

@@ -1,5 +1,15 @@
 # RSS Feed Source Errors - Investigation Report
 
+> **Archive Note**  
+> **Archived On:** December 22, 2024  
+> **Related Work:** Investigation of RSS feed parsing errors for V2  
+> **Completion Status:** ✅ INVESTIGATION COMPLETE  
+> **Related Commit:** [c26d6f1](https://github.com/russellwinters/unbiased/commit/c26d6f130666d05c41c4e89674d808bd18b96bbb)
+> 
+> **Summary:** This document investigated parsing errors with four RSS feed sources: MSNBC, Reuters, Associated Press, and USA Today. The investigation identified root causes including CORS restrictions, non-standard RSS formats, paywalled content, and feed unavailability. Solutions and workarounds were documented, including the use of RSS proxy services, server-side fetching, and alternative feed URLs. The investigation informed the final implementation approach for the RSS aggregator.
+
+---
+
 **Date:** December 18, 2024  
 **Issue:** TODO in `V2/lib/news/rss-parser.ts` line 159  
 **Status:** Investigation Complete

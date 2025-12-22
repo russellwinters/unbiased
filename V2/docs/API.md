@@ -51,7 +51,7 @@ interface ParsedArticle {
 | Source | URL | Bias Rating |
 |--------|-----|-------------|
 | The Guardian | https://www.theguardian.com/world/rss | left |
-| CNN | http://rss.cnn.com/rss/cnn_topstories.rss | left |
+| CNN | https://rss.cnn.com/rss/cnn_topstories.rss | left |
 | Huffington Post | https://www.huffpost.com/section/front-page/feed | left |
 | NPR | https://feeds.npr.org/1001/rss.xml | lean-left |
 | The New York Times | https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml | lean-left |

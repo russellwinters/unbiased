@@ -14,7 +14,7 @@ export const rssSources: Record<string, RSSSource> = {
   },
   'cnn': {
     name: 'CNN',
-    url: 'http://rss.cnn.com/rss/cnn_topstories.rss',
+    url: 'https://rss.cnn.com/rss/cnn_topstories.rss',
     biasRating: 'left'
   },
   'huffington-post': {

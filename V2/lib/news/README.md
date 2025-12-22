@@ -17,7 +17,7 @@ The following news sources are configured with their respective RSS feeds:
 | Source | Bias Rating | RSS Feed URL |
 |--------|-------------|--------------|
 | The Guardian | left | https://www.theguardian.com/world/rss |
-| CNN | left | http://rss.cnn.com/rss/cnn_topstories.rss |
+| CNN | left | https://rss.cnn.com/rss/cnn_topstories.rss |
 | Huffington Post | left | https://www.huffpost.com/section/front-page/feed |
 | NPR | lean-left | https://feeds.npr.org/1001/rss.xml |
 | The New York Times | lean-left | https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml |

@@ -172,7 +172,7 @@ V1 has been updated with the latest security patches:
 - Dependencies updated to latest secure versions
 - Node.js requirement: 18+ (LTS)
 
-See [SECURITY_UPDATE_SUMMARY.md](../SECURITY_UPDATE_SUMMARY.md) for details.
+See [../archive/SECURITY_UPDATE_SUMMARY.md](../archive/SECURITY_UPDATE_SUMMARY.md) for details.
 
 ## Contributing
 
@@ -186,7 +186,7 @@ See root [LICENSE](../LICENSE) file.
 
 - [V1_OVERVIEW.md](./V1_OVERVIEW.md) - Complete technical documentation
 - [../work_plan.md](../work_plan.md) - Migration work plan
-- [../SECURITY_ASSESSMENT.md](../SECURITY_ASSESSMENT.md) - Security analysis
+- [../archive/SECURITY_ASSESSMENT.md](../archive/SECURITY_ASSESSMENT.md) - Security analysis
 - [../README.md](../README.md) - Repository overview
 
 ---

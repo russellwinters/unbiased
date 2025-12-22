@@ -194,12 +194,15 @@ This repository is undergoing a structured reinitialization process. See [work_p
 
 ## 📚 Documentation
 
+### Current Work
 - [work_plan.md](work_plan.md) - Comprehensive reinitialization work plan
 - [V1/README.md](V1/README.md) - V1 setup and usage guide
 - [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md) - Complete V1 technical documentation
-- [PHASE_1_COMPLETION_REPORT.md](PHASE_1_COMPLETION_REPORT.md) - Phase 1 completion summary
-- [SECURITY_ASSESSMENT.md](SECURITY_ASSESSMENT.md) - Security analysis and updates
-- [SECURITY_UPDATE_SUMMARY.md](SECURITY_UPDATE_SUMMARY.md) - Dependency update summary
+
+### Archived Documentation
+- [archive/PHASE_1_COMPLETION_REPORT.md](archive/PHASE_1_COMPLETION_REPORT.md) - Phase 1 completion summary
+- [archive/SECURITY_ASSESSMENT.md](archive/SECURITY_ASSESSMENT.md) - Security analysis and updates
+- [archive/SECURITY_UPDATE_SUMMARY.md](archive/SECURITY_UPDATE_SUMMARY.md) - Dependency update summary
 
 ## 🔒 Security
 
@@ -209,7 +212,7 @@ V1 has been updated with the latest security patches:
 - Dependabot configured for automated security updates
 - Node.js requirement: 18+ (LTS)
 
-See [SECURITY_UPDATE_SUMMARY.md](SECURITY_UPDATE_SUMMARY.md) for complete details.
+See [archive/SECURITY_UPDATE_SUMMARY.md](archive/SECURITY_UPDATE_SUMMARY.md) for complete details.
 
 ## 🗺 Roadmap
 

@@ -12,9 +12,9 @@ export const rssSources: Record<string, RSSSource> = {
     url: 'https://www.theguardian.com/world/rss',
     biasRating: 'left'
   },
-  'msnbc': {
-    name: 'MSNBC',
-    url: 'https://www.msnbc.com/feeds/latest',
+  'nbc-news': {
+    name: 'NBC News',
+    url: 'https://www.nbcnews.com/rss/nbcnews/public/news',
     biasRating: 'left'
   },
   'huffington-post': {
@@ -46,14 +46,14 @@ export const rssSources: Record<string, RSSSource> = {
     url: 'https://feeds.bbci.co.uk/news/rss.xml',
     biasRating: 'center'
   },
-  'reuters': {
-    name: 'Reuters',
-    url: 'https://www.reutersagency.com/feed/',
+  'bloomberg': {
+    name: 'Bloomberg',
+    url: 'https://feeds.bloomberg.com/politics/news.rss',
     biasRating: 'center'
   },
-  'associated-press': {
-    name: 'Associated Press',
-    url: 'https://apnews.com/hub/world-news/feed',
+  'axios': {
+    name: 'Axios',
+    url: 'https://api.axios.com/feed/',
     biasRating: 'center'
   },
   
@@ -68,9 +68,9 @@ export const rssSources: Record<string, RSSSource> = {
     url: 'https://thehill.com/feed/',
     biasRating: 'lean-right'
   },
-  'usa-today': {
-    name: 'USA Today',
-    url: 'https://rssfeeds.usatoday.com/usatoday-NewsTopStories',
+  'washington-times': {
+    name: 'The Washington Times',
+    url: 'https://www.washingtontimes.com/rss/headlines/news/',
     biasRating: 'lean-right'
   },
   

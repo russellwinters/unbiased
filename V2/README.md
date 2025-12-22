@@ -16,7 +16,7 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database (local or cloud via Supabase/Neon)
+- Docker and Docker Compose (for local PostgreSQL)
 - npm 9+
 
 ### Installation
@@ -31,25 +31,69 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    cp .env.example .env
    ```
    
-   Configure your `.env`:
+   The `.env.example` is pre-configured for Docker. For local development with Docker, you can use it as-is:
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/unbiased"
+   DATABASE_URL="postgresql://unbiased:unbiased_dev_password@localhost:5432/unbiased"
    OPENAI_API_KEY="sk-..."
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
 
-3. Set up database:
+3. Start PostgreSQL with Docker:
    ```bash
-   npx prisma generate
-   npx prisma migrate dev --name init
+   docker-compose up -d
    ```
+   
+   This will start a PostgreSQL 16 container with the database ready to use.
 
-4. Run development server:
+4. Initialize the database (migrations + seed data):
+   ```bash
+   npm run db:init
+   ```
+   
+   This script will:
+   - Generate the Prisma Client
+   - Run database migrations to create tables
+   - Seed 15+ news sources with bias ratings
+   - Fetch and store 100-500 recent articles from RSS feeds
+   
+   **Note:** The seed process fetches real articles from RSS feeds and may take 1-2 minutes.
+
+5. Run development server:
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000)
+6. Open [http://localhost:3000](http://localhost:3000)
+
+### Database Management
+
+Useful commands for database operations:
+
+```bash
+# View your database in a GUI
+npm run db:studio
+
+# Run migrations only
+npm run db:migrate
+
+# Re-seed the database
+npm run db:seed
+
+# Seed sources only
+npm run db:seed:sources
+
+# Seed articles only (requires sources to be seeded first)
+npm run db:seed:articles
+
+# Reset database completely (drops all data, re-runs migrations, and seeds)
+npm run db:reset
+
+# Stop PostgreSQL container
+docker-compose down
+
+# Stop and remove all data
+docker-compose down -v
+```
 
 ## 📁 Project Structure
 

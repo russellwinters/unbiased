@@ -42,6 +42,9 @@ next-env.d.ts
 
 /app/generated/prisma
 
+# Docker
+# Note: docker-compose.yml is committed, but volumes are ignored by Docker
+
 # test scripts
 test-*.ts
 test-*.js

@@ -303,7 +303,7 @@ export const rssSources: Record<string, RSSSource> = {
   
   'msnbc': {
     name: 'MSNBC',
-    url: 'https://www.nbcnews.com/rss/nbcnews/public/news', // Alternative
+    url: 'https://rss.cnn.com/rss/cnn_topstories.rss', // Alternative
     biasRating: 'left',
     notes: 'Using CNN as MSNBC RSS feeds are unreliable'
   },

@@ -48,12 +48,12 @@ This document investigates parsing errors observed with four RSS feed sources: M
 // Try these alternative MSNBC feed URLs:
 const alternativeMsnbcFeeds: string[] = [
   'https://www.msnbc.com/feeds/msnbctv', // TV content feed
-  'https://www.nbcnews.com/rss/nbcnews/public/news', // NBC News as alternative
+  'https://www.cnn.com/services/rss/', // CNN as alternative
 ];
 ```
 
 **Option B: Replace with Alternative Left-Leaning Source**
-- Consider using NBC News (parent company) as a replacement
+- Consider using CNN (http://rss.cnn.com/rss/cnn_topstories.rss) as a replacement
 - Alternative: CNN RSS feeds (if available)
 - Alternative: The Atlantic or Vox RSS feeds
 
@@ -305,7 +305,7 @@ export const rssSources: Record<string, RSSSource> = {
     name: 'MSNBC',
     url: 'https://www.nbcnews.com/rss/nbcnews/public/news', // Alternative
     biasRating: 'left',
-    notes: 'Using NBC News as MSNBC RSS feeds are unreliable'
+    notes: 'Using CNN as MSNBC RSS feeds are unreliable'
   },
   
   'reuters': {
@@ -562,9 +562,8 @@ For each problematic source:
 
 If the problematic sources cannot be fixed, consider these replacements:
 
-### Left-Leaning (to replace MSNBC)
-- **NBC News**: `https://www.nbcnews.com/rss/nbcnews/public/news`
-- **CNN**: Check for available RSS feeds
+### Left-Leaning (to replace MSNBC or others)
+- **CNN**: `http://rss.cnn.com/rss/cnn_topstories.rss`
 - **The Nation**: `https://www.thenation.com/feed/`
 - **Mother Jones**: `https://www.motherjones.com/feed/`
 

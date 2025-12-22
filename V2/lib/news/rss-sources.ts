@@ -12,9 +12,9 @@ export const rssSources: Record<string, RSSSource> = {
     url: 'https://www.theguardian.com/world/rss',
     biasRating: 'left'
   },
-  'nbc-news': {
-    name: 'NBC News',
-    url: 'https://www.nbcnews.com/rss/nbcnews/public/news',
+  'cnn': {
+    name: 'CNN',
+    url: 'http://rss.cnn.com/rss/cnn_topstories.rss',
     biasRating: 'left'
   },
   'huffington-post': {

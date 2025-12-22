@@ -3,6 +3,13 @@ import { RSSSource } from './rss-sources';
 
 export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
 
+/**
+ * Type guard to check if a string is a valid BiasRating
+ */
+function isValidBiasRating(value: string): value is BiasRating {
+  return ['left', 'lean-left', 'center', 'lean-right', 'right'].includes(value);
+}
+
 export interface ParsedArticle {
   title: string;
   description: string | null;
@@ -139,6 +146,11 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
   try {
     const feed = await parser.parseURL(source.url);
 
+    // Validate bias rating
+    if (!isValidBiasRating(source.biasRating)) {
+      throw new Error(`Invalid bias rating for source ${source.name}: ${source.biasRating}`);
+    }
+
     const articles: ParsedArticle[] = feed.items
       .filter((item) => item.title && item.link)
       .map((item) => {
@@ -151,7 +163,7 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
           publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
           source: {
             name: source.name,
-            biasRating: source.biasRating as BiasRating
+            biasRating: source.biasRating
           }
         };
       });

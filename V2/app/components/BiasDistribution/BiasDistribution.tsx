@@ -32,7 +32,7 @@ export default function BiasDistribution({ articles }: BiasDistributionProps) {
   };
 
   articles.forEach((article) => {
-    const bias = article.source.biasRating as BiasRating;
+    const bias = article.source.biasRating;
     if (bias in biasCounts) {
       biasCounts[bias]++;
     }
@@ -41,12 +41,12 @@ export default function BiasDistribution({ articles }: BiasDistributionProps) {
   const totalArticles = articles.length;
   const uniqueSourcesCount = new Set(articles.map(a => a.source.name)).size;
   
-  const biasData: BiasCount[] = Object.entries(biasCounts).map(([biasRating, count]) => ({
-    biasRating: biasRating as BiasRating,
+  const biasData: BiasCount[] = (Object.entries(biasCounts) as [BiasRating, number][]).map(([biasRating, count]) => ({
+    biasRating,
     count,
     percentage: totalArticles > 0 ? (count / totalArticles) * 100 : 0,
-    label: biasConfig[biasRating as BiasRating].label,
-    color: biasConfig[biasRating as BiasRating].color,
+    label: biasConfig[biasRating].label,
+    color: biasConfig[biasRating].color,
   }));
 
   return (

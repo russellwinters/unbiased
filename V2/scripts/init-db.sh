@@ -14,10 +14,20 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | xargs)
+    echo -e "${GREEN}✅ Loaded .env file${NC}"
+else
+    echo -e "${RED}❌ .env file not found${NC}"
+    echo "Please create a .env file (copy from .env.example)"
+    exit 1
+fi
+
 # Check if DATABASE_URL is set
 if [ -z "$DATABASE_URL" ]; then
     echo -e "${RED}❌ Error: DATABASE_URL environment variable is not set${NC}"
-    echo "Please set it in your .env file or environment"
+    echo "Please set it in your .env file"
     exit 1
 fi
 

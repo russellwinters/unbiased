@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from "./page.module.scss";
 
 export default function Home() {
@@ -36,12 +37,12 @@ export default function Home() {
         </div>
         
         <div className={styles.ctas}>
-          <button className={`${styles.button} ${styles.primary}`}>
+          <Link href="/articles" className={`${styles.button} ${styles.primary}`}>
             Browse News
-          </button>
-          <button className={`${styles.button} ${styles.secondary}`}>
+          </Link>
+          <Link href="#features" className={`${styles.button} ${styles.secondary}`}>
             Learn More
-          </button>
+          </Link>
         </div>
         
         <div className={styles.note}>

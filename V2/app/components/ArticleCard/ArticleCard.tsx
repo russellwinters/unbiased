@@ -29,7 +29,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             <span className={styles.separator}>•</span>
             <span className={styles.timeAgo}>{timeAgo}</span>
           </div>
-          <BiasIndicator biasRating={article.source.biasRating as any} size="small" />
+          <BiasIndicator biasRating={article.source.biasRating} size="small" />
         </div>
         
         <h2 className={styles.title}>

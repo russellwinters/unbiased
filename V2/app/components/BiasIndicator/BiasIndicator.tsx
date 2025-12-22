@@ -1,6 +1,5 @@
+import { BiasRating } from '@/lib/news/rss-parser';
 import styles from './BiasIndicator.module.scss';
-
-export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
 
 interface BiasIndicatorProps {
   biasRating: BiasRating;

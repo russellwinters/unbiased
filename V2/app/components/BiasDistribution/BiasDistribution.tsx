@@ -1,5 +1,4 @@
-import { ParsedArticle } from '@/lib/news/rss-parser';
-import { BiasRating } from '../BiasIndicator';
+import { ParsedArticle, BiasRating } from '@/lib/news/rss-parser';
 import styles from './BiasDistribution.module.scss';
 
 interface BiasDistributionProps {
@@ -40,6 +39,7 @@ export default function BiasDistribution({ articles }: BiasDistributionProps) {
   });
 
   const totalArticles = articles.length;
+  const uniqueSourcesCount = new Set(articles.map(a => a.source.name)).size;
   
   const biasData: BiasCount[] = Object.entries(biasCounts).map(([biasRating, count]) => ({
     biasRating: biasRating as BiasRating,
@@ -53,7 +53,7 @@ export default function BiasDistribution({ articles }: BiasDistributionProps) {
     <div className={styles.biasDistribution}>
       <h3 className={styles.title}>Bias Distribution</h3>
       <p className={styles.subtitle}>
-        Showing {totalArticles} articles from {articles.length > 0 ? new Set(articles.map(a => a.source.name)).size : 0} sources
+        Showing {totalArticles} articles from {uniqueSourcesCount} sources
       </p>
       
       <div className={styles.chart}>

@@ -1,6 +1,8 @@
 import Parser from 'rss-parser';
 import { RSSSource } from './rss-sources';
 
+export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
+
 export interface ParsedArticle {
   title: string;
   description: string | null;
@@ -9,7 +11,7 @@ export interface ParsedArticle {
   publishedAt: Date;
   source: {
     name: string;
-    biasRating: string;
+    biasRating: BiasRating;
   };
 }
 
@@ -149,7 +151,7 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
           publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
           source: {
             name: source.name,
-            biasRating: source.biasRating
+            biasRating: source.biasRating as BiasRating
           }
         };
       });

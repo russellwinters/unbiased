@@ -82,8 +82,25 @@ async function seedMockArticles() {
         continue;
       }
 
-      // Create a unique URL for each article
-      const url = `https://example.com/article/${mockArticle.source.toLowerCase().replace(/\s+/g, '-')}/${Date.now()}-${created}`;
+      // Create a consistent URL for each article based on title
+      const urlSlug = mockArticle.title.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .substring(0, 60);
+      const url = `https://example.com/${mockArticle.source.toLowerCase().replace(/\s+/g, '-')}/${urlSlug}`;
+
+      // Check if article already exists by URL (deduplication)
+      const existing = await prisma.article.findUnique({
+        where: { url }
+      });
+
+      if (existing) {
+        skipped++;
+        if (skipped <= 5) {
+          console.log(`⏭️  Skipping: ${mockArticle.title}`);
+        }
+        continue;
+      }
 
       // Create new article
       await prisma.article.create({

@@ -16,7 +16,7 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-async function runSeedScript(scriptName: string) {
+async function runSeedScript(scriptName: string, allowFailure = false) {
   console.log(`\n🚀 Running ${scriptName}...`);
   const scriptPath = join(__dirname, scriptName);
   
@@ -26,9 +26,15 @@ async function runSeedScript(scriptName: string) {
       cwd: join(__dirname, '..')
     });
     console.log(`✅ ${scriptName} completed successfully\n`);
+    return true;
   } catch (error) {
-    console.error(`❌ Error running ${scriptName}:`, error);
-    throw error;
+    if (allowFailure) {
+      console.warn(`⚠️  ${scriptName} failed, but continuing...\n`);
+      return false;
+    } else {
+      console.error(`❌ Error running ${scriptName}:`, error);
+      throw error;
+    }
   }
 }
 
@@ -40,8 +46,15 @@ async function main() {
     // First, seed sources
     await runSeedScript('seed-sources.ts');
 
-    // Then, seed articles
-    await runSeedScript('seed-articles.ts');
+    // Then, try to seed articles from RSS feeds
+    console.log('\n📡 Attempting to fetch articles from RSS feeds...');
+    const rssSuccess = await runSeedScript('seed-articles.ts', true);
+    
+    // If RSS seeding failed, use mock articles
+    if (!rssSuccess) {
+      console.log('\n⚠️  RSS feeds unavailable. Using mock articles for testing...');
+      await runSeedScript('seed-mock-articles.ts');
+    }
 
     console.log('═'.repeat(50));
     console.log('\n✨ Database seeding completed successfully!\n');

@@ -104,6 +104,11 @@ async function seedArticles() {
   }
 
   console.log(`\n📊 Summary: ${created} created, ${skipped} skipped, ${errors_count} errors`);
+  
+  // Return error if no articles were created
+  if (created === 0) {
+    throw new Error('No articles were created. RSS feeds may be unavailable.');
+  }
 }
 
 async function main() {

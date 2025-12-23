@@ -9,17 +9,17 @@ import styles from './page.module.scss';
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // For now, use mock data
     // TODO: Replace with API call when database is set up
     const mockArticles = getMockArticles();
     setArticles(mockArticles);
-    setLoading(false);
+    setIsLoading(false);
   }, []);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>Loading articles...</div>

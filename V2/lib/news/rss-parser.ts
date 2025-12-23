@@ -3,9 +3,6 @@ import { RSSSource } from './rss-sources';
 
 export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
 
-/**
- * Type guard to check if a string is a valid BiasRating
- */
 function isValidBiasRating(value: string): value is BiasRating {
   return ['left', 'lean-left', 'center', 'lean-right', 'right'].includes(value);
 }
@@ -154,7 +151,6 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
     const articles: ParsedArticle[] = feed.items
       .filter((item) => item.title && item.link)
       .map((item) => {
-        // Safe to assert non-null because of filter above
         return {
           title: item.title!,
           description: extractDescription(item),

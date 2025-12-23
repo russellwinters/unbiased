@@ -11,7 +11,17 @@
   
   // Typography
   --font-size-base: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 3rem;
   --line-height-base: 1.6;
+  --line-height-tight: 1.4;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   
   // Spacing
   --spacing-xs: 0.25rem;
@@ -21,6 +31,17 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
+  
+  // Layout
+  --max-width-content: 1400px;
+  --sidebar-width: 300px;
+  --border-radius-sm: 3px;
+  --border-radius: 6px;
+  --border-radius-lg: 8px;
+  
+  // Breakpoints (reference only, use in media queries)
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
 }
 
 @media (prefers-color-scheme: dark) {

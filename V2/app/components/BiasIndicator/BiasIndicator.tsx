@@ -1,4 +1,5 @@
 import { BiasRating } from '@/lib/news/rss-parser';
+import { BIAS_LABELS } from '@/lib/constants';
 import styles from './BiasIndicator.module.scss';
 
 interface BiasIndicatorProps {
@@ -6,21 +7,13 @@ interface BiasIndicatorProps {
   size?: 'small' | 'medium' | 'large';
 }
 
-const biasLabels: Record<BiasRating, string> = {
-  'left': 'Left',
-  'lean-left': 'Lean Left',
-  'center': 'Center',
-  'lean-right': 'Lean Right',
-  'right': 'Right',
-};
-
 export default function BiasIndicator({ biasRating, size = 'medium' }: BiasIndicatorProps) {
   return (
     <span 
       className={`${styles.biasIndicator} ${styles[biasRating]} ${styles[size]}`}
-      title={`Bias Rating: ${biasLabels[biasRating]}`}
+      title={`Bias Rating: ${BIAS_LABELS[biasRating]}`}
     >
-      {biasLabels[biasRating]}
+      {BIAS_LABELS[biasRating]}
     </span>
   );
 }

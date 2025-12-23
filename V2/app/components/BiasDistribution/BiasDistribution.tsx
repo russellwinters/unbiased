@@ -1,4 +1,6 @@
 import { ParsedArticle, BiasRating } from '@/lib/news/rss-parser';
+import { BIAS_CONFIG } from '@/lib/constants';
+import { getUniqueSourceCount } from '@/lib/utils';
 import styles from './BiasDistribution.module.scss';
 
 interface BiasDistributionProps {
@@ -13,41 +15,54 @@ interface BiasCount {
   color: string;
 }
 
-const biasConfig: Record<BiasRating, { label: string; color: string }> = {
-  'left': { label: 'Left', color: '#1e40af' },
-  'lean-left': { label: 'Lean Left', color: '#3b82f6' },
-  'center': { label: 'Center', color: '#8b5cf6' },
-  'lean-right': { label: 'Lean Right', color: '#f97316' },
-  'right': { label: 'Right', color: '#dc2626' },
-};
-
 export default function BiasDistribution({ articles }: BiasDistributionProps) {
-  // Count articles by bias rating
-  const biasCounts: Record<BiasRating, number> = {
+  const biasCounts = articles.reduce<Record<BiasRating, number>>((acc, article) => {
+    const bias = article.source.biasRating;
+    acc[bias] = (acc[bias] || 0) + 1;
+    return acc;
+  }, {
     'left': 0,
     'lean-left': 0,
     'center': 0,
     'lean-right': 0,
     'right': 0,
-  };
-
-  articles.forEach((article) => {
-    const bias = article.source.biasRating;
-    if (bias in biasCounts) {
-      biasCounts[bias]++;
-    }
   });
 
   const totalArticles = articles.length;
-  const uniqueSourcesCount = new Set(articles.map(a => a.source.name)).size;
+  const uniqueSourcesCount = getUniqueSourceCount(articles);
   
   const biasData: BiasCount[] = (Object.entries(biasCounts) as [BiasRating, number][]).map(([biasRating, count]) => ({
     biasRating,
     count,
     percentage: totalArticles > 0 ? (count / totalArticles) * 100 : 0,
-    label: biasConfig[biasRating].label,
-    color: biasConfig[biasRating].color,
+    label: BIAS_CONFIG[biasRating].label,
+    color: BIAS_CONFIG[biasRating].color,
   }));
+
+  const renderBar = (data: BiasCount) => (
+    <div 
+      key={data.biasRating}
+      className={styles.bar}
+      style={{ 
+        width: `${data.percentage}%`,
+        backgroundColor: data.color 
+      }}
+      title={`${data.label}: ${data.count} articles (${data.percentage.toFixed(1)}%)`}
+    />
+  );
+
+  const renderLegendItem = (data: BiasCount) => (
+    <div key={data.biasRating} className={styles.legendItem}>
+      <div 
+        className={styles.legendColor}
+        style={{ backgroundColor: data.color }}
+      />
+      <span className={styles.legendLabel}>{data.label}</span>
+      <span className={styles.legendCount}>
+        {data.count} ({data.percentage.toFixed(0)}%)
+      </span>
+    </div>
+  );
 
   return (
     <div className={styles.biasDistribution}>
@@ -57,34 +72,11 @@ export default function BiasDistribution({ articles }: BiasDistributionProps) {
       </p>
       
       <div className={styles.chart}>
-        {biasData.map((data) => (
-          data.count > 0 && (
-            <div 
-              key={data.biasRating}
-              className={styles.bar}
-              style={{ 
-                width: `${data.percentage}%`,
-                backgroundColor: data.color 
-              }}
-              title={`${data.label}: ${data.count} articles (${data.percentage.toFixed(1)}%)`}
-            />
-          )
-        ))}
+        {biasData.filter(data => data.count > 0).map(renderBar)}
       </div>
       
       <div className={styles.legend}>
-        {biasData.map((data) => (
-          <div key={data.biasRating} className={styles.legendItem}>
-            <div 
-              className={styles.legendColor}
-              style={{ backgroundColor: data.color }}
-            />
-            <span className={styles.legendLabel}>{data.label}</span>
-            <span className={styles.legendCount}>
-              {data.count} ({data.percentage.toFixed(0)}%)
-            </span>
-          </div>
-        ))}
+        {biasData.map(renderLegendItem)}
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
+import type { BiasRating } from './rss-parser';
+
 // RSS feed sources configuration
 export interface RSSSource {
   name: string;
   url: string;
-  biasRating: string;
+  biasRating: BiasRating;
 }
 
 export const rssSources: Record<string, RSSSource> = {

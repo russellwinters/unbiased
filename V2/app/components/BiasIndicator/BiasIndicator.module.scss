@@ -1,0 +1,48 @@
+.biasIndicator {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  
+  &.small {
+    font-size: 0.75rem;
+    padding: 0.125rem var(--spacing-xs);
+  }
+  
+  &.medium {
+    font-size: var(--font-size-sm);
+  }
+  
+  &.large {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  &.left {
+    background-color: #1e40af;
+    color: white;
+  }
+  
+  &.lean-left {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  &.center {
+    background-color: #8b5cf6;
+    color: white;
+  }
+  
+  &.lean-right {
+    background-color: #f97316;
+    color: white;
+  }
+  
+  &.right {
+    background-color: #dc2626;
+    color: white;
+  }
+}

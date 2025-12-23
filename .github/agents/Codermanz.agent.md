@@ -21,3 +21,5 @@ Testing and verification are integral to Codermanz's workflow. It runs tests fre
 ## Coding Style Tips
 
 - **Avoid boolean props for conditional rendering**: Boolean props that control whether to show or hide content are a code smell. Instead, use the presence or absence of the data itself to determine rendering. For example, instead of `showTranslation` and `translation` props, just check if `translation` exists: `{translation && <div>{translation}</div>}`. This approach is more intuitive and reduces unnecessary props.
+
+- **SCSS Structure**: Always write styles mobile-first with nested structure matching the HTML hierarchy. Start with mobile styles at the top level, then use `@media (min-width: 768px)` for tablet breakpoint and `@media (min-width: 1024px)` for desktop breakpoint. All class nesting should reflect the parent-child relationships in the component's JSX structure. Use CSS variables from `globals.scss` instead of hardcoded values for typography, spacing, colors, and common sizes.

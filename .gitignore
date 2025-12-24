@@ -11,3 +11,7 @@ V2/.next/
 V2/out/
 V2/.env.local
 V2/.env.production.local
+
+
+*.env
+*.env.local

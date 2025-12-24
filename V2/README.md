@@ -21,12 +21,19 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
 
 ### Installation
 
-1. Install dependencies:
+**Note:** This is an npm workspace project. All commands should be run from the **repository root** unless specified otherwise.
+
+1. Install dependencies (from repository root):
    ```bash
    npm install
    ```
 
-2. Set up environment variables:
+2. Navigate to V2 directory:
+   ```bash
+   cd V2
+   ```
+
+3. Set up environment variables:
    ```bash
    cp .env.example .env
    ```
@@ -38,12 +45,14 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
 
-3. Start PostgreSQL with Docker:
+4. Start PostgreSQL with Docker:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
    
    This will start a PostgreSQL 16 container with the database ready to use.
+   
+   **Note:** If using older Docker versions, you may need `docker-compose` instead of `docker compose`.
 
 4. Initialize the database (migrations + seed data):
    ```bash
@@ -51,18 +60,14 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    ```
    
    This script will:
+   - Check that dependencies are installed
+   - Load environment variables from .env
    - Generate the Prisma Client
    - Run database migrations to create tables
    - Seed 15+ news sources with bias ratings
-   - Fetch and store 100-500 recent articles from RSS feeds
+   - Fetch and store 100-500 recent articles from RSS feeds (or use mock data if unavailable)
    
-   **Note:** If RSS feeds are blocked in your environment (common in CI/restricted networks), you can use mock data instead:
-   ```bash
-   npx prisma generate
-   npx prisma migrate deploy
-   npm run db:seed:sources
-   npm run db:seed:mock  # Seeds 25 sample articles for testing
-   ```
+   **Note:** If RSS feeds are blocked in your environment (common in CI/restricted networks), the script automatically falls back to mock data.
 
 5. Run development server:
    ```bash
@@ -98,10 +103,10 @@ npm run db:seed:mock
 npm run db:reset
 
 # Stop PostgreSQL container
-docker-compose down
+docker compose down
 
 # Stop and remove all data
-docker-compose down -v
+docker compose down -v
 ```
 
 ## 📁 Project Structure

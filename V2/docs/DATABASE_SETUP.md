@@ -165,14 +165,22 @@ npm run db:reset         # Reset database (drop, migrate, seed)
 - Ensure Docker is running: `docker ps`
 - Check PostgreSQL container status: `docker compose ps`
 - Verify DATABASE_URL in .env file
+- Wait a few seconds after `docker compose up -d` for the container to be ready
+
+### "Dependencies not found" error  
+- This is a **npm workspace** project - dependencies are installed at the repository root
+- Run `npm install` from the **repository root** (parent directory of V2)
+- The script automatically detects workspace setup and checks for dotenv availability
 
 ### "client password must be a string" error
 - Ensure .env file exists and contains DATABASE_URL
+- The init script now uses `source .env` which properly handles quoted values
 - Verify dotenv is loaded at the top of seed scripts
 
 ### "RSS feeds blocked" or network errors
 - Use mock seeding instead: `npm run db:seed:mock`
 - RSS feeds may be blocked in CI/restricted environments
+- The seed script automatically falls back to mock data
 
 ### Prisma Client errors
 - Regenerate client: `npx prisma generate`

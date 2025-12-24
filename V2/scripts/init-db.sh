@@ -16,7 +16,10 @@ NC='\033[0m' # No Color
 
 # Load environment variables from .env file
 if [ -f .env ]; then
-    export $(cat .env | grep -v '^#' | xargs)
+    # Use set -a to automatically export all variables
+    set -a
+    source .env
+    set +a
     echo -e "${GREEN}✅ Loaded .env file${NC}"
 else
     echo -e "${RED}❌ .env file not found${NC}"
@@ -33,6 +36,15 @@ fi
 
 echo -e "${GREEN}✅ DATABASE_URL is configured${NC}\n"
 
+# Check if dotenv is available (critical for Prisma config)
+if ! node -e "require('dotenv')" 2>/dev/null; then
+    echo -e "${RED}❌ Error: Required dependencies not found${NC}"
+    echo "Please run 'npm install' from the repository root first"
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Dependencies available${NC}\n"
+
 # Check if Docker is running (if using local setup)
 if command -v docker &> /dev/null && docker ps &> /dev/null; then
     echo -e "${GREEN}✅ Docker is running${NC}"
@@ -42,7 +54,7 @@ if command -v docker &> /dev/null && docker ps &> /dev/null; then
         echo -e "${GREEN}✅ PostgreSQL container is running${NC}\n"
     else
         echo -e "${YELLOW}⚠️  PostgreSQL container is not running${NC}"
-        echo -e "${YELLOW}   Run 'docker-compose up -d' to start it${NC}\n"
+        echo -e "${YELLOW}   Run 'docker compose up -d' to start it${NC}\n"
     fi
 else
     echo -e "${YELLOW}⚠️  Docker not found or not running${NC}"

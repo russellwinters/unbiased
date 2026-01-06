@@ -16,8 +16,8 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database (local or cloud via Supabase/Neon)
 - npm 9+
+- Docker and Docker Compose (for local PostgreSQL database)
 
 ### Installation
 
@@ -38,13 +38,23 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
 
-3. Set up database:
+3. Start the database:
    ```bash
-   npx prisma generate
-   npx prisma migrate dev --name init
+   docker compose up -d
+   ```
+   
+   This starts a PostgreSQL database in Docker. To stop it later:
+   ```bash
+   docker compose down
    ```
 
-4. Run development server:
+4. Set up database schema:
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
+
+5. Run development server:
    ```bash
    npm run dev
    ```
@@ -82,9 +92,13 @@ V2/
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
-- `npx prisma studio` - Open Prisma Studio (database GUI)
-- `npx prisma generate` - Generate Prisma Client
-- `npx prisma migrate dev` - Create and apply migrations
+
+**Database Commands:**
+- `npm run db:generate` - Generate Prisma Client
+- `npm run db:migrate` - Create and apply database migrations
+- `npm run db:push` - Push schema changes to database (skip migration files)
+- `npm run db:studio` - Open Prisma Studio (database GUI)
+- `npm run db:reset` - Reset database and apply all migrations
 
 ### Styling with SCSS
 

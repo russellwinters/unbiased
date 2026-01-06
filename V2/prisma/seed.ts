@@ -88,7 +88,7 @@ async function main() {
   console.log('🌱 Starting database seed...');
   
   // Import the news module functions dynamically
-  const newsModule = await import('../lib/news/index.js');
+  const newsModule = await import('../lib/news/index');
   const { getAllSources, parseMultipleFeeds } = newsModule;
   
   // Get all configured RSS sources

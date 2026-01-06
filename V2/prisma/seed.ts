@@ -1,8 +1,42 @@
 import { PrismaClient } from '@prisma/client';
-import { getAllSources, parseMultipleFeeds } from '../lib/news';
-import type { ParsedArticle } from '../lib/news';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
+import { config } from 'dotenv';
 
-const prisma = new PrismaClient();
+// Load environment variables
+config();
+
+// Create a PostgreSQL pool
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL
+});
+
+// Create the Prisma adapter
+const adapter = new PrismaPg(pool);
+
+// Create the Prisma client with the adapter
+const prisma = new PrismaClient({ adapter });
+
+// We'll use dynamic imports since this is run in a Node context
+type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
+
+interface ParsedArticle {
+  title: string;
+  description: string | null;
+  url: string;
+  imageUrl: string | null;
+  publishedAt: Date;
+  source: {
+    name: string;
+    biasRating: BiasRating;
+  };
+}
+
+interface RSSSource {
+  name: string;
+  url: string;
+  biasRating: BiasRating;
+}
 
 // Map bias ratings to reliability ratings (simplified approach)
 function getReliability(biasRating: string): string {
@@ -53,8 +87,12 @@ function extractKeywords(title: string, description: string | null): string[] {
 async function main() {
   console.log('🌱 Starting database seed...');
   
+  // Import the news module functions dynamically
+  const newsModule = await import('../lib/news/index.js');
+  const { getAllSources, parseMultipleFeeds } = newsModule;
+  
   // Get all configured RSS sources
-  const rssSources = getAllSources();
+  const rssSources = getAllSources() as RSSSource[];
   console.log(`📰 Found ${rssSources.length} RSS sources`);
   
   // Parse feeds from all sources
@@ -74,7 +112,7 @@ async function main() {
   const oneDayAgo = new Date();
   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
   
-  const recentArticles = articles.filter(article => 
+  const recentArticles = (articles as ParsedArticle[]).filter(article => 
     article.publishedAt >= oneDayAgo
   );
   

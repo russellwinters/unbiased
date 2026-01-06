@@ -54,12 +54,22 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    npm run db:migrate
    ```
 
-5. Run development server:
+5. (Optional) Seed database with initial data:
+   ```bash
+   npm run db:seed
+   ```
+   
+   This will:
+   - Fetch articles from RSS feeds (past 24 hours)
+   - Populate up to 500 recent articles
+   - Create source records with bias ratings
+
+6. Run development server:
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000)
+7. Open [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
 
@@ -99,6 +109,7 @@ V2/
 - `npm run db:push` - Push schema changes to database (skip migration files)
 - `npm run db:studio` - Open Prisma Studio (database GUI)
 - `npm run db:reset` - Reset database and apply all migrations
+- `npm run db:seed` - Seed database with news sources and recent articles
 
 ### Styling with SCSS
 

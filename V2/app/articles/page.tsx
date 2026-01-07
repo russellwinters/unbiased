@@ -2,27 +2,67 @@
 
 import { useEffect, useState } from 'react';
 import { ParsedArticle } from '@/lib/news/rss-parser';
-import { getMockArticles } from '@/lib/news/mock-data';
 import ArticleCard from '../components/ArticleCard';
 import BiasDistribution from '../components/BiasDistribution';
 import styles from './page.module.scss';
 
+interface ApiResponse {
+  articles: ParsedArticle[];
+  count: number;
+  sources: string[];
+  usedMockData: boolean;
+  errors: string[];
+  timestamp: string;
+}
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // For now, use mock data
-    // TODO: Replace with API call when database is set up
-    const mockArticles = getMockArticles();
-    setArticles(mockArticles);
-    setIsLoading(false);
+    async function fetchArticles() {
+      try {
+        const response = await fetch('/api/articles');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch articles');
+        }
+        
+        const data: ApiResponse = await response.json();
+        
+        // Convert publishedAt strings back to Date objects
+        const articlesWithDates = data.articles.map(article => ({
+          ...article,
+          publishedAt: new Date(article.publishedAt)
+        }));
+        
+        setArticles(articlesWithDates);
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchArticles();
   }, []);
 
   if (isLoading) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>Loading articles...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          Error loading articles: {error}
+        </div>
       </div>
     );
   }

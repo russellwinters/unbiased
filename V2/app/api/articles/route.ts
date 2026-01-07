@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllSources, parseMultipleFeeds, ParseMultipleFeedsResult, RSSSource, FeedError } from '@/lib/news';
+import { ParsedArticle, BiasRating } from '@/lib/news/rss-parser';
+import { prisma } from '@/lib/db';
 import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
 
 /**
  * GET /api/articles
  * 
- * Fetches and parses articles from configured RSS feeds.
- * Falls back to mock data if RSS feeds cannot be accessed.
+ * Fetches articles from the database.
+ * Falls back to mock data if database is unavailable or empty.
  * 
  * Query Parameters:
  * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
@@ -19,7 +20,7 @@ import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
  *   count: number,
  *   sources: string[],
  *   usedMockData: boolean,
- *   errors: FeedError[],
+ *   errors: string[],
  *   timestamp: string
  * }
  */
@@ -36,48 +37,62 @@ export async function GET(request: NextRequest) {
 async function coreLogic(request: NextRequest) {
   const { forceMock, sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
 
-  let articles;
-  let sources: string[] = [];
-  let feedErrors: { sourceName: string; error: string }[] = [];
-
   if (forceMock) {
     return respondWithMocks(sourceFilter, limit);
   }
 
-  const allSources = getAllSources();
-  const sourcesToFetch: RSSSource[] = sourceFilter
-    ? allSources.filter((s) => s.name.toLowerCase() === sourceFilter.toLowerCase())
-    : allSources;
-
-  if (sourcesToFetch.length === 0) {
-    return respondWithNoSources()
-  }
-
   try {
-    const result: ParseMultipleFeedsResult = await parseMultipleFeeds(sourcesToFetch);
-    articles = result.articles;
-    feedErrors = result.errors;
-    sources = sourcesToFetch.map((s) => s.name);
+    // Build where clause for optional source filter
+    const whereClause = sourceFilter
+      ? { source: { name: { equals: sourceFilter, mode: 'insensitive' as const } } }
+      : {};
 
-    if (articles.length === 0) {
-      return respondWithNoArticles(sources, feedErrors);
+    // Fetch articles from database with source relation
+    const dbArticles = await prisma.article.findMany({
+      where: whereClause,
+      include: {
+        source: true,
+      },
+      orderBy: {
+        publishedAt: 'desc',
+      },
+      take: limit,
+    });
+
+    // If no articles in database, fall back to mock data
+    if (dbArticles.length === 0) {
+      console.log('No articles found in database, using mock data');
+      return respondWithMocks(sourceFilter, limit);
     }
 
-    articles = articles.slice(0, limit);
-  } catch (rssError) {
-    console.log('RSS parsing failed, using mock data:', rssError);
+    // Transform database articles to ParsedArticle format
+    const articles: ParsedArticle[] = dbArticles.map((article) => ({
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      imageUrl: article.imageUrl,
+      publishedAt: article.publishedAt,
+      source: {
+        name: article.source.name,
+        biasRating: article.source.biasRating as BiasRating,
+      },
+    }));
+
+    // Get unique source names
+    const sources = [...new Set(articles.map((a) => a.source.name))];
+
+    return NextResponse.json({
+      articles,
+      count: articles.length,
+      sources,
+      usedMockData: false,
+      errors: [],
+      timestamp: new Date().toISOString(),
+    });
+  } catch (dbError) {
+    console.error('Database query failed, using mock data:', dbError);
     return respondWithMocks(sourceFilter, limit);
   }
-
-
-  return NextResponse.json({
-    articles,
-    count: articles.length,
-    sources,
-    usedMockData: false,
-    errors: feedErrors,
-    timestamp: new Date().toISOString()
-  });
 }
 
 function parseQueryParams(params: URLSearchParams) {
@@ -93,8 +108,7 @@ function respondWithMocks(sourceFilter?: string | null, limit?: number) {
   const articles = sourceFilter
     ? getMockArticlesBySource(sourceFilter, limit)
     : getMockArticles(limit);
-  const sources = sourceFilter ? getAllSources().filter((s) => s.name.toLowerCase() === sourceFilter.toLowerCase())
-    : getAllSources();
+  const sources = [...new Set(articles.map((a) => a.source.name))];
 
   return NextResponse.json({
     articles,
@@ -103,26 +117,11 @@ function respondWithMocks(sourceFilter?: string | null, limit?: number) {
     usedMockData: true,
     errors: [],
     timestamp: new Date().toISOString()
-  })
-}
-
-function respondWithNoSources() {
-  return NextResponse.json(
-    { error: 'No valid sources found' },
-    { status: 400 }
-  );
-}
-
-function respondWithNoArticles(sources: string[], feedErrors: FeedError[]) {
-  return NextResponse.json({
-    articles: [],
-    count: 0,
-    sources,
-    usedMockData: false,
-    errors: feedErrors,
-    timestamp: new Date().toISOString()
   });
 }
+
+
+
 
 function respondWith500Error(error: any) {
   return NextResponse.json(

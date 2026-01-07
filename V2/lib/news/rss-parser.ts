@@ -3,7 +3,7 @@ import { RSSSource } from './rss-sources';
 
 export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
 
-function isValidBiasRating(value: string): value is BiasRating {
+export function isValidBiasRating(value: string): value is BiasRating {
   return ['left', 'lean-left', 'center', 'lean-right', 'right'].includes(value);
 }
 

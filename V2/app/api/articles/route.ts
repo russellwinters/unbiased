@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ParsedArticle, BiasRating } from '@/lib/news/rss-parser';
+import { ParsedArticle, isValidBiasRating } from '@/lib/news/rss-parser';
 import { prisma } from '@/lib/db';
 import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
-
-/**
- * Validates if a string is a valid BiasRating
- */
-function isValidBiasRating(value: string): value is BiasRating {
-  return ['left', 'lean-left', 'center', 'lean-right', 'right'].includes(value);
-}
 
 /**
  * GET /api/articles

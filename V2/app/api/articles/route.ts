@@ -4,6 +4,13 @@ import { prisma } from '@/lib/db';
 import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
 
 /**
+ * Validates if a string is a valid BiasRating
+ */
+function isValidBiasRating(value: string): value is BiasRating {
+  return ['left', 'lean-left', 'center', 'lean-right', 'right'].includes(value);
+}
+
+/**
  * GET /api/articles
  * 
  * Fetches articles from the database.
@@ -44,7 +51,14 @@ async function coreLogic(request: NextRequest) {
   try {
     // Build where clause for optional source filter
     const whereClause = sourceFilter
-      ? { source: { name: { equals: sourceFilter, mode: 'insensitive' as const } } }
+      ? {
+          source: {
+            name: {
+              equals: sourceFilter,
+              mode: 'insensitive' as const,
+            },
+          },
+        }
       : {};
 
     // Fetch articles from database with source relation
@@ -66,17 +80,24 @@ async function coreLogic(request: NextRequest) {
     }
 
     // Transform database articles to ParsedArticle format
-    const articles: ParsedArticle[] = dbArticles.map((article) => ({
-      title: article.title,
-      description: article.description,
-      url: article.url,
-      imageUrl: article.imageUrl,
-      publishedAt: article.publishedAt,
-      source: {
-        name: article.source.name,
-        biasRating: article.source.biasRating as BiasRating,
-      },
-    }));
+    const articles: ParsedArticle[] = dbArticles.map((article) => {
+      // Validate and default bias rating if invalid
+      const biasRating = isValidBiasRating(article.source.biasRating)
+        ? article.source.biasRating
+        : 'center'; // Default to center if invalid
+
+      return {
+        title: article.title,
+        description: article.description,
+        url: article.url,
+        imageUrl: article.imageUrl,
+        publishedAt: article.publishedAt,
+        source: {
+          name: article.source.name,
+          biasRating,
+        },
+      };
+    });
 
     // Get unique source names
     const sources = [...new Set(articles.map((a) => a.source.name))];

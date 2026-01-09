@@ -12,7 +12,6 @@ import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
  * Query Parameters:
  * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
  * - limit: (optional) Maximum number of articles to return (default: 50)
- * - mock: (optional) Force use of mock data (set to 'true')
  * 
  * Response:
  * {
@@ -35,26 +34,21 @@ export async function GET(request: NextRequest) {
 
 
 async function coreLogic(request: NextRequest) {
-  const { forceMock, sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
+  const { sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
 
-  if (forceMock) {
-    return respondWithMocks(sourceFilter, limit);
-  }
 
   try {
-    // Build where clause for optional source filter
     const whereClause = sourceFilter
       ? {
-          source: {
-            name: {
-              equals: sourceFilter,
-              mode: 'insensitive' as const,
-            },
+        source: {
+          name: {
+            equals: sourceFilter,
+            mode: 'insensitive' as const,
           },
-        }
+        },
+      }
       : {};
 
-    // Fetch articles from database with source relation
     const dbArticles = await prisma.article.findMany({
       where: whereClause,
       include: {
@@ -66,18 +60,10 @@ async function coreLogic(request: NextRequest) {
       take: limit,
     });
 
-    // If no articles in database, fall back to mock data
-    if (dbArticles.length === 0) {
-      console.log('No articles found in database, using mock data');
-      return respondWithMocks(sourceFilter, limit);
-    }
-
-    // Transform database articles to ParsedArticle format
     const articles: ParsedArticle[] = dbArticles.map((article) => {
-      // Validate and default bias rating if invalid
       const biasRating = isValidBiasRating(article.source.biasRating)
         ? article.source.biasRating
-        : 'center'; // Default to center if invalid
+        : 'center';
 
       return {
         title: article.title,
@@ -92,7 +78,6 @@ async function coreLogic(request: NextRequest) {
       };
     });
 
-    // Get unique source names
     const sources = [...new Set(articles.map((a) => a.source.name))];
 
     return NextResponse.json({
@@ -105,39 +90,19 @@ async function coreLogic(request: NextRequest) {
     });
   } catch (dbError) {
     console.error('Database query failed, using mock data:', dbError);
-    return respondWithMocks(sourceFilter, limit);
+    return respondWith500Error();
   }
 }
 
 function parseQueryParams(params: URLSearchParams) {
-  const forceMock = params.get('mock') === 'true';
   const sourceFilter = params.get('source');
   const limitParam = params.get('limit');
   const limit = limitParam ? parseInt(limitParam, 10) : 50;
 
-  return { forceMock, sourceFilter, limit };
+  return { sourceFilter, limit };
 }
 
-function respondWithMocks(sourceFilter?: string | null, limit?: number) {
-  const articles = sourceFilter
-    ? getMockArticlesBySource(sourceFilter, limit)
-    : getMockArticles(limit);
-  const sources = [...new Set(articles.map((a) => a.source.name))];
-
-  return NextResponse.json({
-    articles,
-    count: articles.length,
-    sources,
-    usedMockData: true,
-    errors: [],
-    timestamp: new Date().toISOString()
-  });
-}
-
-
-
-
-function respondWith500Error(error: any) {
+function respondWith500Error(error?: any) {
   return NextResponse.json(
     {
       error: 'Failed to fetch articles',

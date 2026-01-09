@@ -24,25 +24,24 @@ export default function ArticlesPage() {
     async function fetchArticles() {
       try {
         const response = await fetch('/api/articles');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
         }
-        
+
         const data: ApiResponse = await response.json();
-        
-        // Convert publishedAt strings back to Date objects with validation
+
+
         const articlesWithDates = data.articles.map(article => {
           const publishedAt = new Date(article.publishedAt);
-          // Fallback to current date if invalid
           const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt;
-          
+
           return {
             ...article,
             publishedAt: validDate
           };
         });
-        
+
         setArticles(articlesWithDates);
       } catch (err) {
         console.error('Error fetching articles:', err);

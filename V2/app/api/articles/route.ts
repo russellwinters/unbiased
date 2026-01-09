@@ -32,10 +32,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-
 async function coreLogic(request: NextRequest) {
   const { sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
-
 
   try {
     const whereClause = sourceFilter

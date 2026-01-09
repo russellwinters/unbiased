@@ -45,12 +45,14 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
         pages.push(i);
       }
 
+      // Only add ellipsis and last page if not already included
       if (currentPage < totalPages - 2) {
         pages.push('...');
       }
-
-      // Always show last page
-      pages.push(totalPages);
+      
+      if (!pages.includes(totalPages)) {
+        pages.push(totalPages);
+      }
     }
 
     return pages;

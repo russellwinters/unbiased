@@ -6,12 +6,11 @@ import type { Article, Source } from '@prisma/client';
 /**
  * GET /api/articles
  * 
- * Fetches articles from the database.
- * Falls back to mock data if database is unavailable or empty.
+ * Fetches articles from the database with pagination support.
  * 
  * Query Parameters:
  * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
- * - limit: (optional) Maximum number of articles to return per page (default: 50)
+ * - limit: (optional) Maximum number of articles to return per page (default: 50, max: 100)
  * - page: (optional) Page number (1-indexed, default: 1)
  * 
  * Response:
@@ -103,8 +102,8 @@ async function coreLogic(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (dbError) {
-    console.error('Database query failed, using mock data:', dbError);
-    return respondWith500Error();
+    console.error('Database query failed:', dbError);
+    return respondWith500Error(dbError);
   }
 }
 
@@ -112,8 +111,24 @@ function parseQueryParams(params: URLSearchParams) {
   const sourceFilter = params.get('source');
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
-  const limit = limitParam ? parseInt(limitParam, 10) : 50;
-  const page = pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
+  
+  // Validate and constrain limit (default: 50, max: 100)
+  let limit = 50;
+  if (limitParam) {
+    const parsedLimit = parseInt(limitParam, 10);
+    if (!isNaN(parsedLimit) && parsedLimit > 0) {
+      limit = Math.min(parsedLimit, 100);
+    }
+  }
+  
+  // Validate page (default: 1, min: 1)
+  let page = 1;
+  if (pageParam) {
+    const parsedPage = parseInt(pageParam, 10);
+    if (!isNaN(parsedPage) && parsedPage > 0) {
+      page = parsedPage;
+    }
+  }
 
   return { sourceFilter, limit, page };
 }

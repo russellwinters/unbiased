@@ -1,0 +1,95 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-xl) 0;
+  flex-wrap: wrap;
+
+  .button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .pages {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .pageButton {
+      min-width: 2.5rem;
+      height: 2.5rem;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      color: var(--foreground);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      &.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        font-weight: var(--font-weight-bold);
+      }
+    }
+
+    .ellipsis {
+      padding: 0 var(--spacing-xs);
+      color: var(--secondary);
+      user-select: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination {
+    gap: var(--spacing-md);
+
+    .button {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: var(--font-size-base);
+    }
+
+    .pages {
+      gap: var(--spacing-sm);
+
+      .pageButton {
+        min-width: 2.75rem;
+        height: 2.75rem;
+        font-size: var(--font-size-base);
+      }
+
+      .ellipsis {
+        padding: 0 var(--spacing-sm);
+      }
+    }
+  }
+}

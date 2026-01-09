@@ -23,6 +23,13 @@
         opacity: 0.95;
         margin: 0;
       }
+
+      .articleCount {
+        font-size: var(--font-size-sm);
+        opacity: 0.85;
+        margin: var(--spacing-sm) 0 0 0;
+        font-weight: var(--font-weight-medium);
+      }
     }
   }
 

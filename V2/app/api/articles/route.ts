@@ -1,22 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ParsedArticle, isValidBiasRating } from '@/lib/news/rss-parser';
 import { prisma } from '@/lib/db';
-import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
+import type { Article, Source } from '@prisma/client';
 
 /**
  * GET /api/articles
  * 
- * Fetches articles from the database.
- * Falls back to mock data if database is unavailable or empty.
+ * Fetches articles from the database with pagination support.
  * 
  * Query Parameters:
  * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
- * - limit: (optional) Maximum number of articles to return (default: 50)
+ * - limit: (optional) Maximum number of articles to return per page (default: 50, max: 100)
+ * - page: (optional) Page number (1-indexed, default: 1)
  * 
  * Response:
  * {
  *   articles: ParsedArticle[],
  *   count: number,
+ *   totalCount: number,
+ *   page: number,
+ *   totalPages: number,
  *   sources: string[],
  *   usedMockData: boolean,
  *   errors: string[],
@@ -33,7 +36,7 @@ export async function GET(request: NextRequest) {
 }
 
 async function coreLogic(request: NextRequest) {
-  const { sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
+  const { sourceFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
 
   try {
     const whereClause = sourceFilter
@@ -47,6 +50,14 @@ async function coreLogic(request: NextRequest) {
       }
       : {};
 
+    // Get total count for pagination
+    const totalCount = await prisma.article.count({
+      where: whereClause,
+    });
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const skip = (page - 1) * limit;
+
     const dbArticles = await prisma.article.findMany({
       where: whereClause,
       include: {
@@ -55,10 +66,11 @@ async function coreLogic(request: NextRequest) {
       orderBy: {
         publishedAt: 'desc',
       },
+      skip,
       take: limit,
     });
 
-    const articles: ParsedArticle[] = dbArticles.map((article) => {
+    const articles: ParsedArticle[] = dbArticles.map((article: Article & { source: Source }) => {
       const biasRating = isValidBiasRating(article.source.biasRating)
         ? article.source.biasRating
         : 'center';
@@ -81,26 +93,47 @@ async function coreLogic(request: NextRequest) {
     return NextResponse.json({
       articles,
       count: articles.length,
+      totalCount,
+      page,
+      totalPages,
       sources,
       usedMockData: false,
       errors: [],
       timestamp: new Date().toISOString(),
     });
   } catch (dbError) {
-    console.error('Database query failed, using mock data:', dbError);
-    return respondWith500Error();
+    console.error('Database query failed:', dbError);
+    return respondWith500Error(dbError);
   }
 }
 
 function parseQueryParams(params: URLSearchParams) {
   const sourceFilter = params.get('source');
   const limitParam = params.get('limit');
-  const limit = limitParam ? parseInt(limitParam, 10) : 50;
+  const pageParam = params.get('page');
+  
+  // Validate and constrain limit (default: 50, max: 100)
+  let limit = 50;
+  if (limitParam) {
+    const parsedLimit = parseInt(limitParam, 10);
+    if (!isNaN(parsedLimit) && parsedLimit > 0) {
+      limit = Math.min(parsedLimit, 100);
+    }
+  }
+  
+  // Validate page (default: 1, min: 1)
+  let page = 1;
+  if (pageParam) {
+    const parsedPage = parseInt(pageParam, 10);
+    if (!isNaN(parsedPage) && parsedPage > 0) {
+      page = parsedPage;
+    }
+  }
 
-  return { sourceFilter, limit };
+  return { sourceFilter, limit, page };
 }
 
-function respondWith500Error(error?: any) {
+function respondWith500Error(error?: unknown) {
   return NextResponse.json(
     {
       error: 'Failed to fetch articles',

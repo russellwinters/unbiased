@@ -30,22 +30,25 @@ export function extractDomain(url: string): string {
 }
 
 /**
+ * Common words to filter out when extracting keywords
+ */
+const COMMON_WORDS = new Set([
+  'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+  'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
+  'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+  'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it',
+  'its', 'what', 'which', 'who', 'when', 'where', 'why', 'how'
+]);
+
+/**
  * Extracts keywords from title and description
  */
 export function extractKeywords(title: string, description: string | null): string[] {
   const text = `${title} ${description || ''}`.toLowerCase();
 
-  const commonWords = new Set([
-    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-    'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
-    'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-    'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it',
-    'its', 'what', 'which', 'who', 'when', 'where', 'why', 'how'
-  ]);
-
   const words = text.match(/\b[a-z]{3,}\b/g) || [];
   const uniqueWords = [...new Set(words)]
-    .filter(word => !commonWords.has(word))
+    .filter(word => !COMMON_WORDS.has(word))
     .slice(0, 10);
 
   return uniqueWords;

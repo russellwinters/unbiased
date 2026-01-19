@@ -4,6 +4,20 @@ import { prisma } from '@/lib/db';
 import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
 
 /**
+ * Response type for POST /api/articles
+ */
+interface ArticleUpdateResponse {
+  success: boolean;
+  sourcesCreated: number;
+  sourcesUpdated: number;
+  articlesCreated: number;
+  articlesUpdated: number;
+  articlesSkipped: number;
+  errors: string[];
+  timestamp: string;
+}
+
+/**
  * GET /api/articles
  * 
  * Fetches articles from the database.
@@ -147,7 +161,8 @@ export async function POST(request: NextRequest) {
     console.log(`📄 Fetched ${articles.length} total articles`);
 
     // Filter articles from the beginning of the previous day onwards
-    const startOfPreviousDay = new Date();
+    const now = new Date();
+    const startOfPreviousDay = new Date(now);
     startOfPreviousDay.setDate(startOfPreviousDay.getDate() - 1);
     startOfPreviousDay.setHours(0, 0, 0, 0);
 
@@ -260,7 +275,7 @@ export async function POST(request: NextRequest) {
       console.log(`⚠️  Skipped ${articlesSkipped} articles`);
     }
 
-    const response = {
+    const response: ArticleUpdateResponse = {
       success: true,
       sourcesCreated,
       sourcesUpdated,

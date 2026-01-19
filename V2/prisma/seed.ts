@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import { config } from 'dotenv';
-import { getAllSources, parseMultipleFeeds, ParsedArticle, RSSSource } from '@/lib/news';
+import { getAllSources, parseMultipleFeeds, ParsedArticle, RSSSource, getReliability, extractDomain, extractKeywords } from '@/lib/news';
 
 config();
 
@@ -13,46 +13,6 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
-
-function getReliability(biasRating: string): string {
-  const reliabilityMap: Record<string, string> = {
-    'left': 'mixed',
-    'lean-left': 'high',
-    'center': 'very-high',
-    'lean-right': 'high',
-    'right': 'mixed',
-  };
-  return reliabilityMap[biasRating] || 'mixed';
-}
-
-function extractDomain(url: string): string {
-  try {
-    const urlObj = new URL(url);
-    return urlObj.hostname.replace(/^www\./, '');
-  } catch {
-    return 'unknown.com';
-  }
-}
-
-function extractKeywords(title: string, description: string | null): string[] {
-  const text = `${title} ${description || ''}`.toLowerCase();
-
-  const commonWords = new Set([
-    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-    'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
-    'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-    'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it',
-    'its', 'what', 'which', 'who', 'when', 'where', 'why', 'how'
-  ]);
-
-
-  const words = text.match(/\b[a-z]{3,}\b/g) || [];
-  const uniqueWords = [...new Set(words)]
-    .filter(word => !commonWords.has(word))
-    .slice(0, 10);
-
-  return uniqueWords;
-}
 
 async function main() {
   console.log('🌱 Starting database seed...');

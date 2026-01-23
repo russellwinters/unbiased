@@ -1,7 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ParsedArticle, isValidBiasRating } from '@/lib/news/rss-parser';
-import { prisma } from '@/lib/db';
-import { getMockArticles, getMockArticlesBySource } from '@/lib/news/mock-data';
+import { getRssData, ParsedArticle, isValidBiasRating, getAllSources, parseMultipleFeeds, RSSSource, getReliability, extractDomain, extractKeywords } from '@/lib/news';
+import { prisma, upsertArticles, upsertSources } from '@/lib/db';
+import { filterWithinRange, yesterdayAtMidnight } from "@/lib/utils"
+
+/**
+ * Response type for POST /api/articles
+ */
+interface ArticleUpdateResponse {
+  success: boolean;
+  sourcesCreated: number;
+  sourcesUpdated: number;
+  articlesCreated: number;
+  articlesUpdated: number;
+  articlesSkipped: number;
+  errors: string[];
+  timestamp: string;
+}
 
 /**
  * GET /api/articles
@@ -28,10 +42,12 @@ export async function GET(request: NextRequest) {
     return await coreLogic(request);
   } catch (error) {
     console.error('Error in /api/articles:', error);
-    return respondWith500Error(error);
+    return respondWith500Error({ err: error, message: 'Failed to fetch articles' });
   }
 }
 
+// TODO: update this so it's more like the post request
+// with the calls pulled from utils elsewhere in the codebase
 async function coreLogic(request: NextRequest) {
   const { sourceFilter, limit } = parseQueryParams(request.nextUrl.searchParams);
 
@@ -88,7 +104,7 @@ async function coreLogic(request: NextRequest) {
     });
   } catch (dbError) {
     console.error('Database query failed, using mock data:', dbError);
-    return respondWith500Error();
+    return respondWith500Error({ err: dbError, message: 'Internal error' });
   }
 }
 
@@ -100,12 +116,60 @@ function parseQueryParams(params: URLSearchParams) {
   return { sourceFilter, limit };
 }
 
-function respondWith500Error(error?: any) {
+/**
+ * POST /api/articles
+ * 
+ * Fetches articles from RSS feeds and populates the database.
+ * Articles are fetched from the beginning of the previous day to the current time.
+ * De-duplication is handled through the unique `url` field on articles.
+ * 
+ * Response:
+ * {
+ *   success: boolean,
+ *   sourcesCreated: number,
+ *   sourcesUpdated: number,
+ *   articlesCreated: number,
+ *   articlesUpdated: number,
+ *   articlesSkipped: number,
+ *   errors: string[],
+ *   timestamp: string
+ * }
+ */
+export async function POST(request: NextRequest) {
+  try {
+    console.log('🚀 Starting article update from RSS feeds...');
+
+    const { sources, articles, rssErrors } = await getRssData();
+    const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
+
+    const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
+    const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
+
+    const response: ArticleUpdateResponse = {
+      success: true,
+      sourcesCreated,
+      sourcesUpdated,
+      articlesCreated,
+      articlesUpdated,
+      articlesSkipped,
+      errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('🎉 Article update completed!');
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    console.error('❌ Error in POST /api/articles:', error);
+    return respondWith500Error({ err: error, message: 'Failed to update articles' });
+  }
+}
+
+function respondWith500Error({ err, message }: { err?: any, message?: string }) {
   return NextResponse.json(
     {
-      error: 'Failed to fetch articles',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      error: message || 'Failed to fetch articles',
+      message: err instanceof Error ? err.message : 'Unknown error'
     },
     { status: 500 }
   );
-}
+};

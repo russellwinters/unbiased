@@ -111,6 +111,14 @@ V2/
 - `npm run db:reset` - Reset database and apply all migrations
 - `npm run db:seed` - Seed database with news sources and recent articles
 
+### API Endpoints
+
+See [docs/API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for detailed API documentation.
+
+**Key Endpoints:**
+- `GET /api/articles` - Fetch articles from database with optional filtering
+- `POST /api/articles` - Update articles from RSS feeds (fetches from past day onwards)
+
 ### Styling with SCSS
 
 This project uses SCSS for styling. Key files:

@@ -2,7 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import { config } from 'dotenv';
-import { getAllSources, parseMultipleFeeds, ParsedArticle, RSSSource, getReliability, extractDomain, extractKeywords } from '@/lib/news';
+import { getReliability, extractDomain, extractKeywords, getRssData } from '@/lib/news';
+import { filterWithinRange, yesterdayAtMidnight } from '@/lib/utils';
 
 config();
 
@@ -16,27 +17,20 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('🌱 Starting database seed...');
+  console.log('📡 Fetching sources and articles from RSS feeds...');
+  const { sources, articles, rssErrors } = await getRssData();
 
-  const rssSources = getAllSources() as RSSSource[];
-  console.log(`📰 Found ${rssSources.length} RSS sources`);
-
-  console.log('📡 Fetching articles from RSS feeds...');
-  const { articles, errors } = await parseMultipleFeeds(rssSources);
-
-  if (errors.length > 0) {
-    console.log(`⚠️  Encountered ${errors.length} errors while fetching feeds:`);
+  if (rssErrors.length > 0) {
+    console.log(`⚠️  Encountered ${rssErrors.length} errors while fetching feeds:`);
   }
 
+  console.log(`📰 Found ${sources.length} RSS sources`);
   console.log(`📄 Fetched ${articles.length} total articles`);
 
   const oneDayAgo = new Date();
   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-  const recentArticles = (articles as ParsedArticle[]).filter(article =>
-    article.publishedAt >= oneDayAgo
-  );
-
-  console.log(`🕒 Filtered to ${recentArticles.length} articles from the past 24 hours`);
+  const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
 
   const articlesToSeed = recentArticles.slice(0, 500);
   console.log(`📊 Limiting to ${articlesToSeed.length} articles for seeding`);
@@ -44,7 +38,7 @@ async function main() {
   console.log('💾 Creating/updating sources...');
   const sourceMap = new Map<string, string>(); // sourceName -> sourceId
 
-  for (const rssSource of rssSources) {
+  for (const rssSource of sources) {
     const domain = extractDomain(rssSource.url);
 
     const source = await prisma.source.upsert({

@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import { RSSSource } from './rss-sources';
+import { RSSSource, getAllSources } from './rss-sources';
 
 export type BiasRating = 'left' | 'lean-left' | 'center' | 'lean-right' | 'right';
 
@@ -204,4 +204,20 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
     articles: allArticles,
     errors
   };
+}
+
+export async function getRssData(): Promise<{ sources: RSSSource[], articles: ParsedArticle[], rssErrors: any[] }> {
+  const rssSources = getAllSources() as RSSSource[];
+  console.log(`📰 Found ${rssSources.length} RSS sources`);
+
+  // Fetch articles from RSS feeds
+  console.log('📡 Fetching articles from RSS feeds...');
+  const { articles, errors: fetchErrors } = await parseMultipleFeeds(rssSources);
+
+  if (fetchErrors.length > 0) {
+    console.log(`⚠️  Encountered ${fetchErrors.length} errors while fetching feeds`);
+  }
+
+  console.log(`📄 Fetched ${articles.length} total articles`);
+  return { sources: rssSources, articles, rssErrors: fetchErrors };
 }

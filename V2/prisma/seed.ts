@@ -25,9 +25,6 @@ async function main() {
 
   if (errors.length > 0) {
     console.log(`⚠️  Encountered ${errors.length} errors while fetching feeds:`);
-    errors.forEach(error => {
-      console.log(`   - ${error.sourceName}: ${error.error}`);
-    });
   }
 
   console.log(`📄 Fetched ${articles.length} total articles`);

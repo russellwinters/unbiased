@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ParsedArticle, isValidBiasRating } from '@/lib/news/rss-parser';
-import { prisma } from '@/lib/db';
+import { getRssData, ParsedArticle, isValidBiasRating } from '@/lib/news';
+import { prisma, upsertArticles, upsertSources } from '@/lib/db';
+import { filterWithinRange, yesterdayAtMidnight } from "@/lib/utils"
 import type { Article, Source } from '@prisma/client';
-import page from '@/app/articles/page';
+
+/**
+ * Response type for POST /api/articles
+ */
+interface ArticleUpdateResponse {
+  success: boolean;
+  sourcesCreated: number;
+  sourcesUpdated: number;
+  articlesCreated: number;
+  articlesUpdated: number;
+  articlesSkipped: number;
+  errors: string[];
+  timestamp: string;
+}
 
 /**
  * GET /api/articles
@@ -29,14 +43,76 @@ import page from '@/app/articles/page';
  */
 export async function GET(request: NextRequest) {
   try {
-    return await coreLogic(request);
+    return await coreGetLogic(request);
   } catch (error) {
     console.error('Error in /api/articles:', error);
-    return respondWith500Error(error);
+    return respondWith500Error({ err: error, message: 'Failed to fetch articles' });
   }
 }
 
-async function coreLogic(request: NextRequest) {
+
+
+/**
+ * POST /api/articles
+ * 
+ * Fetches articles from RSS feeds and populates the database.
+ * Articles are fetched from the beginning of the previous day to the current time.
+ * De-duplication is handled through the unique `url` field on articles.
+ * 
+ * Response:
+ * {
+ *   success: boolean,
+ *   sourcesCreated: number,
+ *   sourcesUpdated: number,
+ *   articlesCreated: number,
+ *   articlesUpdated: number,
+ *   articlesSkipped: number,
+ *   errors: string[],
+ *   timestamp: string
+ * }
+ */
+export async function POST(request: NextRequest) {
+  try {
+    console.log('🚀 Starting article update from RSS feeds...');
+
+    const { sources, articles, rssErrors } = await getRssData();
+    const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
+
+    const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
+    const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
+
+    const response: ArticleUpdateResponse = {
+      success: true,
+      sourcesCreated,
+      sourcesUpdated,
+      articlesCreated,
+      articlesUpdated,
+      articlesSkipped,
+      errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('🎉 Article update completed!');
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    console.error('❌ Error in POST /api/articles:', error);
+    return respondWith500Error({ err: error, message: 'Failed to update articles' });
+  }
+}
+
+function respondWith500Error({ err, message }: { err?: any, message?: string }) {
+  return NextResponse.json(
+    {
+      error: message || 'Failed to fetch articles',
+      message: err instanceof Error ? err.message : 'Unknown error'
+    },
+    { status: 500 }
+  );
+};
+
+// TODO: update this so it's more like the post request
+// with the calls pulled from utils elsewhere in the codebase
+async function coreGetLogic(request: NextRequest) {
   const { sourceFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
 
   try {
@@ -102,7 +178,7 @@ async function coreLogic(request: NextRequest) {
     });
   } catch (dbError) {
     console.error('Database query failed:', dbError);
-    return respondWith500Error(dbError);
+    return respondWith500Error({ err: dbError, message: 'Database query failed' });
   }
 }
 
@@ -132,14 +208,4 @@ function parseIntParam(param: string | null, defaultValue: number, minValue: num
   }
 
   return defaultValue;
-}
-
-function respondWith500Error(error?: unknown) {
-  return NextResponse.json(
-    {
-      error: 'Failed to fetch articles',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    },
-    { status: 500 }
-  );
 }

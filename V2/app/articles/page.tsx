@@ -4,26 +4,38 @@ import { useEffect, useState } from 'react';
 import { ParsedArticle } from '@/lib/news/rss-parser';
 import ArticleCard from '../components/ArticleCard';
 import BiasDistribution from '../components/BiasDistribution';
+import Pagination from '../components/Pagination';
 import styles from './page.module.scss';
 
 interface ApiResponse {
   articles: ParsedArticle[];
   count: number;
+  totalCount: number;
+  page: number;
+  totalPages: number;
   sources: string[];
   usedMockData: boolean;
   errors: string[];
   timestamp: string;
 }
 
+const PAGINATION_LIMIT = 50;
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchArticles() {
+      setIsLoading(true);
+      setError(null);
+
       try {
-        const response = await fetch('/api/articles');
+        const response = await fetch(`/api/articles?page=${currentPage}&limit=${PAGINATION_LIMIT}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
@@ -34,7 +46,7 @@ export default function ArticlesPage() {
 
         const articlesWithDates = data.articles.map(article => {
           const publishedAt = new Date(article.publishedAt);
-          const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt;
+          const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt; // TODO: consider if this is necessary??
 
           return {
             ...article,
@@ -43,6 +55,8 @@ export default function ArticlesPage() {
         });
 
         setArticles(articlesWithDates);
+        setTotalPages(data.totalPages);
+        setTotalCount(data.totalCount);
       } catch (err) {
         console.error('Error fetching articles:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -52,7 +66,12 @@ export default function ArticlesPage() {
     }
 
     fetchArticles();
-  }, []);
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (isLoading) {
     return (
@@ -80,6 +99,11 @@ export default function ArticlesPage() {
           <p className={styles.subtitle}>
             Multi-perspective news coverage from across the political spectrum
           </p>
+          {totalCount > 0 && (
+            <p className={styles.articleCount}>
+              Showing {getCurrentPageStart(currentPage, PAGINATION_LIMIT)}-{getCurrentPageEnd(currentPage, PAGINATION_LIMIT, totalCount)} of {totalCount} articles
+            </p>
+          )}
         </div>
       </header>
 
@@ -94,14 +118,30 @@ export default function ArticlesPage() {
               <p>No articles available at this time.</p>
             </div>
           ) : (
-            <div className={styles.articleGrid}>
-              {articles.map((article, index) => (
-                <ArticleCard key={`${article.url}-${index}`} article={article} />
-              ))}
-            </div>
+            <>
+              <div className={styles.articleGrid}>
+                {articles.map((article, index) => (
+                  <ArticleCard key={`${article.url}-${index}`} article={article} />
+                ))}
+              </div>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           )}
         </main>
       </div>
     </div>
   );
+}
+
+function getCurrentPageStart(currentPage: number, pageLimit: number) {
+  return (currentPage - 1) * pageLimit + 1;
+}
+
+function getCurrentPageEnd(currentPage: number, pageLimit: number, totalCount: number) {
+  return Math.min(currentPage * pageLimit, totalCount);
 }

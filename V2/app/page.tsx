@@ -1,57 +1,147 @@
-import Link from 'next/link';
-import styles from "./page.module.scss";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import { ParsedArticle } from '@/lib/news/rss-parser';
+import ArticleCard from './components/ArticleCard';
+import BiasDistribution from './components/BiasDistribution';
+import Pagination from './components/Pagination';
+import styles from './page.module.scss';
+
+interface ApiResponse {
+  articles: ParsedArticle[];
+  count: number;
+  totalCount: number;
+  page: number;
+  totalPages: number;
+  sources: string[];
+  usedMockData: boolean;
+  errors: string[];
+  timestamp: string;
+}
+
+const PAGINATION_LIMIT = 50;
+
+export default function ArticlesPage() {
+  const [articles, setArticles] = useState<ParsedArticle[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`/api/articles?page=${currentPage}&limit=${PAGINATION_LIMIT}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch articles');
+        }
+
+        const data: ApiResponse = await response.json();
+
+
+        const articlesWithDates = data.articles.map(article => {
+          const publishedAt = new Date(article.publishedAt);
+          const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt; // TODO: consider if this is necessary??
+
+          return {
+            ...article,
+            publishedAt: validDate
+          };
+        });
+
+        setArticles(articlesWithDates);
+        setTotalPages(data.totalPages);
+        setTotalCount(data.totalCount);
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, [currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (isLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading articles...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          Error loading articles: {error}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Unbiased V2</h1>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          <h1 className={styles.title}>News Articles</h1>
           <p className={styles.subtitle}>
-            A modern news aggregator providing multi-perspective coverage
-            with bias analysis
+            Multi-perspective news coverage from across the political spectrum
           </p>
-        </div>
-        
-        <div className={styles.features}>
-          <div className={styles.featureCard}>
-            <h3 className={styles.featureTitle}>Multi-Source</h3>
-            <p className={styles.featureDescription}>
-              Aggregates news from sources across the political spectrum
+          {totalCount > 0 && (
+            <p className={styles.articleCount}>
+              Showing {getCurrentPageStart(currentPage, PAGINATION_LIMIT)}-{getCurrentPageEnd(currentPage, PAGINATION_LIMIT, totalCount)} of {totalCount} articles
             </p>
-          </div>
-          
-          <div className={styles.featureCard}>
-            <h3 className={styles.featureTitle}>Bias Aware</h3>
-            <p className={styles.featureDescription}>
-              Transparent bias ratings help identify perspective
-            </p>
-          </div>
-          
-          <div className={styles.featureCard}>
-            <h3 className={styles.featureTitle}>Story Clustering</h3>
-            <p className={styles.featureDescription}>
-              See how different sources cover the same story
-            </p>
-          </div>
+          )}
         </div>
-        
-        <div className={styles.ctas}>
-          <Link href="/articles" className={`${styles.button} ${styles.primary}`}>
-            Browse News
-          </Link>
-          <Link href="#features" className={`${styles.button} ${styles.secondary}`}>
-            Learn More
-          </Link>
-        </div>
-        
-        <div className={styles.note}>
-          <p>
-            <strong>Note:</strong> This is V2 of Unbiased - a complete rewrite
-            with modern architecture. V1 is preserved in the V1 directory.
-          </p>
-        </div>
-      </main>
+      </header>
+
+      <div className={styles.content}>
+        <aside className={styles.sidebar}>
+          <BiasDistribution articles={articles} />
+        </aside>
+
+        <main className={styles.main}>
+          {articles.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p>No articles available at this time.</p>
+            </div>
+          ) : (
+            <>
+              <div className={styles.articleGrid}>
+                {articles.map((article, index) => (
+                  <ArticleCard key={`${article.url}-${index}`} article={article} />
+                ))}
+              </div>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
+}
+
+function getCurrentPageStart(currentPage: number, pageLimit: number) {
+  return (currentPage - 1) * pageLimit + 1;
+}
+
+function getCurrentPageEnd(currentPage: number, pageLimit: number, totalCount: number) {
+  return Math.min(currentPage * pageLimit, totalCount);
 }

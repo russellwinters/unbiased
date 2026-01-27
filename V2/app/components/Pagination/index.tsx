@@ -21,38 +21,21 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     }
   };
 
-  const getPageNumbers = () => {
+  const getPageIndicators = () => {
     const pages: (number | string)[] = [];
-    const maxVisible = 7;
+    const itemMaxCount = 7;
 
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+    if (totalPages <= itemMaxCount) {
+      pushAllPages(pages, totalPages);
     } else {
-      // Always show first page
       pages.push(1);
+      maybePushPageSeparatorInit(pages, currentPage);
 
-      if (currentPage > 3) {
-        pages.push('...');
-      }
+      const { start, end } = getSurroundingPageRange(currentPage, totalPages);
+      pushRange(pages, start, end);
 
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      // Only add ellipsis and last page if not already included
-      if (currentPage < totalPages - 2) {
-        pages.push('...');
-      }
-      
-      if (!pages.includes(totalPages)) {
-        pages.push(totalPages);
-      }
+      maybePushPageSeparatorClose(pages, currentPage, totalPages);
+      maybePushFinalPage(pages, totalPages);
     }
 
     return pages;
@@ -70,7 +53,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       </button>
 
       <div className={styles.pages}>
-        {getPageNumbers().map((page, index) => (
+        {getPageIndicators().map((page, index) => (
           typeof page === 'number' ? (
             <button
               key={`page-${page}`}
@@ -100,3 +83,40 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     </nav>
   );
 }
+
+function pushAllPages(pages: (number | string)[], totalPages: number) {
+  for (let i = 1; i <= totalPages; i++) {
+    pages.push(i);
+  }
+}
+
+function maybePushPageSeparatorInit(pages: (number | string)[], currentPage: number) {
+  if (currentPage > 3) {
+    pages.push('...');
+  }
+}
+
+function maybePushPageSeparatorClose(pages: (number | string)[], currentPage: number, totalPages: number) {
+  if (currentPage < totalPages - 2) {
+    pages.push('...');
+  }
+}
+
+function pushRange(pages: (number | string)[], start: number, end: number) {
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+}
+
+function getSurroundingPageRange(currentPage: number, totalPages: number) {
+  const start = Math.max(2, currentPage - 1);
+  const end = Math.min(totalPages - 1, currentPage + 1);
+  return { start, end };
+}
+
+function maybePushFinalPage(pages: (number | string)[], totalPages: number) {
+  if (!pages.includes(totalPages)) {
+    pages.push(totalPages);
+  }
+}
+

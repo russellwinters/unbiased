@@ -19,6 +19,8 @@ interface ApiResponse {
   timestamp: string;
 }
 
+const PAGINATION_LIMIT = 50;
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,9 +33,9 @@ export default function ArticlesPage() {
     async function fetchArticles() {
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        const response = await fetch(`/api/articles?page=${currentPage}&limit=50`);
+        const response = await fetch(`/api/articles?page=${currentPage}&limit=${PAGINATION_LIMIT}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
@@ -44,7 +46,7 @@ export default function ArticlesPage() {
 
         const articlesWithDates = data.articles.map(article => {
           const publishedAt = new Date(article.publishedAt);
-          const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt;
+          const validDate = isNaN(publishedAt.getTime()) ? new Date() : publishedAt; // TODO: consider if this is necessary??
 
           return {
             ...article,
@@ -99,7 +101,7 @@ export default function ArticlesPage() {
           </p>
           {totalCount > 0 && (
             <p className={styles.articleCount}>
-              Showing {((currentPage - 1) * 50) + 1}-{Math.min(currentPage * 50, totalCount)} of {totalCount} articles
+              Showing {getCurrentPageStart(currentPage, PAGINATION_LIMIT)}-{getCurrentPageEnd(currentPage, PAGINATION_LIMIT, totalCount)} of {totalCount} articles
             </p>
           )}
         </div>
@@ -122,7 +124,7 @@ export default function ArticlesPage() {
                   <ArticleCard key={`${article.url}-${index}`} article={article} />
                 ))}
               </div>
-              
+
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -134,4 +136,12 @@ export default function ArticlesPage() {
       </div>
     </div>
   );
+}
+
+function getCurrentPageStart(currentPage: number, pageLimit: number) {
+  return (currentPage - 1) * pageLimit + 1;
+}
+
+function getCurrentPageEnd(currentPage: number, pageLimit: number, totalCount: number) {
+  return Math.min(currentPage * pageLimit, totalCount);
 }

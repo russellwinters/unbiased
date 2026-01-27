@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ParsedArticle, isValidBiasRating } from '@/lib/news/rss-parser';
 import { prisma } from '@/lib/db';
 import type { Article, Source } from '@prisma/client';
+import page from '@/app/articles/page';
 
 /**
  * GET /api/articles
@@ -50,13 +51,11 @@ async function coreLogic(request: NextRequest) {
       }
       : {};
 
-    // Get total count for pagination
-    const totalCount = await prisma.article.count({
+    const count = await prisma.article.count({
       where: whereClause,
     });
 
-    const totalPages = Math.ceil(totalCount / limit);
-    const skip = (page - 1) * limit;
+    const { pagesTotal, skipCount } = getPaginationData(count, limit, page);
 
     const dbArticles = await prisma.article.findMany({
       where: whereClause,
@@ -66,7 +65,7 @@ async function coreLogic(request: NextRequest) {
       orderBy: {
         publishedAt: 'desc',
       },
-      skip,
+      skip: skipCount,
       take: limit,
     });
 
@@ -93,9 +92,9 @@ async function coreLogic(request: NextRequest) {
     return NextResponse.json({
       articles,
       count: articles.length,
-      totalCount,
+      totalCount: count,
       page,
-      totalPages,
+      totalPages: pagesTotal,
       sources,
       usedMockData: false,
       errors: [],
@@ -107,30 +106,32 @@ async function coreLogic(request: NextRequest) {
   }
 }
 
+function getPaginationData(count: number, pageLimit: number, pageCurrent: number) {
+  const pagesTotal = Math.ceil(count / pageLimit);
+  const skipCount = (pageCurrent - 1) * pageLimit;
+  return { pagesTotal, skipCount };
+}
+
 function parseQueryParams(params: URLSearchParams) {
   const sourceFilter = params.get('source');
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
-  
-  // Validate and constrain limit (default: 50, max: 100)
-  let limit = 50;
-  if (limitParam) {
-    const parsedLimit = parseInt(limitParam, 10);
-    if (!isNaN(parsedLimit) && parsedLimit > 0) {
-      limit = Math.min(parsedLimit, 100);
-    }
-  }
-  
-  // Validate page (default: 1, min: 1)
-  let page = 1;
-  if (pageParam) {
-    const parsedPage = parseInt(pageParam, 10);
-    if (!isNaN(parsedPage) && parsedPage > 0) {
-      page = parsedPage;
-    }
-  }
+
+  let limit = parseIntParam(limitParam, 50);
+  let page = parseIntParam(pageParam, 1);
 
   return { sourceFilter, limit, page };
+}
+
+function parseIntParam(param: string | null, defaultValue: number, minValue: number = 0) {
+  if (param === null) return defaultValue;
+
+  const parsed = parseInt(param, 10);
+  if (!isNaN(parsed) && parsed > minValue) {
+    return parsed;
+  }
+
+  return defaultValue;
 }
 
 function respondWith500Error(error?: unknown) {

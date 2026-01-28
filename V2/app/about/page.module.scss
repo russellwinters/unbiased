@@ -1,0 +1,184 @@
+.container {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  
+  .headerPlaceholder {
+    // Placeholder for future header component
+    // Reserve space for header (80px mobile, 100px desktop)
+    height: 80px;
+    background: transparent;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-3xl);
+
+    .hero {
+      text-align: center;
+      margin-bottom: var(--spacing-3xl);
+      padding: var(--spacing-2xl) 0;
+
+      .heroTitle {
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--foreground);
+        margin: 0 0 var(--spacing-md) 0;
+        line-height: var(--line-height-tight);
+      }
+
+      .heroSubtitle {
+        font-size: var(--font-size-lg);
+        color: var(--secondary);
+        font-style: italic;
+        margin: 0;
+        line-height: var(--line-height-base);
+      }
+    }
+
+    .section {
+      margin-bottom: var(--spacing-3xl);
+
+      .sectionTitle {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        color: var(--foreground);
+        margin: 0 0 var(--spacing-lg) 0;
+        line-height: var(--line-height-tight);
+      }
+
+      .sectionText {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        color: var(--foreground);
+        margin: 0 0 var(--spacing-lg) 0;
+
+        em {
+          font-style: italic;
+          font-weight: var(--font-weight-medium);
+        }
+      }
+
+      .featureList {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--spacing-xl) 0;
+
+        .featureItem {
+          padding: var(--spacing-md) 0;
+          border-bottom: 1px solid var(--border);
+          font-size: var(--font-size-base);
+          line-height: var(--line-height-base);
+          color: var(--foreground);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          strong {
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+            display: block;
+            margin-bottom: var(--spacing-xs);
+          }
+        }
+      }
+    }
+
+    .cta {
+      text-align: center;
+      padding: var(--spacing-2xl) 0;
+      margin-top: var(--spacing-3xl);
+
+      .ctaTitle {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        color: var(--foreground);
+        margin: 0 0 var(--spacing-lg) 0;
+      }
+
+      .ctaButton {
+        display: inline-block;
+        padding: var(--spacing-md) var(--spacing-xl);
+        background: var(--primary);
+        color: white;
+        border-radius: var(--border-radius);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-medium);
+        text-decoration: none;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: var(--primary-hover);
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Tablet breakpoint
+@media (min-width: 768px) {
+  .container {
+    .headerPlaceholder {
+      height: 100px;
+    }
+
+    .main {
+      padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
+
+      .hero {
+        padding: var(--spacing-3xl) 0;
+        margin-bottom: var(--spacing-3xl);
+
+        .heroTitle {
+          font-size: var(--font-size-3xl);
+        }
+
+        .heroSubtitle {
+          font-size: var(--font-size-xl);
+        }
+      }
+
+      .section {
+        .sectionTitle {
+          font-size: var(--font-size-2xl);
+        }
+
+        .sectionText {
+          font-size: var(--font-size-lg);
+        }
+
+        .featureList {
+          .featureItem {
+            padding: var(--spacing-lg) 0;
+            font-size: var(--font-size-lg);
+          }
+        }
+      }
+
+      .cta {
+        padding: var(--spacing-3xl) 0;
+
+        .ctaTitle {
+          font-size: var(--font-size-2xl);
+        }
+
+        .ctaButton {
+          padding: var(--spacing-lg) var(--spacing-2xl);
+          font-size: var(--font-size-lg);
+        }
+      }
+    }
+  }
+}
+
+// Desktop breakpoint
+@media (min-width: 1024px) {
+  .container {
+    .main {
+      padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-3xl);
+    }
+  }
+}

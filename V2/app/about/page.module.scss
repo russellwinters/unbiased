@@ -102,7 +102,7 @@
         display: inline-block;
         padding: var(--spacing-md) var(--spacing-xl);
         background: var(--primary);
-        color: white;
+        color: var(--button-text);
         border-radius: var(--border-radius);
         font-size: var(--font-size-base);
         font-weight: var(--font-weight-medium);
@@ -111,7 +111,7 @@
 
         &:hover {
           background: var(--primary-hover);
-          color: white;
+          color: var(--button-text);
         }
       }
     }

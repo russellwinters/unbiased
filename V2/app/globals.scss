@@ -38,6 +38,8 @@
   --border-radius-sm: 3px;
   --border-radius: 6px;
   --border-radius-lg: 8px;
+  --header-height-mobile: 80px;
+  --header-height-desktop: 100px;
   
   // Breakpoints (reference only, use in media queries)
   --breakpoint-sm: 768px;
@@ -100,3 +102,12 @@ button {
     color-scheme: dark;
   }
 }
+
+main {
+  padding-top: var(--header-height-mobile);
+
+  @media (min-width: 768px) {
+    padding-top: var(--header-height-desktop);
+  }
+}
+

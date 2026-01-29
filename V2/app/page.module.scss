@@ -3,7 +3,7 @@
   background: var(--background);
 
   .header {
-    background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+    background: var(--primary);
     color: white;
     padding: var(--spacing-2xl) var(--spacing-md);
     margin-bottom: var(--spacing-xl);

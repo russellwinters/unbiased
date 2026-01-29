@@ -15,6 +15,7 @@ The Unbiased V2 API provides endpoints for retrieving and managing news articles
 1. [Authentication](#authentication)
 2. [Endpoints](#endpoints)
    - [GET /api/articles](#get-apiarticles)
+   - [GET /api/sources](#get-apisources)
    - [POST /api/articles](#post-apiarticles)
 3. [Data Models](#data-models)
 4. [Database Schema](#database-schema)
@@ -46,9 +47,17 @@ GET /api/articles
 
 | Parameter | Type   | Required | Default | Constraints | Description |
 |-----------|--------|----------|---------|-------------|-------------|
-| `source`  | string | No       | -       | Case-insensitive | Filter articles by source name (e.g., "The Guardian", "Fox News") |
+| `sourceIds`  | string | No       | -       | Comma-separated UUIDs | Filter articles by source IDs (e.g., "uuid-1,uuid-2") - **Recommended for optimal performance** |
+| `bias`  | string | No       | -       | Comma-separated bias ratings | Filter articles by bias ratings (e.g., "left,center") |
+| `source`  | string | No       | -       | Case-insensitive | **DEPRECATED** - Filter by source name (kept for backwards compatibility) |
 | `limit`   | number | No       | 50      | Min: 1 | Maximum number of articles to return per page |
 | `page`    | number | No       | 1       | Min: 1 | Page number for pagination (1-indexed) |
+
+**Note on Filtering:**
+- The new `sourceIds` parameter provides better performance by using the indexed `sourceId` field
+- Multiple source IDs and bias ratings can be combined
+- When both `sourceIds` and `bias` are provided, articles must match BOTH criteria (AND logic)
+- The legacy `source` parameter is still supported but less efficient than `sourceIds`
 
 #### Response Schema
 
@@ -112,6 +121,24 @@ curl "http://localhost:3000/api/articles?limit=20&page=2"
 curl "http://localhost:3000/api/articles?source=BBC%20News&limit=10&page=1"
 ```
 
+##### Filter by source IDs (recommended for performance)
+
+```bash
+curl "http://localhost:3000/api/articles?sourceIds=550e8400-e29b-41d4-a716-446655440000,6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+```
+
+##### Filter by bias rating
+
+```bash
+curl "http://localhost:3000/api/articles?bias=left,lean-left&limit=20"
+```
+
+##### Combine source and bias filters
+
+```bash
+curl "http://localhost:3000/api/articles?sourceIds=550e8400-e29b-41d4-a716-446655440000&bias=left,center&page=1&limit=50"
+```
+
 #### Example Response
 
 ```json
@@ -158,6 +185,94 @@ curl "http://localhost:3000/api/articles?source=BBC%20News&limit=10&page=1"
 
 - **200 OK** - Request successful
 - **500 Internal Server Error** - Database query failed or unexpected error
+
+---
+
+### GET /api/sources
+
+Retrieves all available news sources with their metadata. This endpoint is used by the filtering UI to display source options.
+
+#### URL
+
+```
+GET /api/sources
+```
+
+#### Query Parameters
+
+None.
+
+#### Response Schema
+
+```typescript
+{
+  sources: Source[];
+  count: number;           // Total number of sources
+  timestamp: string;       // ISO 8601 timestamp of response
+}
+```
+
+#### Source Schema
+
+```typescript
+interface Source {
+  id: string;              // UUID - used for filtering articles
+  name: string;            // Display name (e.g., "The Guardian")
+  biasRating: string;      // "left", "lean-left", "center", "lean-right", "right"
+  domain: string;          // Source domain
+}
+```
+
+#### Sorting
+
+Sources are returned sorted alphabetically by name.
+
+#### Example Request
+
+```bash
+curl http://localhost:3000/api/sources
+```
+
+#### Example Response
+
+```json
+{
+  "sources": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Axios",
+      "biasRating": "center",
+      "domain": "axios.com"
+    },
+    {
+      "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      "name": "BBC News",
+      "biasRating": "center",
+      "domain": "bbc.co.uk"
+    },
+    {
+      "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+      "name": "Bloomberg",
+      "biasRating": "center",
+      "domain": "bloomberg.com"
+    }
+    // ... more sources
+  ],
+  "count": 15,
+  "timestamp": "2024-12-18T12:00:00.000Z"
+}
+```
+
+#### Use Cases
+
+1. **Filter UI initialization** - Fetch available sources to populate filter dropdowns/checkboxes
+2. **Source metadata lookup** - Get source IDs for constructing filtered article queries
+3. **Bias distribution display** - Show available sources grouped by bias rating
+
+#### HTTP Status Codes
+
+- **200 OK** - Request successful
+- **500 Internal Server Error** - Database query failed
 
 ---
 
@@ -716,6 +831,8 @@ For issues, questions, or contributions, please refer to the project's GitHub re
 
 - Database-backed article storage with PostgreSQL and Prisma
 - Pagination support for GET endpoint
+- **Advanced filtering**: Filter articles by source IDs and bias ratings
+- **Source metadata API**: New `/api/sources` endpoint for retrieving source information
 - Improved error handling with detailed error messages
 - RSS feed-based article updates via POST endpoint
 - De-duplication by article URL
@@ -729,7 +846,8 @@ For issues, questions, or contributions, please refer to the project's GitHub re
 Planned features for future releases:
 
 - [ ] Filtering by date range
-- [ ] Filtering by bias rating
+- [x] Filtering by bias rating (implemented)
+- [x] Filtering by source IDs (implemented)
 - [ ] Keyword search across articles
 - [ ] Caching layer for improved performance
 - [ ] Rate limiting

@@ -113,11 +113,25 @@ V2/
 
 ### API Endpoints
 
-See [docs/API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for detailed API documentation.
+See [docs/reference/API_REFERENCE.md](../docs/reference/API_REFERENCE.md) for detailed API documentation.
 
 **Key Endpoints:**
-- `GET /api/articles` - Fetch articles from database with optional filtering
+- `GET /api/articles` - Fetch articles from database with optional filtering by source IDs and bias ratings
+- `GET /api/sources` - Fetch all available news sources with their metadata
 - `POST /api/articles` - Update articles from RSS feeds (fetches from past day onwards)
+
+**Article Filtering:**
+The `/api/articles` endpoint now supports advanced filtering:
+```bash
+# Filter by source IDs (comma-separated UUIDs)
+GET /api/articles?sourceIds=uuid-1,uuid-2
+
+# Filter by bias ratings
+GET /api/articles?bias=left,center
+
+# Combine filters
+GET /api/articles?sourceIds=uuid-1,uuid-2&bias=left,lean-left&page=1&limit=50
+```
 
 ### Styling with SCSS
 

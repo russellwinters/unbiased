@@ -33,6 +33,13 @@ export default function Header() {
 
         <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.navOpen : ''}`}>
           <Link
+            href="/about"
+            className={`${styles.navLink} ${isActivePage('/about') ? styles.navLinkActive : ''}`}
+            onClick={closeMobileMenu}
+          >
+            About
+          </Link>
+          <Link
             href="/"
             className={`${styles.navLink} ${isActivePage('/') ? styles.navLinkActive : ''}`}
             onClick={closeMobileMenu}

@@ -2,13 +2,6 @@
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  
-  .headerPlaceholder {
-    // Placeholder for future header component
-    // Reserve space for header (80px mobile, 100px desktop)
-    height: 80px;
-    background: transparent;
-  }
 
   .main {
     max-width: 800px;
@@ -17,8 +10,8 @@
 
     .hero {
       text-align: center;
-      margin-bottom: var(--spacing-3xl);
-      padding: var(--spacing-2xl) 0;
+      margin-bottom: var(--spacing-xl);
+      padding: var(--spacing-xl) 0;
 
       .heroTitle {
         font-size: var(--font-size-2xl);
@@ -26,11 +19,15 @@
         color: var(--foreground);
         margin: 0 0 var(--spacing-md) 0;
         line-height: var(--line-height-tight);
+
+        span {
+          color: var(--primary);
+        }
       }
 
       .heroSubtitle {
         font-size: var(--font-size-lg);
-        color: var(--secondary);
+        color: var(--primary-hover);
         font-style: italic;
         margin: 0;
         line-height: var(--line-height-base);
@@ -38,7 +35,7 @@
     }
 
     .section {
-      margin-bottom: var(--spacing-3xl);
+      margin-bottom: var(--spacing-2xl);
 
       .sectionTitle {
         font-size: var(--font-size-xl);
@@ -88,8 +85,7 @@
 
     .cta {
       text-align: center;
-      padding: var(--spacing-2xl) 0;
-      margin-top: var(--spacing-3xl);
+      padding: var(--spacing-xl) 0;
 
       .ctaTitle {
         font-size: var(--font-size-xl);
@@ -118,7 +114,6 @@
   }
 }
 
-// Tablet breakpoint
 @media (min-width: 768px) {
   .container {
     .headerPlaceholder {
@@ -129,8 +124,8 @@
       padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
 
       .hero {
-        padding: var(--spacing-3xl) 0;
-        margin-bottom: var(--spacing-3xl);
+        padding: var(--spacing-xl) 0;
+        margin-bottom: var(--spacing-2xl);
 
         .heroTitle {
           font-size: var(--font-size-3xl);
@@ -159,7 +154,7 @@
       }
 
       .cta {
-        padding: var(--spacing-3xl) 0;
+        padding: var(--spacing-xl) 0;
 
         .ctaTitle {
           font-size: var(--font-size-2xl);
@@ -170,15 +165,6 @@
           font-size: var(--font-size-lg);
         }
       }
-    }
-  }
-}
-
-// Desktop breakpoint
-@media (min-width: 1024px) {
-  .container {
-    .main {
-      padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-3xl);
     }
   }
 }

@@ -11,6 +11,7 @@ This document outlines the plan to implement rate limiting for the POST /api/art
 **Location:** `/V2/app/api/articles/route.ts`
 
 **Current Behavior:**
+
 - Fetches articles from all RSS sources (15 sources configured in `lib/news/rss-sources.ts`)
 - Filters articles to include only those published since yesterday at midnight
 - Upserts sources and articles into the database
@@ -18,6 +19,7 @@ This document outlines the plan to implement rate limiting for the POST /api/art
 - Can be called repeatedly without restriction
 
 **Data Flow:**
+
 1. Client calls POST /api/articles
 2. `getRssData()` fetches from all RSS feeds
 3. `filterWithinRange()` filters articles by date
@@ -57,7 +59,6 @@ model RSSUpdateHistory {
   duration        Int?
   
   @@index([requestedAt])
-  @@index([status])
   @@index([completedAt])
 }
 ```
@@ -66,19 +67,16 @@ model RSSUpdateHistory {
 
 1. **Timestamps in UTC:** All timestamps use PostgreSQL's native timestamp handling with Prisma's `DateTime` type, which stores in UTC by default.
 
-2. **Status Tracking:** The `status` field enables monitoring of ongoing updates and detecting failures.
+2. **Detailed Statistics:** Captures the same metrics currently returned by the endpoint for historical analysis.
 
-3. **Detailed Statistics:** Captures the same metrics currently returned by the endpoint for historical analysis.
+3. **Error Tracking:** Preserves error information for debugging and monitoring feed reliability.
 
-4. **Error Tracking:** Preserves error information for debugging and monitoring feed reliability.
+4. **Duration Tracking:** Enables performance monitoring and optimization.
 
-5. **Duration Tracking:** Enables performance monitoring and optimization.
+5. **Update Type:** Distinguishes between manual API calls and scheduled/automated updates (for future cron jobs).
 
-6. **Update Type:** Distinguishes between manual API calls and scheduled/automated updates (for future cron jobs).
-
-7. **Indexes:** Optimized for the most common query patterns:
+6. **Indexes:** Optimized for the most common query patterns:
    - `requestedAt` - For checking recent updates in 24hr window
-   - `status` - For monitoring active/failed updates
    - `completedAt` - For historical reporting
 
 ---
@@ -88,6 +86,7 @@ model RSSUpdateHistory {
 ### Step 1: Create Migration File
 
 **Command:**
+
 ```bash
 cd V2
 npm run db:migrate
@@ -103,6 +102,7 @@ Add the `RSSUpdateHistory` model to `/V2/prisma/schema.prisma` (see schema above
 ### Step 3: Apply Migration
 
 The `npm run db:migrate` command will:
+
 1. Generate the migration SQL
 2. Apply it to the local database
 3. Update the Prisma Client types
@@ -120,6 +120,7 @@ docker compose exec postgres psql -U unbiased -d unbiased -c "\d \"RSSUpdateHist
 ### Migration SQL Preview
 
 The generated migration will include:
+
 ```sql
 -- CreateTable
 CREATE TABLE "RSSUpdateHistory" (
@@ -145,9 +146,6 @@ CREATE TABLE "RSSUpdateHistory" (
 CREATE INDEX "RSSUpdateHistory_requestedAt_idx" ON "RSSUpdateHistory"("requestedAt");
 
 -- CreateIndex
-CREATE INDEX "RSSUpdateHistory_status_idx" ON "RSSUpdateHistory"("status");
-
--- CreateIndex
 CREATE INDEX "RSSUpdateHistory_completedAt_idx" ON "RSSUpdateHistory"("completedAt");
 ```
 
@@ -160,6 +158,7 @@ CREATE INDEX "RSSUpdateHistory_completedAt_idx" ON "RSSUpdateHistory"("completed
 **Location:** `/V2/lib/db/rss-update-history/`
 
 Create new module structure:
+
 ```
 lib/db/rss-update-history/
 ├── index.ts       # Public API exports
@@ -504,6 +503,7 @@ RSS_UPDATE_PERIOD_HOURS=24   # Time window in hours
 ```
 
 **Implementation:**
+
 ```typescript
 const DAILY_UPDATE_LIMIT = parseInt(process.env.RSS_UPDATE_LIMIT || '3', 10);
 const HOURS_IN_DAY = parseInt(process.env.RSS_UPDATE_PERIOD_HOURS || '24', 10);
@@ -649,6 +649,7 @@ Notify when rate limit is reached:
 ### 5. Historical Analytics Dashboard
 
 Build UI to visualize:
+
 - Update frequency over time
 - Success/failure rates
 - Performance metrics (duration trends)
@@ -668,6 +669,7 @@ Build UI to visualize:
 ### Migration Steps
 
 1. **Development Environment:**
+
    ```bash
    cd V2
    npm run db:migrate
@@ -685,6 +687,7 @@ Build UI to visualize:
    - Monitor error logs and metrics
 
 4. **Production Migration:**
+
    ```bash
    # In production environment
    npm run db:migrate
@@ -705,9 +708,11 @@ If issues arise:
    - The table will exist but be unused (safe)
 
 2. **Database Rollback (if necessary):**
+
    ```sql
    DROP TABLE "RSSUpdateHistory";
    ```
+
    - Note: This is destructive and should only be done if table is causing issues
 
 ---
@@ -750,6 +755,7 @@ The implementation uses only existing dependencies in the project.
 ### 1. UTC Timestamps
 
 All timestamps are stored in UTC to prevent timezone-related bugs:
+
 - Prisma automatically handles UTC conversion
 - PostgreSQL `TIMESTAMP` stores in UTC
 - JavaScript `Date` objects are converted properly
@@ -759,6 +765,7 @@ All timestamps are stored in UTC to prevent timezone-related bugs:
 Potential issue: Multiple simultaneous requests could bypass rate limit.
 
 **Mitigation Strategy:**
+
 - Use database transaction isolation
 - Consider implementing distributed lock (Redis) for high-traffic scenarios
 - PostgreSQL's MVCC handles concurrent reads safely
@@ -768,12 +775,14 @@ Potential issue: Multiple simultaneous requests could bypass rate limit.
 ### 3. Failed Updates
 
 Failed updates do not count toward the rate limit:
+
 - Only `status: 'completed'` updates are counted
 - Prevents DOS-like scenarios where failures block future attempts
 
 ### 4. Manual vs. Scheduled Updates
 
 Tracking `updateType` allows future differentiation:
+
 - Could apply different limits to manual vs. automated
 - Enables auditing who/what triggered updates
 
@@ -784,6 +793,7 @@ Tracking `updateType` allows future differentiation:
 ### Database Query Performance
 
 The rate limit check query is optimized:
+
 - Uses index on `requestedAt` for fast date filtering
 - Uses index on `status` for status filtering
 - Typical query time: <10ms with proper indexes
@@ -791,6 +801,7 @@ The rate limit check query is optimized:
 ### Cache Consideration (Future)
 
 For high-traffic scenarios, cache the rate limit status:
+
 ```typescript
 // Cache for 5 minutes to reduce DB hits
 // Invalidate on successful update

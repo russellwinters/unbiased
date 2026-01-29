@@ -164,6 +164,7 @@ curl "http://localhost:3000/api/articles?source=BBC%20News&limit=10&page=1"
 ### POST /api/articles
 
 Fetches articles from RSS feeds and populates the database. This endpoint triggers an update process that:
+
 1. Fetches articles from all configured RSS sources
 2. Filters articles to only include those from yesterday onwards
 3. Upserts sources and articles into the database
@@ -317,6 +318,7 @@ model Source {
 ```
 
 **Indexes:**
+
 - `domain` (unique)
 
 ### Article Model
@@ -345,6 +347,7 @@ model Article {
 ```
 
 **Indexes:**
+
 - `url` (unique)
 - `publishedAt`
 - `sourceId`
@@ -367,6 +370,7 @@ model Cluster {
 ```
 
 **Indexes:**
+
 - `firstSeenAt`
 
 ---
@@ -379,41 +383,41 @@ The API fetches articles from 15 RSS feeds across the political spectrum:
 
 | Source | Domain | RSS URL |
 |--------|--------|---------|
-| The Guardian | theguardian.com | https://www.theguardian.com/world/rss |
-| NBC News | nbcnews.com | https://www.nbcnews.com/rss/nbcnews/public/news |
-| Huffington Post | huffpost.com | https://www.huffpost.com/section/front-page/feed |
+| The Guardian | theguardian.com | <https://www.theguardian.com/world/rss> |
+| NBC News | nbcnews.com | <https://www.nbcnews.com/rss/nbcnews/public/news> |
+| Huffington Post | huffpost.com | <https://www.huffpost.com/section/front-page/feed> |
 
 ### Lean-Left
 
 | Source | Domain | RSS URL |
 |--------|--------|---------|
-| NPR | npr.org | https://feeds.npr.org/1001/rss.xml |
-| The New York Times | nytimes.com | https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml |
-| Washington Post | washingtonpost.com | https://feeds.washingtonpost.com/rss/world |
+| NPR | npr.org | <https://feeds.npr.org/1001/rss.xml> |
+| The New York Times | nytimes.com | <https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml> |
+| Washington Post | washingtonpost.com | <https://feeds.washingtonpost.com/rss/world> |
 
 ### Center
 
 | Source | Domain | RSS URL |
 |--------|--------|---------|
-| BBC News | bbc.co.uk | https://feeds.bbci.co.uk/news/rss.xml |
-| Bloomberg | bloomberg.com | https://feeds.bloomberg.com/politics/news.rss |
-| Axios | axios.com | https://api.axios.com/feed/ |
+| BBC News | bbc.co.uk | <https://feeds.bbci.co.uk/news/rss.xml> |
+| Bloomberg | bloomberg.com | <https://feeds.bloomberg.com/politics/news.rss> |
+| Axios | axios.com | <https://api.axios.com/feed/> |
 
 ### Lean-Right
 
 | Source | Domain | RSS URL |
 |--------|--------|---------|
-| Wall Street Journal | wsj.com | https://feeds.a.dj.com/rss/RSSWorldNews.xml |
-| The Hill | thehill.com | https://thehill.com/feed/ |
-| The Washington Times | washingtontimes.com | https://www.washingtontimes.com/rss/headlines/news/ |
+| Wall Street Journal | wsj.com | <https://feeds.a.dj.com/rss/RSSWorldNews.xml> |
+| The Hill | thehill.com | <https://thehill.com/feed/> |
+| The Washington Times | washingtontimes.com | <https://www.washingtontimes.com/rss/headlines/news/> |
 
 ### Right
 
 | Source | Domain | RSS URL |
 |--------|--------|---------|
-| Fox News | foxnews.com | https://moxie.foxnews.com/google-publisher/latest.xml |
-| Breitbart | breitbart.com | https://www.breitbart.com/feed/ |
-| The Daily Wire | dailywire.com | https://www.dailywire.com/feeds/rss.xml |
+| Fox News | foxnews.com | <https://moxie.foxnews.com/google-publisher/latest.xml> |
+| Breitbart | breitbart.com | <https://www.breitbart.com/feed/> |
+| The Daily Wire | dailywire.com | <https://www.dailywire.com/feeds/rss.xml> |
 
 ---
 
@@ -709,6 +713,7 @@ For issues, questions, or contributions, please refer to the project's GitHub re
 ## Changelog
 
 ### V2 (Current)
+
 - Database-backed article storage with PostgreSQL and Prisma
 - Pagination support for GET endpoint
 - Improved error handling with detailed error messages
@@ -723,13 +728,8 @@ For issues, questions, or contributions, please refer to the project's GitHub re
 
 Planned features for future releases:
 
-- [ ] Article clustering API endpoint
 - [ ] Filtering by date range
 - [ ] Filtering by bias rating
 - [ ] Keyword search across articles
 - [ ] Caching layer for improved performance
-- [ ] Rate limiting and authentication
-- [ ] WebSocket support for real-time updates
-- [ ] Article sentiment analysis
-- [ ] Source reliability scoring
-- [ ] Article fact-checking integration
+- [ ] Rate limiting

@@ -4,7 +4,7 @@ A news aggregation platform that provides multi-perspective coverage of current 
 
 > **⚠️ V1 Deprecation Notice**  
 > The original V1 implementation (Node.js/Express/MongoDB) has been archived and is no longer under active development. It remains in the repository for reference purposes only. All current development is focused on V2.  
-> 
+>
 > **V1 Documentation:** [V1/README.md](V1/README.md) | [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md)
 
 ---
@@ -12,6 +12,7 @@ A news aggregation platform that provides multi-perspective coverage of current 
 ## 🎯 Overview
 
 In an era of polarized media and echo chambers, **Unbiased** helps readers:
+
 - **See multiple perspectives** - View how different news sources cover the same story
 - **Understand bias** - Transparent bias ratings for every news source
 - **Break the bubble** - Discover coverage you might not find in your usual news feed
@@ -40,9 +41,7 @@ V2 is a complete rewrite using modern web technologies:
 - **Styling:** SCSS/Sass
 - **State Management:** TanStack Query (React Query)
 - **News Aggregation:** RSS Parser
-- **Data Processing:** date-fns, axios
 - **Development:** ESLint, Docker Compose (local DB)
-- **Deployment:** Vercel (planned)
 
 ## 🚀 Quick Start
 
@@ -55,66 +54,70 @@ V2 is a complete rewrite using modern web technologies:
 ### Installation & Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/russellwinters/unbiased.git
    cd unbiased/V2
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env` with your configuration:
-   ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/unbiased"
-   OPENAI_API_KEY="sk-..."  # Optional, for future AI features
-   NEXT_PUBLIC_APP_URL="http://localhost:3000"
-   ```
 
 4. **Start the PostgreSQL database**
+
    ```bash
    docker compose up -d
    ```
-   
+
    This starts a containerized PostgreSQL database. To stop it later:
+
    ```bash
    docker compose down
    ```
 
 5. **Initialize the database**
+
    ```bash
    npm run db:generate  # Generate Prisma Client
    npm run db:migrate   # Apply database schema migrations
    ```
 
 6. **Seed the database** (optional but recommended)
+
    ```bash
    npm run db:seed
    ```
-   
+
    This will:
    - Add news sources with bias ratings
    - Fetch recent articles from RSS feeds (past 24 hours)
    - Populate the database with up to 500 articles
 
 7. **Start the development server**
+
    ```bash
    npm run dev
    ```
 
 8. **Open the application**
-   
+
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## ✨ Key Features
 
 ### Current Features (V2)
+
 - ✅ Modern Next.js 16 App Router architecture
 - ✅ PostgreSQL database with Prisma ORM
 - ✅ Type-safe development with TypeScript
@@ -125,13 +128,11 @@ V2 is a complete rewrite using modern web technologies:
 - ✅ Server-side rendering and API routes
 
 ### Planned Features
+
 - 🔄 Story clustering (grouping related articles)
 - 🔄 Multi-perspective story views
-- 🔄 AI-powered semantic similarity using OpenAI embeddings
 - 🔄 Advanced search and filtering
 - 🔄 Topic-based browsing
-- 🔄 Article-level bias analysis (optional)
-- 🔄 User accounts and personalization
 
 ## 📁 Project Structure
 
@@ -147,8 +148,7 @@ unbiased/
 │   ├── components/        # React components
 │   ├── lib/               # Business logic
 │   │   ├── db/           # Database utilities
-│   │   ├── news/         # News aggregation
-│   │   └── bias/         # Bias analysis (planned)
+│   │   └── news/         # News aggregation
 │   ├── prisma/           # Database schema & migrations
 │   │   ├── schema.prisma # Prisma database schema
 │   │   └── seed.ts       # Database seeding script
@@ -163,18 +163,26 @@ unbiased/
 The V2 database is built on three core models:
 
 ### **Source**
+
 News sources with bias ratings and reliability scores.
+
 - Fields: `name`, `domain`, `rssUrl`, `biasRating`, `reliability`
 - Bias Ratings: `left`, `lean-left`, `center`, `lean-right`, `right`
 - Reliability: `very-high`, `high`, `mixed`, `low`
 
 ### **Article**
+
 Individual news articles from sources.
+
 - Fields: `title`, `description`, `url`, `imageUrl`, `publishedAt`, `source`, `keywords`
 - Relationships: Belongs to a `Source`, optionally belongs to a `Cluster`
 
 ### **Cluster**
+
+**Idea formed. Not technically implemented, underway, or planned.**
+
 Groups of related articles covering the same story.
+
 - Fields: `topic`, `mainEntity`, `firstSeenAt`
 - Relationships: Has many `Articles`
 
@@ -185,16 +193,18 @@ See [V2/prisma/schema.prisma](V2/prisma/schema.prisma) for complete schema detai
 ### Available Scripts
 
 **Development:**
+
 - `npm run dev` - Start Next.js development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 
 **Database:**
+
 - `npm run db:generate` - Generate Prisma Client
 - `npm run db:migrate` - Create and apply migrations
 - `npm run db:push` - Push schema changes (skip migration files)
-- `npm run db:studio` - Open Prisma Studio (database GUI at http://localhost:5555)
+- `npm run db:studio` - Open Prisma Studio (database GUI at <http://localhost:5555>)
 - `npm run db:reset` - Reset database and reapply all migrations
 - `npm run db:seed` - Seed database with sources and articles
 
@@ -204,6 +214,7 @@ See [V2/prisma/schema.prisma](V2/prisma/schema.prisma) for complete schema detai
 Fetch articles from the database with optional filtering.
 
 Query parameters:
+
 - `source` - Filter by source name (case-insensitive)
 - `limit` - Maximum number of articles to return per page (default: 50)
 - `page` - Page number for pagination (1-indexed, default: 1)
@@ -232,14 +243,17 @@ npm run dev
 ## 📚 Documentation
 
 ### V2 Documentation
+
 - [V2/README.md](V2/README.md) - Detailed V2 setup and architecture
 - [docs/reference/API_REFERENCE.md](docs/reference/API_REFERENCE.md) - Complete API reference
 
 ### V1 (Legacy)
+
 - [V1/README.md](V1/README.md) - V1 setup guide
 - [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md) - Complete V1 technical documentation
 
 ### Development Documentation
+
 - [work_plan.md](work_plan.md) - Migration and development work plan
 
 ## 🔒 Security
@@ -252,30 +266,28 @@ npm run dev
 ## 🗺 Roadmap
 
 ### ✅ Completed
+
 - Phase 1: Repository preparation & documentation
 - Phase 2: Branch migration (master → main)
 - Phase 3: V1 directory structure & preservation
 - Phase 4: V2 Next.js initialization with Prisma
 
 ### 🔄 Current: Phase 5 - Core Features
+
 - RSS feed aggregation ✅
 - Database seeding ✅
 - Article browsing UI (in progress)
 - Source filtering (in progress)
 
 ### 📋 Upcoming: Phase 6 - Multi-Perspective Views
+
 - Story clustering implementation
 - Multi-perspective story display
 - Source bias visualization
 - Search and filtering
 
-### 🚀 Future: Phase 7 - AI Enhancement
-- OpenAI embeddings integration
-- Semantic similarity clustering
-- Article-level bias analysis
-- Smart topic extraction
+### 🏁 Future: Phase 7 - Production
 
-### 🏁 Future: Phase 8 - Production
 - Performance optimization
 - Caching layer
 - SEO optimization

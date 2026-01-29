@@ -204,14 +204,14 @@ See [V2/prisma/schema.prisma](V2/prisma/schema.prisma) for complete schema detai
 Fetch articles from the database with optional filtering.
 
 Query parameters:
-- `source` - Filter by source domain
-- `biasRating` - Filter by bias rating (`left`, `center`, `right`, etc.)
-- `limit` - Number of articles to return (default: 50)
+- `source` - Filter by source name (case-insensitive)
+- `limit` - Maximum number of articles to return per page (default: 50)
+- `page` - Page number for pagination (1-indexed, default: 1)
 
 **`POST /api/articles`**  
 Fetch new articles from RSS feeds and store them in the database.
 
-For detailed API documentation, see [V2/docs/API_DOCUMENTATION.md](V2/docs/API_DOCUMENTATION.md).
+For detailed API documentation, see [docs/reference/API_REFERENCE.md](docs/reference/API_REFERENCE.md).
 
 ### Monorepo Commands
 
@@ -233,7 +233,7 @@ npm run dev
 
 ### V2 Documentation
 - [V2/README.md](V2/README.md) - Detailed V2 setup and architecture
-- [V2/docs/API_DOCUMENTATION.md](V2/docs/API_DOCUMENTATION.md) - API endpoint details
+- [docs/reference/API_REFERENCE.md](docs/reference/API_REFERENCE.md) - Complete API reference
 
 ### V1 (Legacy)
 - [V1/README.md](V1/README.md) - V1 setup guide

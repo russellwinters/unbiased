@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Unbiased V2 API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 16, TypeScript, Prisma ORM, and PostgreSQL.
+The Unbiased V2 API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 16.1.5, TypeScript, Prisma ORM, and PostgreSQL.
 
 **Base URL:** `http://localhost:3000` (development)
 
@@ -47,7 +47,7 @@ GET /api/articles
 | Parameter | Type   | Required | Default | Constraints | Description |
 |-----------|--------|----------|---------|-------------|-------------|
 | `source`  | string | No       | -       | Case-insensitive | Filter articles by source name (e.g., "The Guardian", "Fox News") |
-| `limit`   | number | No       | 50      | Min: 1, Max: 100 | Maximum number of articles to return per page |
+| `limit`   | number | No       | 50      | Min: 1 | Maximum number of articles to return per page |
 | `page`    | number | No       | 1       | Min: 1 | Page number for pagination (1-indexed) |
 
 #### Response Schema
@@ -60,7 +60,7 @@ GET /api/articles
   page: number;            // Current page number
   totalPages: number;      // Total number of pages available
   sources: string[];       // List of unique source names in results
-  usedMockData: boolean;   // Always false for database queries
+  usedMockData: boolean;   // False for database queries; would be true if fallback mock data were used
   errors: string[];        // Any errors encountered
   timestamp: string;       // ISO 8601 timestamp of response
 }
@@ -606,6 +606,8 @@ Or using a Node.js script:
 
 ```javascript
 // update-articles.js
+// Note: Uses CommonJS for Node.js environments. For ES modules, use:
+// import fetch from 'node-fetch';
 const fetch = require('node-fetch');
 
 async function updateArticles() {

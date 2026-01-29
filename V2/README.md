@@ -34,7 +34,7 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    Configure your `.env`:
    ```env
    # Database connection string (used by Prisma)
-   DATABASE_URL="postgresql://user:password@localhost:5432/unbiased"
+   DATABASE_URL="postgresql://unbiased:unbiased_dev_password@localhost:5433/unbiased"
    
    # Postgres Docker configuration (used by docker-compose)
    POSTGRES_USER="unbiased"
@@ -49,7 +49,8 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    ```
    
    **Note:** The `POSTGRES_*` variables are used by docker-compose to configure the PostgreSQL container. 
-   Make sure the credentials in `DATABASE_URL` match your `POSTGRES_*` values.
+   Make sure the credentials in `DATABASE_URL` match your `POSTGRES_*` values, and use port 5433 
+   (the docker-compose host port mapping).
 
 3. Start the database:
    ```bash

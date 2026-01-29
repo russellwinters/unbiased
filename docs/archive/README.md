@@ -1,12 +1,12 @@
-# Archive
+# V2 Documentation Archive
 
-This directory contains completed documentation from past work phases. Documents are moved here once the related work has been completed and merged.
+This directory contains completed V2-specific documentation from past work phases. Documents are moved here once the related work has been completed and integrated.
 
 ## Purpose
 
-- **Preserve Historical Context**: Maintain a record of completed work, decisions, and implementations
-- **Reduce Root Clutter**: Keep the root directory focused on current/active work
-- **Reference Material**: Provide access to past documentation for future reference
+- **Preserve Historical Context**: Maintain a record of POCs, investigations, and implementations
+- **Reduce Docs Clutter**: Keep the docs directory focused on current/active documentation
+- **Reference Material**: Provide access to past technical decisions and implementations
 
 ## Archived Documents
 
@@ -17,10 +17,9 @@ Each archived document includes:
 
 ## Current Archive Contents
 
-- **PHASE_1_COMPLETION_REPORT.md** - Phase 1 completion report (Repository Preparation & Documentation)
-- **SECURITY_ASSESSMENT.md** - Initial security vulnerability assessment
-- **SECURITY_UPDATE_SUMMARY.md** - Security update completion summary
+- **RSS_POC_SUMMARY.md** - RSS Feed POC implementation summary
+- **source_errors.md** - RSS feed source error investigation
 
 ## Access
 
-All archived documents are read-only references. If updates are needed based on archived work, create new documents in the active work areas.
+All archived documents are read-only references. For current API documentation and active planning, see the parent docs directory.

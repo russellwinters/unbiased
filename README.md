@@ -1,265 +1,304 @@
-# Unbiased - News Aggregator
+# Unbiased - Multi-Perspective News Aggregator
 
-A news aggregation platform that provides multi-perspective coverage with bias analysis, helping readers understand different viewpoints on current events.
+A news aggregation platform that provides multi-perspective coverage of current events, helping readers break out of information bubbles by presenting how different sources across the political spectrum cover the same stories.
 
-## 📂 Repository Structure
+> **⚠️ V1 Deprecation Notice**  
+> The original V1 implementation (Node.js/Express/MongoDB) has been archived and is no longer under active development. It remains in the repository for reference purposes only. All current development is focused on V2.  
+> 
+> **V1 Documentation:** [V1/README.md](V1/README.md) | [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md)
 
-This repository is organized as a monorepo containing two versions of Unbiased:
+---
 
-```
-unbiased/
-├── V1/              # Original implementation (preserved for reference)
-├── V2/              # Modern rewrite (Phase 4 complete)
-├── README.md        # This file
-├── work_plan.md     # Migration work plan
-└── package.json     # Monorepo workspace configuration
-```
+## 🎯 Overview
 
-### V1 (Legacy)
+In an era of polarized media and echo chambers, **Unbiased** helps readers:
+- **See multiple perspectives** - View how different news sources cover the same story
+- **Understand bias** - Transparent bias ratings for every news source
+- **Break the bubble** - Discover coverage you might not find in your usual news feed
+- **Stay informed** - Get comprehensive coverage of current events from across the spectrum
 
-The original Unbiased application, preserved for historical reference and potential migration needs.
+This isn't about eliminating bias (that's impossible) — it's about making bias transparent and helping readers see the full picture.
 
-- **Status:** Archived, read-only reference
-- **Purpose:** Reference implementation, historical context
-- **Tech Stack:** Node.js, Express, MongoDB, React 18, React Router v6
-- **Documentation:** See [V1/README.md](V1/README.md) and [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md)
+## 💡 Project Ethos
 
-### V2 (Current Development)
+News sources have bias. That's not inherently bad — it's human. What matters is:
 
-Complete rewrite using modern technologies and improved architecture based on extensive research and planning.
+1. **Transparency** - Clearly labeling where sources fall on the political spectrum
+2. **Diversity** - Aggregating from sources across the entire spectrum (left, center, right)
+3. **Context** - Showing how the *same story* is covered differently by different sources
+4. **Education** - Helping readers identify their own information bubbles
 
-- **Status:** Active Development (Phase 4 Complete)
-- **Tech Stack:** Next.js 16, TypeScript, Prisma, PostgreSQL, SCSS/Sass
-- **Documentation:** See [V2/README.md](V2/README.md)
+Unbiased doesn't tell you what to think. It gives you the tools to see how different sources frame the same events, so you can think more critically about the news you consume.
+
+## 🛠 Tech Stack (V2)
+
+V2 is a complete rewrite using modern web technologies:
+
+- **Framework:** Next.js 16 (App Router) with React 19
+- **Language:** TypeScript
+- **Database:** PostgreSQL with Prisma ORM
+- **Styling:** SCSS/Sass
+- **State Management:** TanStack Query (React Query)
+- **News Aggregation:** RSS Parser
+- **Data Processing:** date-fns, axios
+- **Development:** ESLint, Docker Compose (local DB)
+- **Deployment:** Vercel (planned)
 
 ## 🚀 Quick Start
 
-### Running V1 (Legacy)
+### Prerequisites
 
-```bash
-# Navigate to V1
-cd V1
+- **Node.js** 18+ (LTS recommended)
+- **npm** 9+
+- **Docker** and **Docker Compose** (for local PostgreSQL database)
 
-# Install dependencies
-npm install
+### Installation & Setup
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your MongoDB URI, NewsAPI key, etc.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/russellwinters/unbiased.git
+   cd unbiased/V2
+   ```
 
-# Run in development mode (backend + frontend)
-npm run dev
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` with your configuration:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/unbiased"
+   OPENAI_API_KEY="sk-..."  # Optional, for future AI features
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
+   ```
 
-For detailed V1 setup instructions, see [V1/README.md](V1/README.md).
+4. **Start the PostgreSQL database**
+   ```bash
+   docker compose up -d
+   ```
+   
+   This starts a containerized PostgreSQL database. To stop it later:
+   ```bash
+   docker compose down
+   ```
 
-### Running V2
+5. **Initialize the database**
+   ```bash
+   npm run db:generate  # Generate Prisma Client
+   npm run db:migrate   # Apply database schema migrations
+   ```
 
-V2 has been initialized and is ready for development.
+6. **Seed the database** (optional but recommended)
+   ```bash
+   npm run db:seed
+   ```
+   
+   This will:
+   - Add news sources with bias ratings
+   - Fetch recent articles from RSS feeds (past 24 hours)
+   - Populate the database with up to 500 articles
 
-```bash
-# Navigate to V2
-cd V2
+7. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your DATABASE_URL and other configuration
-
-# Set up database
-npx prisma generate
-npx prisma migrate dev --name init
-
-# Run in development mode
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the app.
-
-## 🎯 Project Goals
-
-1. **Multi-Source Aggregation:** Collect news from diverse sources across the political spectrum
-2. **Bias Transparency:** Provide clear, transparent bias ratings for sources
-3. **Multi-Perspective Views:** Show how different sources cover the same story
-4. **Story Clustering:** Group related articles using semantic similarity
-5. **User Education:** Help readers identify their information bubbles
+8. **Open the application**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## ✨ Key Features
 
-### V1 Features (Implemented)
-- News aggregation from multiple sources
-- Source-level bias indicators
-- Multi-perspective news presentation
-- Source-based filtering
-- User authentication
+### Current Features (V2)
+- ✅ Modern Next.js 16 App Router architecture
+- ✅ PostgreSQL database with Prisma ORM
+- ✅ Type-safe development with TypeScript
+- ✅ RSS feed aggregation from multiple sources
+- ✅ Source-level bias indicators
+- ✅ Article database with source relationships
+- ✅ Responsive UI with SCSS styling
+- ✅ Server-side rendering and API routes
 
-### V2 Features (In Development)
-- Modern Next.js 16 App Router architecture
-- PostgreSQL database with Prisma ORM
-- Type-safe development with TypeScript
-- Responsive UI with SCSS/Sass styling
-- Server-side rendering and API routes
-- Planned: Advanced story clustering with AI
-- Planned: Semantic similarity analysis using embeddings
-- Planned: Article-level bias analysis (optional)
-- Planned: Improved search and filtering
-- Planned: Topic-based browsing
+### Planned Features
+- 🔄 Story clustering (grouping related articles)
+- 🔄 Multi-perspective story views
+- 🔄 AI-powered semantic similarity using OpenAI embeddings
+- 🔄 Advanced search and filtering
+- 🔄 Topic-based browsing
+- 🔄 Article-level bias analysis (optional)
+- 🔄 User accounts and personalization
+
+## 📁 Project Structure
+
+```
+unbiased/
+├── V1/                      # Legacy application (archived)
+├── V2/                      # Current development version
+│   ├── app/                # Next.js App Router
+│   │   ├── api/           # API routes (articles, sources)
+│   │   ├── layout.tsx     # Root layout
+│   │   ├── page.tsx       # Home page
+│   │   └── globals.scss   # Global styles
+│   ├── components/        # React components
+│   ├── lib/               # Business logic
+│   │   ├── db/           # Database utilities
+│   │   ├── news/         # News aggregation
+│   │   └── bias/         # Bias analysis (planned)
+│   ├── prisma/           # Database schema & migrations
+│   │   ├── schema.prisma # Prisma database schema
+│   │   └── seed.ts       # Database seeding script
+│   ├── public/           # Static assets
+│   └── package.json      # Dependencies
+├── docs/                  # Additional documentation
+└── README.md             # This file
+```
+
+## 🗄 Database Schema
+
+The V2 database is built on three core models:
+
+### **Source**
+News sources with bias ratings and reliability scores.
+- Fields: `name`, `domain`, `rssUrl`, `biasRating`, `reliability`
+- Bias Ratings: `left`, `lean-left`, `center`, `lean-right`, `right`
+- Reliability: `very-high`, `high`, `mixed`, `low`
+
+### **Article**
+Individual news articles from sources.
+- Fields: `title`, `description`, `url`, `imageUrl`, `publishedAt`, `source`, `keywords`
+- Relationships: Belongs to a `Source`, optionally belongs to a `Cluster`
+
+### **Cluster**
+Groups of related articles covering the same story.
+- Fields: `topic`, `mainEntity`, `firstSeenAt`
+- Relationships: Has many `Articles`
+
+See [V2/prisma/schema.prisma](V2/prisma/schema.prisma) for complete schema details.
 
 ## 🛠 Development
 
-This is a monorepo using npm workspaces. You can run commands for either version from the root:
+### Available Scripts
+
+**Development:**
+- `npm run dev` - Start Next.js development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+**Database:**
+- `npm run db:generate` - Generate Prisma Client
+- `npm run db:migrate` - Create and apply migrations
+- `npm run db:push` - Push schema changes (skip migration files)
+- `npm run db:studio` - Open Prisma Studio (database GUI at http://localhost:5555)
+- `npm run db:reset` - Reset database and reapply all migrations
+- `npm run db:seed` - Seed database with sources and articles
+
+### API Endpoints
+
+**`GET /api/articles`**  
+Fetch articles from the database with optional filtering.
+
+Query parameters:
+- `source` - Filter by source domain
+- `biasRating` - Filter by bias rating (`left`, `center`, `right`, etc.)
+- `limit` - Number of articles to return (default: 50)
+
+**`POST /api/articles`**  
+Fetch new articles from RSS feeds and store them in the database.
+
+For detailed API documentation, see [V2/docs/API_DOCUMENTATION.md](V2/docs/API_DOCUMENTATION.md).
+
+### Monorepo Commands
+
+Run commands from the root directory:
 
 ```bash
-# Install all dependencies (both V1 and V2)
-npm install
-
-# Run V1 in development mode
-npm run dev:v1
-
-# Run V2 in development mode
+# Run V2 in development
 npm run dev:v2
-
-# Build V1
-npm run build:v1
 
 # Build V2
 npm run build:v2
 
-# Start V1 backend only
-npm run server:v1
-
-# Start V1 frontend only
-npm run client:v1
-```
-
-Or navigate to the specific version directory and run commands directly:
-
-```bash
-cd V1
-npm run dev
-
-# Or for V2:
+# Or navigate to V2 directory
 cd V2
 npm run dev
 ```
 
-## 📋 Work Plan Status
-
-This repository is undergoing a structured reinitialization process. See [work_plan.md](work_plan.md) for details.
-
-### Completed Phases
-
-- ✅ **Phase 1:** Repository Preparation & Documentation
-  - Documented V1 application state
-  - Resolved security vulnerabilities (96.6% reduction)
-  - Updated dependencies to modern versions
-  - Configured automated security monitoring
-  
-- ✅ **Phase 2:** Branch Migration (master → main)
-  - Updated default branch to `main`
-  - Updated all references and workflows
-
-- ✅ **Phase 3:** Create V1 Directory Structure
-  - Moved legacy application to V1/
-  - Created monorepo structure
-  - Set up workspace configuration
-  - V1 application preserved and functional
-
-### Current Phase
-
-- ✅ **Phase 4:** Initialize V2 Directory with Next.js (COMPLETE)
-  - Created modern Next.js 16 application
-  - Set up Prisma and database schema
-  - Implemented SCSS/Sass styling system (implementation choice differed from original plan)
-  - Created basic landing page
-  - Note: See [V2/README.md](V2/README.md) for actual tech stack; work_plan.md reflects original planning
-
-### Upcoming Phases
-
-- ⏳ **Phase 5:** Continue V2 Development
-  - Implement RSS feed parser
-  - Build news aggregation logic
-  - Create article browsing UI
-  - Add bias indicators and source ratings
-
-- ⏳ **Phase 6:** Production Features
-  - Story clustering implementation
-  - Search and filtering
-  - Performance optimization
-  - Deploy V2 to production
-
 ## 📚 Documentation
 
-### Current Work
-- [work_plan.md](work_plan.md) - Comprehensive reinitialization work plan
-- [V1/README.md](V1/README.md) - V1 setup and usage guide
+### V2 Documentation
+- [V2/README.md](V2/README.md) - Detailed V2 setup and architecture
+- [V2/docs/API_DOCUMENTATION.md](V2/docs/API_DOCUMENTATION.md) - API endpoint details
+
+### V1 (Legacy)
+- [V1/README.md](V1/README.md) - V1 setup guide
 - [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md) - Complete V1 technical documentation
 
-### Archived Documentation
-- [archive/PHASE_1_COMPLETION_REPORT.md](archive/PHASE_1_COMPLETION_REPORT.md) - Phase 1 completion summary
-- [archive/SECURITY_ASSESSMENT.md](archive/SECURITY_ASSESSMENT.md) - Security analysis and updates
-- [archive/SECURITY_UPDATE_SUMMARY.md](archive/SECURITY_UPDATE_SUMMARY.md) - Dependency update summary
+### Development Documentation
+- [work_plan.md](work_plan.md) - Migration and development work plan
 
 ## 🔒 Security
 
-V1 has been updated with the latest security patches:
-- All critical vulnerabilities resolved
-- Dependencies updated to latest secure versions
-- Dependabot configured for automated security updates
-- Node.js requirement: 18+ (LTS)
-
-See [archive/SECURITY_UPDATE_SUMMARY.md](archive/SECURITY_UPDATE_SUMMARY.md) for complete details.
+- All dependencies kept up-to-date via Dependabot
+- Security vulnerabilities addressed promptly
+- Environment variables for sensitive data
+- Type-safe database queries with Prisma
 
 ## 🗺 Roadmap
 
-### Foundation Phases (Complete)
-- [x] Phase 1: Documentation and security
-- [x] Phase 2: Branch migration
-- [x] Phase 3: V1 directory structure
-- [x] Phase 4: Initialize Next.js project with Prisma
+### ✅ Completed
+- Phase 1: Repository preparation & documentation
+- Phase 2: Branch migration (master → main)
+- Phase 3: V1 directory structure & preservation
+- Phase 4: V2 Next.js initialization with Prisma
 
-### V2 Development Milestones (Current)
-1. **Phase 5: Core Features** (Current)
-   - [ ] RSS feed parser implementation
-   - [ ] Database seeding with news sources
-   - [ ] Basic article listing UI
-   - [ ] News aggregation logic
+### 🔄 Current: Phase 5 - Core Features
+- RSS feed aggregation ✅
+- Database seeding ✅
+- Article browsing UI (in progress)
+- Source filtering (in progress)
 
-2. **Phase 6: Bias & Multi-Perspective**
-   - [ ] Source bias ratings
-   - [ ] Multi-perspective views
-   - [ ] Story clustering
-   - [ ] Search functionality
+### 📋 Upcoming: Phase 6 - Multi-Perspective Views
+- Story clustering implementation
+- Multi-perspective story display
+- Source bias visualization
+- Search and filtering
 
-3. **Phase 7: AI Enhancement**
-   - [ ] OpenAI embeddings integration
-   - [ ] Semantic clustering
-   - [ ] Article-level bias analysis
+### 🚀 Future: Phase 7 - AI Enhancement
+- OpenAI embeddings integration
+- Semantic similarity clustering
+- Article-level bias analysis
+- Smart topic extraction
 
-4. **Phase 8: Production Ready**
-   - [ ] Performance optimization
-   - [ ] Caching layer
-   - [ ] SEO optimization
-   - [ ] Production deployment
+### 🏁 Future: Phase 8 - Production
+- Performance optimization
+- Caching layer
+- SEO optimization
+- Production deployment to Vercel
 
 ## 🤝 Contributing
 
-This is a personal project. For questions or suggestions, please open an issue.
+This is a personal project, but suggestions and feedback are welcome! To contribute:
+
+1. Open an issue to discuss your idea
+2. Fork the repository
+3. Create a feature branch
+4. Submit a pull request
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details.
 
 ## 📞 Contact
 
-For questions about this project, please open an issue on GitHub.
+For questions or suggestions, please [open an issue](https://github.com/russellwinters/unbiased/issues) on GitHub.
 
 ---
 
-**Current Status:** Phase 4 Complete - V2 Next.js application initialized with Prisma and SCSS, ready for feature development
-
-**Last Updated:** December 18, 2024
+**Current Status:** V2 Phase 5 - Core features under active development  
+**Last Updated:** January 2025

@@ -6,13 +6,13 @@ services:
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_USER: unbiased
-      POSTGRES_PASSWORD: unbiased_dev_password
-      POSTGRES_DB: unbiased
+      POSTGRES_USER: ${POSTGRES_USER:-unbiased}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-unbiased_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-unbiased}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U unbiased" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-unbiased}" ]
       interval: 10s
       timeout: 5s
       retries: 5

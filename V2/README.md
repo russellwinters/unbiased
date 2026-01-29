@@ -33,10 +33,23 @@ V2 is a complete rewrite of Unbiased using modern web technologies and improved 
    
    Configure your `.env`:
    ```env
+   # Database connection string (used by Prisma)
    DATABASE_URL="postgresql://user:password@localhost:5432/unbiased"
+   
+   # Postgres Docker configuration (used by docker-compose)
+   POSTGRES_USER="unbiased"
+   POSTGRES_PASSWORD="unbiased_dev_password"
+   POSTGRES_DB="unbiased"
+   
+   # OpenAI API key (for bias analysis and embeddings)
    OPENAI_API_KEY="sk-..."
+   
+   # App URL
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
+   
+   **Note:** The `POSTGRES_*` variables are used by docker-compose to configure the PostgreSQL container. 
+   Make sure the credentials in `DATABASE_URL` match your `POSTGRES_*` values.
 
 3. Start the database:
    ```bash

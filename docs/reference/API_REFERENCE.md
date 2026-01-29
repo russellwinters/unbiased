@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Unbiased V2 API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 15, TypeScript, Prisma ORM, and PostgreSQL.
+The Unbiased V2 API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 16, TypeScript, Prisma ORM, and PostgreSQL.
 
 **Base URL:** `http://localhost:3000` (development)
 

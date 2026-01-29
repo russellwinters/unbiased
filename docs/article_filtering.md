@@ -3,10 +3,10 @@
 ## 1. Feature Summary
 
 Implement interactive filtering controls on the articles page that allow users to filter articles by:
-- **Source name** (e.g., "The Guardian", "Fox News", "BBC News")
+- **Source** (by source ID for optimal performance, displayed to users by name)
 - **Bias rating** (left, lean-left, center, lean-right, right)
 
-Users can apply multiple filters simultaneously, with the filter state reflected in the URL for sharing and bookmarking.
+Users can apply multiple filters simultaneously, with the filter state reflected in the URL for sharing and bookmarking. The implementation uses source IDs internally for efficient database queries while displaying human-readable source names in the UI.
 
 ## 2. Success Criteria
 
@@ -42,15 +42,15 @@ Users can apply multiple filters simultaneously, with the filter state reflected
 - Uses `/api/articles` endpoint with pagination
 
 **Backend (`V2/app/api/articles/route.ts`):**
-- GET endpoint supports `source` query parameter (single source filter)
+- GET endpoint supports `source` query parameter (single source filter by name)
 - Pagination via `page` and `limit` parameters
 - Returns articles with source and bias information included
 - Database queries via Prisma
 
 **Database Schema (`V2/prisma/schema.prisma`):**
-- `Source` model has `name`, `domain`, `biasRating`, `reliability`
-- `Article` model has `sourceId` foreign key
-- Indexes on `sourceId` for efficient filtering
+- `Source` model has `id` (UUID, indexed), `name`, `domain`, `biasRating`, `reliability`
+- `Article` model has `sourceId` foreign key (indexed)
+- **Performance Note:** `sourceId` is indexed, making ID-based filtering more efficient than name-based filtering
 - BiasRating values: "left", "lean-left", "center", "lean-right", "right"
 
 **Data Structure:**
@@ -60,32 +60,38 @@ Users can apply multiple filters simultaneously, with the filter state reflected
 
 ### Gaps to Address
 
-1. **API Enhancement:** Backend needs to support multiple sources and bias rating filters
-2. **Filter UI:** Need to create FilterPanel component with checkboxes/toggles
-3. **State Management:** Need to manage filter state and sync with URL
-4. **Query Parameter Handling:** Extend URL params to support multiple filters
-5. **Mobile UX:** Filter panel needs responsive design for mobile devices
+1. **API Enhancement:** Backend needs to support multiple source IDs and bias rating filters (using indexed sourceId for performance)
+2. **Source Data Endpoint:** Need API endpoint to provide available sources (id, name, biasRating) for filter UI
+3. **Filter UI:** Need to create FilterPanel component with checkboxes/toggles (displays source names, uses IDs internally)
+4. **State Management:** Need to manage filter state and sync with URL (store source IDs in URL)
+5. **Query Parameter Handling:** Extend URL params to support multiple filters
+6. **Mobile UX:** Filter panel needs responsive design for mobile devices
 
 ## 4. Proposed Implementation Plan
 
 ### Task 1: Extend API to Support Multi-Filter Queries
-**Owner:** Backend Developer | **Estimate:** 4 hours
+**Owner:** Backend Developer | **Estimate:** 5 hours
 
 **Subtasks:**
-1. Update `parseQueryParams` in `/api/articles/route.ts` to accept:
-   - `sources` (comma-separated list or array)
+1. Create new API endpoint `/api/sources` to return available sources with id, name, and biasRating
+2. Update `parseQueryParams` in `/api/articles/route.ts` to accept:
+   - `sourceIds` (comma-separated list of source UUIDs)
    - `bias` (comma-separated list or array)
-2. Modify `whereClause` construction to handle multiple sources and bias ratings using Prisma's `in` operator
-3. Add validation for bias rating values
-4. Update API response to include available sources and bias options
-5. Test API with various filter combinations
+3. Modify `whereClause` construction to filter by `sourceId` using Prisma's `in` operator (indexed field for performance)
+4. Add validation for source IDs (UUID format) and bias rating values
+5. Update API response to include source information with IDs
+6. Test API with various filter combinations
 
 **Files to modify:**
-- `V2/app/api/articles/route.ts`
+- `V2/app/api/articles/route.ts` - Update to filter by sourceId instead of source name
+- `V2/app/api/sources/route.ts` - Create new endpoint to list available sources
 
-**Example API call:**
+**Example API calls:**
 ```
-GET /api/articles?sources=The%20Guardian,BBC%20News&bias=left,center&page=1&limit=50
+GET /api/sources
+Response: [{ id: "uuid-1", name: "The Guardian", biasRating: "left", ... }, ...]
+
+GET /api/articles?sourceIds=uuid-1,uuid-2&bias=left,center&page=1&limit=50
 ```
 
 ### Task 2: Create FilterPanel Component
@@ -94,7 +100,7 @@ GET /api/articles?sources=The%20Guardian,BBC%20News&bias=left,center&page=1&limi
 **Subtasks:**
 1. Create `V2/app/components/FilterPanel/` directory
 2. Implement `FilterPanel.tsx` with:
-   - Source filter section (checkbox list)
+   - Source filter section (checkbox list showing source names, tracking source IDs)
    - Bias filter section (checkbox list with color indicators)
    - "Clear All Filters" button
    - Active filter count badge
@@ -105,15 +111,21 @@ GET /api/articles?sources=The%20Guardian,BBC%20News&bias=left,center&page=1&limi
 
 **Component Props:**
 ```typescript
+interface Source {
+  id: string;  // UUID
+  name: string;
+  biasRating: BiasRating;
+}
+
 interface FilterPanelProps {
-  availableSources: string[];
-  selectedSources: string[];
+  availableSources: Source[];  // Full source objects with IDs
+  selectedSourceIds: string[];  // Array of source IDs (UUIDs)
   selectedBiases: BiasRating[];
-  onSourceChange: (sources: string[]) => void;
+  onSourceChange: (sourceIds: string[]) => void;  // Receives source IDs
   onBiasChange: (biases: BiasRating[]) => void;
   onClearFilters: () => void;
   articleCounts?: {
-    sources: Record<string, number>;
+    sources: Record<string, number>;  // Keyed by source ID
     biases: Record<BiasRating, number>;
   };
 }
@@ -129,17 +141,18 @@ interface FilterPanelProps {
 
 **Subtasks:**
 1. Update `V2/app/page.tsx` to manage filter state:
-   - Add state for `selectedSources` and `selectedBiases`
-   - Read initial state from URL query parameters
+   - Fetch available sources from `/api/sources` on mount
+   - Add state for `selectedSourceIds` (array of UUIDs) and `selectedBiases`
+   - Read initial state from URL query parameters (sourceIds as comma-separated UUIDs)
    - Update URL when filters change (using `useRouter` or `useSearchParams`)
-2. Modify `fetchArticles` function to include filter parameters
+2. Modify `fetchArticles` function to include filter parameters (sourceIds, not names)
 3. Handle filter changes and trigger article refetch
 4. Reset pagination to page 1 when filters change
 5. Add filter state to BiasDistribution component for context
 
 **URL Format:**
 ```
-/articles?sources=The%20Guardian,NPR&bias=left,lean-left&page=1
+/?sourceIds=uuid-1,uuid-2&bias=left,lean-left&page=1
 ```
 
 **Files to modify:**
@@ -203,11 +216,12 @@ interface FilterPanelProps {
 2. `V2/app/components/FilterPanel/FilterPanel.module.scss` - Filter styles
 3. `V2/app/components/FilterPanel/index.ts` - Barrel export
 4. `V2/app/components/FilterPanel/FilterPanel.test.tsx` - Component tests (optional)
+5. `V2/app/api/sources/route.ts` - New endpoint to list available sources
 
 ### Modified Files:
-1. `V2/app/page.tsx` - Integrate FilterPanel, manage filter state
+1. `V2/app/page.tsx` - Integrate FilterPanel, manage filter state, fetch sources
 2. `V2/app/page.module.scss` - Update layout for filter panel
-3. `V2/app/api/articles/route.ts` - Support multiple sources and bias filters
+3. `V2/app/api/articles/route.ts` - Support multiple source IDs and bias filters
 4. `V2/README.md` - Document filtering feature
 
 ## 6. Technical Design Details
@@ -221,14 +235,19 @@ GET /api/articles?source=The%20Guardian&page=1&limit=50
 
 **Proposed:**
 ```
-GET /api/articles?sources=The%20Guardian,NPR&bias=left,lean-left&page=1&limit=50
+GET /api/articles?sourceIds=550e8400-e29b-41d4-a716-446655440000,6ba7b810-9dad-11d1-80b4-00c04fd430c8&bias=left,lean-left&page=1&limit=50
 ```
 
 **Query Parameter Specification:**
-- `sources` (optional): Comma-separated list of source names (case-insensitive match)
+- `sourceIds` (optional): Comma-separated list of source UUIDs (exact match on indexed field)
 - `bias` (optional): Comma-separated list of bias ratings (exact match)
 - `page` (optional): Page number (default: 1)
 - `limit` (optional): Results per page (default: 50, max: 100)
+
+**Note:** Using source IDs instead of names provides better performance because:
+1. The `sourceId` field is indexed in the database
+2. UUID matching is faster than case-insensitive string matching
+3. Avoids issues with special characters or name changes
 
 ### Database Query Enhancement
 
@@ -246,43 +265,51 @@ const whereClause = sourceFilter
   : {};
 ```
 
-**Proposed Prisma Query:**
+**Proposed Prisma Query (using indexed sourceId field):**
 ```typescript
 const whereClause: any = {};
 
-if (sourcesFilter && sourcesFilter.length > 0) {
-  whereClause.source = {
-    name: {
-      in: sourcesFilter,
-      mode: 'insensitive' as const,
-    },
+// Filter by source IDs (indexed field - optimal performance)
+if (sourceIdsFilter && sourceIdsFilter.length > 0) {
+  whereClause.sourceId = {
+    in: sourceIdsFilter,  // Direct ID match on indexed field
   };
 }
 
+// Filter by bias rating (via source relation)
 if (biasFilter && biasFilter.length > 0) {
-  if (!whereClause.source) {
-    whereClause.source = {};
-  }
-  whereClause.source.biasRating = {
-    in: biasFilter,
+  whereClause.source = {
+    biasRating: {
+      in: biasFilter,
+    },
   };
 }
 ```
+
+**Performance Note:** This approach leverages the indexed `sourceId` field on the Article model, which provides significantly better query performance compared to filtering by source name. The database can use the index for fast lookups instead of string comparisons.
 
 ### Filter State Management
 
 **State Structure:**
 ```typescript
 interface FilterState {
-  selectedSources: string[];
+  selectedSourceIds: string[];  // Array of source UUIDs
   selectedBiases: BiasRating[];
+  availableSources: Source[];   // For displaying names in UI
+}
+
+interface Source {
+  id: string;
+  name: string;
+  biasRating: BiasRating;
 }
 ```
 
 **URL Synchronization:**
 - Use Next.js `useSearchParams` and `useRouter` to read/write query params
-- Encode arrays as comma-separated values
+- Encode arrays as comma-separated values (UUIDs for sources)
 - Decode on page load to initialize filter state
+- Store source IDs in URL, but display source names in UI
 
 ### Component Hierarchy
 
@@ -305,25 +332,31 @@ ArticlesPage (page.tsx)
 ### Edge Cases to Handle:
 
 1. **No Results:** When filters produce no articles, show helpful empty state
-2. **Invalid Filter Values:** Validate and ignore invalid source names or bias ratings
+2. **Invalid Filter Values:** Validate and ignore invalid source IDs (non-UUID format or non-existent IDs) or bias ratings
 3. **Large Filter Sets:** Limit UI to show only available sources (avoid empty checkboxes)
-4. **URL Manipulation:** Validate query parameters on page load
+4. **URL Manipulation:** Validate query parameters on page load (UUID format for sourceIds)
 5. **Concurrent Filters:** Ensure source AND bias filters work together correctly
 6. **Pagination Reset:** Reset to page 1 when filters change
-7. **Deep Links:** Support sharing URLs with pre-applied filters
+7. **Deep Links:** Support sharing URLs with pre-applied filters (URLs contain source IDs)
+8. **Source Lookup:** Handle case where source ID in URL doesn't match any available source
 
 ### Performance Considerations:
 
 1. **Debounce Filter Changes:** If using search/autocomplete, debounce API calls
 2. **Client-Side Filtering:** Consider client-side filtering for small datasets to reduce API calls
-3. **Indexed Queries:** Ensure database has appropriate indexes (already present on sourceId)
+3. **Indexed Queries:** Use indexed `sourceId` field for filtering (UUID lookup is fast)
 4. **Filter Count Calculation:** Optimize count queries or cache results
+5. **ID-Based Filtering Benefits:**
+   - Direct index usage on `sourceId` field
+   - No case-insensitive string matching required
+   - Consistent performance regardless of source name length or special characters
 
 ### Security Considerations:
 
 1. **SQL Injection:** Use Prisma's parameterized queries (already handled)
-2. **Input Validation:** Validate all filter inputs on backend
+2. **Input Validation:** Validate all filter inputs on backend (UUID format for sourceIds)
 3. **Rate Limiting:** Consider rate limiting API if filter changes trigger frequent requests
+4. **ID Exposure:** Source UUIDs in URLs are not sensitive information, but consider if this aligns with security policy
 
 ## 8. Mobile Responsiveness Strategy
 
@@ -430,13 +463,13 @@ These are potential improvements for future iterations:
 
 | Phase | Tasks | Duration |
 |-------|-------|----------|
-| Backend | Task 1 (API Enhancement) | 4 hours |
+| Backend | Task 1 (API Enhancement + Sources Endpoint) | 5 hours |
 | Frontend | Task 2 (FilterPanel Component) | 6 hours |
 | Frontend | Task 3 (State Management) | 5 hours |
 | Frontend | Task 4 (Layout Integration) | 3 hours |
 | Frontend | Task 5 (Counts & Empty States) | 2 hours |
 | Testing | Task 6 (Testing & Docs) | 4 hours |
-| **Total** | | **24 hours (3 working days)** |
+| **Total** | | **25 hours (3-4 working days)** |
 
 **Note:** Timeline assumes one developer working on implementation. Can be parallelized with backend and frontend developers working simultaneously.
 

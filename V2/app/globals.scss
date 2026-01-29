@@ -5,10 +5,10 @@
   --foreground: #171717;
   --card-bg: #f8f9fa;
   --border: #e5e7eb;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary: #4D4063;
+  --primary-hover: #736194;
   --secondary: #64748b;
-  
+
   // Typography
   --font-size-base: 16px;
   --font-size-sm: 0.875rem;
@@ -22,7 +22,7 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
+
   // Spacing
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -31,7 +31,7 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
-  
+
   // Layout
   --max-width-content: 1400px;
   --sidebar-width: 300px;
@@ -40,7 +40,7 @@
   --border-radius-lg: 8px;
   --header-height-mobile: 80px;
   --header-height-desktop: 100px;
-  
+
   // Breakpoints (reference only, use in media queries)
   --breakpoint-sm: 768px;
   --breakpoint-md: 1024px;
@@ -85,7 +85,7 @@ a {
   color: var(--primary);
   text-decoration: none;
   transition: color 0.2s ease;
-  
+
   &:hover {
     color: var(--primary-hover);
   }
@@ -110,4 +110,3 @@ main {
     padding-top: var(--header-height-desktop);
   }
 }
-

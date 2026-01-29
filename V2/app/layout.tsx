@@ -3,8 +3,9 @@ import "./globals.scss";
 import Header from "./components/Header";
 
 export const metadata: Metadata = {
-  title: "Unbiased V2 - Multi-Perspective News",
+  title: "Unbiased | News",
   description: "A modern news aggregator providing multi-perspective coverage with bias analysis",
+  keywords: ["news", "politics", "bias analysis", "news aggregator"],
 };
 
 export default function RootLayout({

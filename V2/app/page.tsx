@@ -107,12 +107,12 @@ export default function ArticlesPage() {
         </div>
       </header>
 
-      <div className={styles.content}>
+      <main className={styles.content}>
         <aside className={styles.sidebar}>
           <BiasDistribution articles={articles} />
         </aside>
 
-        <main className={styles.main}>
+        <section className={styles.main}>
           {articles.length === 0 ? (
             <div className={styles.emptyState}>
               <p>No articles available at this time.</p>
@@ -132,9 +132,9 @@ export default function ArticlesPage() {
               />
             </>
           )}
-        </main>
-      </div>
-    </div>
+        </section>
+      </main>
+    </div >
   );
 }
 

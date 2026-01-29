@@ -17,17 +17,8 @@
     align-items: center;
     justify-content: space-between;
 
-
     .logo {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      color: var(--primary);
-      text-decoration: none;
-      transition: color 0.2s ease;
-
-      &:hover {
-        color: var(--primary-hover);
-      }
+      height: 45px;
     }
 
     .nav {

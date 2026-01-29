@@ -2,6 +2,7 @@
   min-height: 100vh;
   background: var(--background);
 
+
   .header {
     background: var(--primary);
     color: white;
@@ -42,11 +43,11 @@
     gap: var(--spacing-xl);
 
     .sidebar {
-      order: 2;
+      order: 1;
     }
 
     .main {
-      order: 1;
+      order: 2;
 
       .articleGrid {
         display: grid;
@@ -105,6 +106,7 @@
 @media (min-width: 1024px) {
   .container {
     .content {
+      padding: 0 var(--spacing-lg) var(--spacing-3xl);
       grid-template-columns: var(--sidebar-width) 1fr;
 
       .sidebar {

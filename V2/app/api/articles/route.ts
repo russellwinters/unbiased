@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRssData, ParsedArticle, isValidBiasRating } from '@/lib/news';
+import { getRssData, ParsedArticle, isValidBiasRating, BiasRating } from '@/lib/news';
 import { prisma, upsertArticles, upsertSources } from '@/lib/db';
 import { filterWithinRange, yesterdayAtMidnight } from "@/lib/utils"
-import type { Article, Source } from '@prisma/client';
+import type { Article, Source, Prisma } from '@prisma/client';
 
 /**
  * Response type for POST /api/articles
@@ -24,7 +24,9 @@ interface ArticleUpdateResponse {
  * Fetches articles from the database with pagination support.
  * 
  * Query Parameters:
- * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
+ * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News') - DEPRECATED, use sourceIds instead
+ * - sourceIds: (optional) Comma-separated list of source UUIDs for filtering
+ * - bias: (optional) Comma-separated list of bias ratings for filtering
  * - limit: (optional) Maximum number of articles to return per page (default: 50, max: 100)
  * - page: (optional) Page number (1-indexed, default: 1)
  * 
@@ -71,7 +73,7 @@ export async function GET(request: NextRequest) {
  *   timestamp: string
  * }
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     console.log('🚀 Starting article update from RSS feeds...');
 
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function respondWith500Error({ err, message }: { err?: any, message?: string }) {
+function respondWith500Error({ err, message }: { err?: unknown, message?: string }) {
   return NextResponse.json(
     {
       error: message || 'Failed to fetch articles',
@@ -113,19 +115,43 @@ function respondWith500Error({ err, message }: { err?: any, message?: string }) 
 // TODO: update this so it's more like the post request
 // with the calls pulled from utils elsewhere in the codebase
 async function coreGetLogic(request: NextRequest) {
-  const { sourceFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
+  const { sourceFilter, sourceIdsFilter, biasFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
 
   try {
-    const whereClause = sourceFilter
-      ? {
-        source: {
-          name: {
-            equals: sourceFilter,
-            mode: 'insensitive' as const,
-          },
+    const whereClause: Prisma.ArticleWhereInput = {};
+
+    // Support legacy source name filter (deprecated)
+    if (sourceFilter) {
+      whereClause.source = {
+        name: {
+          equals: sourceFilter,
+          mode: 'insensitive' as const,
         },
+      };
+    }
+
+    // Filter by source IDs (indexed field - optimal performance)
+    if (sourceIdsFilter && sourceIdsFilter.length > 0) {
+      whereClause.sourceId = {
+        in: sourceIdsFilter,
+      };
+    }
+
+    // Filter by bias rating (via source relation)
+    if (biasFilter && biasFilter.length > 0) {
+      // If we already have a source filter, merge the biasRating condition
+      if (whereClause.source) {
+        whereClause.source.biasRating = {
+          in: biasFilter,
+        };
+      } else {
+        whereClause.source = {
+          biasRating: {
+            in: biasFilter,
+          },
+        };
       }
-      : {};
+    }
 
     const count = await prisma.article.count({
       where: whereClause,
@@ -190,13 +216,41 @@ function getPaginationData(count: number, pageLimit: number, pageCurrent: number
 
 function parseQueryParams(params: URLSearchParams) {
   const sourceFilter = params.get('source');
+  const sourceIdsParam = params.get('sourceIds');
+  const biasParam = params.get('bias');
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
 
-  let limit = parseIntParam(limitParam, 50);
-  let page = parseIntParam(pageParam, 1);
+  // Parse and validate source IDs
+  let sourceIdsFilter: string[] | null = null;
+  if (sourceIdsParam) {
+    const ids = sourceIdsParam.split(',').map(id => id.trim()).filter(id => id.length > 0);
+    // Validate UUID format (basic validation)
+    const validIds = ids.filter(id => isValidUUID(id));
+    if (validIds.length > 0) {
+      sourceIdsFilter = validIds;
+    }
+  }
 
-  return { sourceFilter, limit, page };
+  // Parse and validate bias ratings
+  let biasFilter: BiasRating[] | null = null;
+  if (biasParam) {
+    const biases = biasParam.split(',').map(b => b.trim()).filter(b => b.length > 0);
+    const validBiases = biases.filter(b => isValidBiasRating(b)) as BiasRating[];
+    if (validBiases.length > 0) {
+      biasFilter = validBiases;
+    }
+  }
+
+  const limit = parseIntParam(limitParam, 50);
+  const page = parseIntParam(pageParam, 1);
+
+  return { sourceFilter, sourceIdsFilter, biasFilter, limit, page };
+}
+
+function isValidUUID(uuid: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
 }
 
 function parseIntParam(param: string | null, defaultValue: number, minValue: number = 0) {

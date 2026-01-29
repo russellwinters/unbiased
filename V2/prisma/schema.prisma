@@ -52,3 +52,30 @@ model Cluster {
   
   @@index([firstSeenAt])
 }
+
+// RSS Update History model for rate limiting
+model RSSUpdateHistory {
+  id          String    @id @default(uuid())
+  updateType  String    // "manual" or "scheduled" for tracking request source
+  requestedAt DateTime  @default(now())  // UTC timestamp when update was requested
+  startedAt   DateTime  // UTC timestamp when RSS fetching started
+  completedAt DateTime? // UTC timestamp when update completed (null if in progress/failed)
+  status      String    // "in_progress", "completed", "failed"
+  
+  // Statistics
+  sourcesCreated  Int @default(0)
+  sourcesUpdated  Int @default(0)
+  articlesCreated Int @default(0)
+  articlesUpdated Int @default(0)
+  articlesSkipped Int @default(0)
+  
+  // Error tracking
+  errorCount      Int      @default(0)
+  errorMessages   String[] @default([])
+  
+  // Duration tracking (in milliseconds)
+  duration        Int?
+  
+  @@index([requestedAt])
+  @@index([completedAt])
+}

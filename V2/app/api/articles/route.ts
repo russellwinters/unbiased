@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRssData, ParsedArticle, isValidBiasRating, BiasRating } from '@/lib/news';
 import { prisma, upsertArticles, upsertSources } from '@/lib/db';
-import { filterWithinRange, yesterdayAtMidnight } from "@/lib/utils"
+import { filterWithinRange, isValidUUID, parseIntParam, parseStringListParam, yesterdayAtMidnight } from "@/lib/utils"
 import type { Article, Source, Prisma } from '@prisma/client';
 
 /**
@@ -120,7 +120,6 @@ async function coreGetLogic(request: NextRequest) {
   try {
     const whereClause: Prisma.ArticleWhereInput = {};
 
-    // Support legacy source name filter (deprecated)
     if (sourceFilter) {
       whereClause.source = {
         name: {
@@ -130,24 +129,21 @@ async function coreGetLogic(request: NextRequest) {
       };
     }
 
-    // Filter by source IDs (indexed field - optimal performance)
-    if (sourceIdsFilter && sourceIdsFilter.length > 0) {
+    if (hasItems(sourceIdsFilter)) {
       whereClause.sourceId = {
-        in: sourceIdsFilter,
+        in: sourceIdsFilter!,
       };
     }
 
-    // Filter by bias rating (via source relation)
-    if (biasFilter && biasFilter.length > 0) {
-      // If we already have a source filter, merge the biasRating condition
+    if (hasItems(biasFilter)) {
       if (whereClause.source) {
         whereClause.source.biasRating = {
-          in: biasFilter,
+          in: biasFilter!,
         };
       } else {
         whereClause.source = {
           biasRating: {
-            in: biasFilter,
+            in: biasFilter!,
           },
         };
       }
@@ -221,45 +217,22 @@ function parseQueryParams(params: URLSearchParams) {
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
 
-  // Parse and validate source IDs
-  let sourceIdsFilter: string[] | null = null;
-  if (sourceIdsParam) {
-    const ids = sourceIdsParam.split(',').map(id => id.trim()).filter(id => id.length > 0);
-    // Validate UUID format (basic validation)
-    const validIds = ids.filter(id => isValidUUID(id));
-    if (validIds.length > 0) {
-      sourceIdsFilter = validIds;
-    }
-  }
-
-  // Parse and validate bias ratings
-  let biasFilter: BiasRating[] | null = null;
-  if (biasParam) {
-    const biases = biasParam.split(',').map(b => b.trim()).filter(b => b.length > 0);
-    const validBiases = biases.filter(b => isValidBiasRating(b)) as BiasRating[];
-    if (validBiases.length > 0) {
-      biasFilter = validBiases;
-    }
-  }
-
+  let sourceIdsFilter: string[] | null = parseArrayParam(sourceIdsParam, isValidUUID);
+  let biasFilter: BiasRating[] | null = parseArrayParam(biasParam, isValidBiasRating) as BiasRating[] | null;
   const limit = parseIntParam(limitParam, 50);
   const page = parseIntParam(pageParam, 1);
 
   return { sourceFilter, sourceIdsFilter, biasFilter, limit, page };
 }
 
-function isValidUUID(uuid: string): boolean {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(uuid);
+function parseArrayParam(param: string | null, isValid: (item: string) => boolean): string[] | null {
+  if (param === null) return null;
+
+  const items = parseStringListParam(param);
+  const validItems = items.filter(isValid);
+  return validItems.length > 0 ? validItems : null;
 }
 
-function parseIntParam(param: string | null, defaultValue: number, minValue: number = 0) {
-  if (param === null) return defaultValue;
-
-  const parsed = parseInt(param, 10);
-  if (!isNaN(parsed) && parsed > minValue) {
-    return parsed;
-  }
-
-  return defaultValue;
+function hasItems(target: string[] | null): boolean {
+  return target !== null && target.length > 0;
 }

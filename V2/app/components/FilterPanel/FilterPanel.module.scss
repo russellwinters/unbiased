@@ -210,11 +210,13 @@
       .filterOptions {
         .filterOption {
           &:hover {
-            background: rgba(77, 64, 99, 0.05);
+            background: var(--background);
+            opacity: 0.95;
           }
 
           &.selected {
-            background: rgba(77, 64, 99, 0.1);
+            background: var(--background);
+            opacity: 0.9;
           }
         }
       }

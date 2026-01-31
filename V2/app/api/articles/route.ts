@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRssData, ParsedArticle, isValidBiasRating } from '@/lib/news';
+import { getRssData, ParsedArticle, isValidBiasRating, BiasRating } from '@/lib/news';
 import { prisma, upsertArticles, upsertSources } from '@/lib/db';
-import { filterWithinRange, yesterdayAtMidnight } from "@/lib/utils"
-import type { Article, Source } from '@prisma/client';
+import { filterWithinRange, isValidUUID, parseIntParam, parseStringListParam, yesterdayAtMidnight } from "@/lib/utils"
+import type { Article, Source, Prisma } from '@prisma/client';
 
 /**
  * Response type for POST /api/articles
@@ -24,7 +24,9 @@ interface ArticleUpdateResponse {
  * Fetches articles from the database with pagination support.
  * 
  * Query Parameters:
- * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News')
+ * - source: (optional) Filter by source name (e.g., 'The Guardian', 'Fox News') - DEPRECATED, use sourceIds instead
+ * - sourceIds: (optional) Comma-separated list of source UUIDs for filtering
+ * - bias: (optional) Comma-separated list of bias ratings for filtering
  * - limit: (optional) Maximum number of articles to return per page (default: 50, max: 100)
  * - page: (optional) Page number (1-indexed, default: 1)
  * 
@@ -71,7 +73,7 @@ export async function GET(request: NextRequest) {
  *   timestamp: string
  * }
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     console.log('🚀 Starting article update from RSS feeds...');
 
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function respondWith500Error({ err, message }: { err?: any, message?: string }) {
+function respondWith500Error({ err, message }: { err?: unknown, message?: string }) {
   return NextResponse.json(
     {
       error: message || 'Failed to fetch articles',
@@ -113,19 +115,39 @@ function respondWith500Error({ err, message }: { err?: any, message?: string }) 
 // TODO: update this so it's more like the post request
 // with the calls pulled from utils elsewhere in the codebase
 async function coreGetLogic(request: NextRequest) {
-  const { sourceFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
+  const { sourceFilter, sourceIdsFilter, biasFilter, limit, page } = parseQueryParams(request.nextUrl.searchParams);
 
   try {
-    const whereClause = sourceFilter
-      ? {
-        source: {
-          name: {
-            equals: sourceFilter,
-            mode: 'insensitive' as const,
-          },
+    const whereClause: Prisma.ArticleWhereInput = {};
+
+    if (sourceFilter) {
+      whereClause.source = {
+        name: {
+          equals: sourceFilter,
+          mode: 'insensitive' as const,
         },
+      };
+    }
+
+    if (hasItems(sourceIdsFilter)) {
+      whereClause.sourceId = {
+        in: sourceIdsFilter!,
+      };
+    }
+
+    if (hasItems(biasFilter)) {
+      if (whereClause.source) {
+        whereClause.source.biasRating = {
+          in: biasFilter!,
+        };
+      } else {
+        whereClause.source = {
+          biasRating: {
+            in: biasFilter!,
+          },
+        };
       }
-      : {};
+    }
 
     const count = await prisma.article.count({
       where: whereClause,
@@ -190,22 +212,27 @@ function getPaginationData(count: number, pageLimit: number, pageCurrent: number
 
 function parseQueryParams(params: URLSearchParams) {
   const sourceFilter = params.get('source');
+  const sourceIdsParam = params.get('sourceIds');
+  const biasParam = params.get('bias');
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
 
-  let limit = parseIntParam(limitParam, 50);
-  let page = parseIntParam(pageParam, 1);
+  let sourceIdsFilter: string[] | null = parseArrayParam(sourceIdsParam, isValidUUID);
+  let biasFilter: BiasRating[] | null = parseArrayParam(biasParam, isValidBiasRating) as BiasRating[] | null;
+  const limit = parseIntParam(limitParam, 50);
+  const page = parseIntParam(pageParam, 1);
 
-  return { sourceFilter, limit, page };
+  return { sourceFilter, sourceIdsFilter, biasFilter, limit, page };
 }
 
-function parseIntParam(param: string | null, defaultValue: number, minValue: number = 0) {
-  if (param === null) return defaultValue;
+function parseArrayParam(param: string | null, isValid: (item: string) => boolean): string[] | null {
+  if (param === null) return null;
 
-  const parsed = parseInt(param, 10);
-  if (!isNaN(parsed) && parsed > minValue) {
-    return parsed;
-  }
+  const items = parseStringListParam(param);
+  const validItems = items.filter(isValid);
+  return validItems.length > 0 ? validItems : null;
+}
 
-  return defaultValue;
+function hasItems(target: string[] | null): boolean {
+  return target !== null && target.length > 0;
 }

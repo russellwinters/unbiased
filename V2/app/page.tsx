@@ -77,13 +77,26 @@ function ArticlesPageContent() {
     const pageParam = searchParams.get('page');
 
     if (sourceIdsParam) {
-      const sourceIds = sourceIdsParam.split(',').filter(Boolean);
-      setSelectedSourceIds(sourceIds);
+      // Validate UUIDs before using them
+      const sourceIds = sourceIdsParam.split(',').filter(id => {
+        // Basic UUID format validation (8-4-4-4-12 hex digits)
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(id);
+      });
+      if (sourceIds.length > 0) {
+        setSelectedSourceIds(sourceIds);
+      }
     }
 
     if (biasParam) {
-      const biases = biasParam.split(',').filter(Boolean) as BiasRating[];
-      setSelectedBiases(biases);
+      // Validate bias values against BiasRating type
+      const validBiases: BiasRating[] = ['left', 'lean-left', 'center', 'lean-right', 'right'];
+      const biases = biasParam.split(',').filter(bias => 
+        validBiases.includes(bias as BiasRating)
+      ) as BiasRating[];
+      if (biases.length > 0) {
+        setSelectedBiases(biases);
+      }
     }
 
     if (pageParam) {

@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRssData, ParsedArticle, isValidBiasRating, BiasRating } from '@/lib/news';
-import { prisma, upsertArticles, upsertSources } from '@/lib/db';
+import {
+  prisma,
+  upsertArticles,
+  upsertSources,
+  checkUpdateLimit,
+  createUpdateHistory,
+  completeUpdateHistory,
+  failUpdateHistory,
+} from '@/lib/db';
 import { filterWithinRange, isValidUUID, parseIntParam, parseStringListParam, yesterdayAtMidnight } from "@/lib/utils"
 import type { Article, Source, Prisma } from '@prisma/client';
 
@@ -61,6 +69,8 @@ export async function GET(request: NextRequest) {
  * Articles are fetched from the beginning of the previous day to the current time.
  * De-duplication is handled through the unique `url` field on articles.
  * 
+ * Rate limited to 3 updates per 24-hour period.
+ * 
  * Response:
  * {
  *   success: boolean,
@@ -75,27 +85,77 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(_request: NextRequest) {
   try {
-    console.log('🚀 Starting article update from RSS feeds...');
+    console.log('🚀 Checking rate limit for article update...');
 
-    const { sources, articles, rssErrors } = await getRssData();
-    const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
+    const rateLimitCheck = await checkUpdateLimit();
 
-    const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
-    const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
+    if (!rateLimitCheck.isAllowed) {
+      console.log(`⚠️ Rate limit exceeded: ${rateLimitCheck.updatesInPreviousPeriod}/${rateLimitCheck.updateLimit} updates in 24h`);
 
-    const response: ArticleUpdateResponse = {
-      success: true,
-      sourcesCreated,
-      sourcesUpdated,
-      articlesCreated,
-      articlesUpdated,
-      articlesSkipped,
-      errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
-      timestamp: new Date().toISOString(),
-    };
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Rate limit exceeded',
+          message: `RSS feed updates are limited to ${rateLimitCheck.updateLimit} per 24-hour period. ${rateLimitCheck.updatesInPreviousPeriod} updates have already been performed.`,
+          updatesToday: rateLimitCheck.updatesInPreviousPeriod,
+          limit: rateLimitCheck.updateLimit,
+          nextAllowedTime: rateLimitCheck.allowUpdateNext?.toISOString(),
+          timestamp: new Date().toISOString(),
+        },
+        { status: 429 }
+      );
+    }
 
-    console.log('🎉 Article update completed!');
-    return NextResponse.json(response, { status: 200 });
+    console.log('✅ Rate limit check passed, starting update...');
+
+    const historyRecord = await createUpdateHistory({
+      updateType: 'manual',
+    });
+
+    const startTime = new Date();
+
+    try {
+      const { sources, articles, rssErrors } = await getRssData();
+      const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
+
+      const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
+      const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
+
+      await completeUpdateHistory(
+        historyRecord.id,
+        {
+          sourcesCreated,
+          sourcesUpdated,
+          articlesCreated,
+          articlesUpdated,
+          articlesSkipped,
+          errorMessages: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+        },
+        startTime
+      );
+
+      const response: ArticleUpdateResponse = {
+        success: true,
+        sourcesCreated,
+        sourcesUpdated,
+        articlesCreated,
+        articlesUpdated,
+        articlesSkipped,
+        errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+        timestamp: new Date().toISOString(),
+      };
+
+      console.log('🎉 Article update completed!');
+      return NextResponse.json(response, { status: 200 });
+
+      // TODO: consider handler to prevent try/catch blocks. 
+      // Can model after Elixir {:error, message} | {:ok, result} pattern?
+    } catch (updateError) {
+      const errorMessage = updateError instanceof Error ? updateError.message : 'Unknown error';
+      await failUpdateHistory(historyRecord.id, errorMessage, startTime);
+      throw updateError;
+    }
+
   } catch (error) {
     console.error('❌ Error in POST /api/articles:', error);
     return respondWith500Error({ err: error, message: 'Failed to update articles' });

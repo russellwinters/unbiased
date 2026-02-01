@@ -39,20 +39,18 @@ const PAGINATION_LIMIT = 50;
 function ArticlesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Filter state
+
   const [availableSources, setAvailableSources] = useState<Source[]>([]);
   const [selectedSourceIds, setSelectedSourceIds] = useState<string[]>([]);
   const [selectedBiases, setSelectedBiases] = useState<BiasRating[]>([]);
 
-  // Fetch available sources on mount
   useEffect(() => {
     async function fetchSources() {
       try {
@@ -70,16 +68,13 @@ function ArticlesPageContent() {
     fetchSources();
   }, []);
 
-  // Initialize filter state from URL on mount
   useEffect(() => {
     const sourceIdsParam = searchParams.get('sourceIds');
     const biasParam = searchParams.get('bias');
     const pageParam = searchParams.get('page');
 
     if (sourceIdsParam) {
-      // Validate UUIDs before using them
       const sourceIds = sourceIdsParam.split(',').filter(id => {
-        // Basic UUID format validation (8-4-4-4-12 hex digits)
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         return uuidRegex.test(id);
       });
@@ -89,9 +84,8 @@ function ArticlesPageContent() {
     }
 
     if (biasParam) {
-      // Validate bias values against BiasRating type
       const validBiases: BiasRating[] = ['left', 'lean-left', 'center', 'lean-right', 'right'];
-      const biases = biasParam.split(',').filter(bias => 
+      const biases = biasParam.split(',').filter(bias =>
         validBiases.includes(bias as BiasRating)
       ) as BiasRating[];
       if (biases.length > 0) {
@@ -113,7 +107,6 @@ function ArticlesPageContent() {
       setError(null);
 
       try {
-        // Build query parameters
         const params = new URLSearchParams({
           page: currentPage.toString(),
           limit: PAGINATION_LIMIT.toString(),
@@ -160,7 +153,6 @@ function ArticlesPageContent() {
     fetchArticles();
   }, [currentPage, selectedSourceIds, selectedBiases]);
 
-  // Update URL when filters change
   const updateURL = (sourceIds: string[], biases: BiasRating[], page: number) => {
     const params = new URLSearchParams();
 
@@ -183,13 +175,13 @@ function ArticlesPageContent() {
 
   const handleSourceChange = (sourceIds: string[]) => {
     setSelectedSourceIds(sourceIds);
-    setCurrentPage(1); // Reset to page 1 when filters change
+    setCurrentPage(1);
     updateURL(sourceIds, selectedBiases, 1);
   };
 
   const handleBiasChange = (biases: BiasRating[]) => {
     setSelectedBiases(biases);
-    setCurrentPage(1); // Reset to page 1 when filters change
+    setCurrentPage(1);
     updateURL(selectedSourceIds, biases, 1);
   };
 
@@ -242,6 +234,7 @@ function ArticlesPageContent() {
 
       <main className={styles.content}>
         <aside className={styles.sidebar}>
+          <BiasDistribution articles={articles} />
           <FilterPanel
             availableSources={availableSources}
             selectedSourceIds={selectedSourceIds}
@@ -250,7 +243,6 @@ function ArticlesPageContent() {
             onBiasChange={handleBiasChange}
             onClearFilters={handleClearFilters}
           />
-          <BiasDistribution articles={articles} />
         </aside>
 
         <section className={styles.main}>

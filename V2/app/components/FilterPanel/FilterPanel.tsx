@@ -33,8 +33,8 @@ export default function FilterPanel({
   onClearFilters,
   articleCounts,
 }: FilterPanelProps) {
-  const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
-  const [isBiasExpanded, setIsBiasExpanded] = useState(true);
+  const [isSourcesExpanded, setIsSourcesExpanded] = useState(false);
+  const [isBiasExpanded, setIsBiasExpanded] = useState(false);
 
   const handleSourceToggle = (sourceId: string) => {
     if (selectedSourceIds.includes(sourceId)) {
@@ -52,34 +52,20 @@ export default function FilterPanel({
     }
   };
 
-  const activeFilterCount = selectedSourceIds.length + selectedBiases.length;
-
-  // Group sources by bias rating for better organization
-  const sourcesByBias = availableSources.reduce((acc, source) => {
-    if (!acc[source.biasRating]) {
-      acc[source.biasRating] = [];
-    }
-    acc[source.biasRating].push(source);
-    return acc;
-  }, {} as Record<BiasRating, Source[]>);
-
-  // Sort sources alphabetically within each bias group
-  Object.keys(sourcesByBias).forEach((bias) => {
-    sourcesByBias[bias as BiasRating].sort((a, b) => a.name.localeCompare(b.name));
-  });
-
-  const biasOrder: BiasRating[] = ['left', 'lean-left', 'center', 'lean-right', 'right'];
+  const activeCount = selectedSourceIds.length + selectedBiases.length;
+  const sourcesByBias = alphabetizeKeys(groupByBias(availableSources));
+  const biasDisplayOrder: BiasRating[] = ['left', 'lean-left', 'center', 'lean-right', 'right'];
 
   return (
     <div className={styles.filterPanel}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h3 className={styles.title}>Filters</h3>
-          {activeFilterCount > 0 && (
-            <span className={styles.badge}>{activeFilterCount}</span>
+          {activeCount > 0 && (
+            <span className={styles.badge}>{activeCount}</span>
           )}
         </div>
-        {activeFilterCount > 0 && (
+        {activeCount > 0 && (
           <button
             className={styles.clearButton}
             onClick={onClearFilters}
@@ -89,7 +75,6 @@ export default function FilterPanel({
         )}
       </div>
 
-      {/* Bias Filter Section */}
       <div className={styles.filterSection}>
         <button
           className={styles.sectionHeader}
@@ -103,7 +88,7 @@ export default function FilterPanel({
 
         {isBiasExpanded && (
           <div className={styles.filterOptions}>
-            {biasOrder.map((bias) => {
+            {biasDisplayOrder.map((bias) => {
               const config = BIAS_CONFIG[bias];
               const count = articleCounts?.biases[bias];
               const isSelected = selectedBiases.includes(bias);
@@ -134,7 +119,6 @@ export default function FilterPanel({
         )}
       </div>
 
-      {/* Source Filter Section */}
       <div className={styles.filterSection}>
         <button
           className={styles.sectionHeader}
@@ -148,7 +132,7 @@ export default function FilterPanel({
 
         {isSourcesExpanded && (
           <div className={styles.filterOptions}>
-            {biasOrder.map((bias) => {
+            {biasDisplayOrder.map((bias) => {
               const sources = sourcesByBias[bias] || [];
               if (sources.length === 0) return null;
 
@@ -193,4 +177,21 @@ export default function FilterPanel({
       </div>
     </div>
   );
+}
+
+function groupByBias(sources: Source[]) {
+  return sources.reduce((acc, source) => {
+    if (!acc[source.biasRating]) {
+      acc[source.biasRating] = [];
+    }
+    acc[source.biasRating].push(source);
+    return acc;
+  }, {} as Record<BiasRating, Source[]>);
+}
+
+function alphabetizeKeys<T>(obj: Record<string, T>): Record<string, T> {
+  return Object.keys(obj).sort().reduce((acc, key) => {
+    acc[key] = obj[key];
+    return acc;
+  }, {} as Record<string, T>);
 }

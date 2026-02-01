@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { ParsedArticle } from '@/lib/news/rss-parser';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ParsedArticle, BiasRating } from '@/lib/news/rss-parser';
 import ArticleCard from './components/ArticleCard';
 import BiasDistribution from './components/BiasDistribution';
 import Pagination from './components/Pagination';
+import FilterPanel from './components/FilterPanel';
 import styles from './page.module.scss';
 
 interface ApiResponse {
@@ -19,9 +21,25 @@ interface ApiResponse {
   timestamp: string;
 }
 
+interface Source {
+  id: string;
+  name: string;
+  biasRating: BiasRating;
+  reliability: string;
+}
+
+interface SourcesApiResponse {
+  sources: Source[];
+  count: number;
+  timestamp: string;
+}
+
 const PAGINATION_LIMIT = 50;
 
-export default function ArticlesPage() {
+function ArticlesPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [articles, setArticles] = useState<ParsedArticle[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -29,13 +47,80 @@ export default function ArticlesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [availableSources, setAvailableSources] = useState<Source[]>([]);
+  const [selectedSourceIds, setSelectedSourceIds] = useState<string[]>([]);
+  const [selectedBiases, setSelectedBiases] = useState<BiasRating[]>([]);
+
+  useEffect(() => {
+    async function fetchSources() {
+      try {
+        const response = await fetch('/api/sources');
+        if (!response.ok) {
+          throw new Error('Failed to fetch sources');
+        }
+        const data: SourcesApiResponse = await response.json();
+        setAvailableSources(data.sources);
+      } catch (err) {
+        console.error('Error fetching sources:', err);
+      }
+    }
+
+    fetchSources();
+  }, []);
+
+  useEffect(() => {
+    const sourceIdsParam = searchParams.get('sourceIds');
+    const biasParam = searchParams.get('bias');
+    const pageParam = searchParams.get('page');
+
+    if (sourceIdsParam) {
+      const sourceIds = sourceIdsParam.split(',').filter(id => {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(id);
+      });
+      if (sourceIds.length > 0) {
+        setSelectedSourceIds(sourceIds);
+      }
+    }
+
+    if (biasParam) {
+      const validBiases: BiasRating[] = ['left', 'lean-left', 'center', 'lean-right', 'right'];
+      const biases = biasParam.split(',').filter(bias =>
+        validBiases.includes(bias as BiasRating)
+      ) as BiasRating[];
+      if (biases.length > 0) {
+        setSelectedBiases(biases);
+      }
+    }
+
+    if (pageParam) {
+      const page = parseInt(pageParam, 10);
+      if (!isNaN(page) && page > 0) {
+        setCurrentPage(page);
+      }
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     async function fetchArticles() {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(`/api/articles?page=${currentPage}&limit=${PAGINATION_LIMIT}`);
+        const params = new URLSearchParams({
+          page: currentPage.toString(),
+          limit: PAGINATION_LIMIT.toString(),
+        });
+
+        if (selectedSourceIds.length > 0) {
+          params.set('sourceIds', selectedSourceIds.join(','));
+        }
+
+        if (selectedBiases.length > 0) {
+          params.set('bias', selectedBiases.join(','));
+        }
+
+        const response = await fetch(`/api/articles?${params.toString()}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
@@ -66,10 +151,50 @@ export default function ArticlesPage() {
     }
 
     fetchArticles();
-  }, [currentPage]);
+  }, [currentPage, selectedSourceIds, selectedBiases]);
+
+  const updateURL = (sourceIds: string[], biases: BiasRating[], page: number) => {
+    const params = new URLSearchParams();
+
+    if (sourceIds.length > 0) {
+      params.set('sourceIds', sourceIds.join(','));
+    }
+
+    if (biases.length > 0) {
+      params.set('bias', biases.join(','));
+    }
+
+    if (page > 1) {
+      params.set('page', page.toString());
+    }
+
+    const queryString = params.toString();
+    const newUrl = queryString ? `/?${queryString}` : '/';
+    router.push(newUrl, { scroll: false });
+  };
+
+  const handleSourceChange = (sourceIds: string[]) => {
+    setSelectedSourceIds(sourceIds);
+    setCurrentPage(1);
+    updateURL(sourceIds, selectedBiases, 1);
+  };
+
+  const handleBiasChange = (biases: BiasRating[]) => {
+    setSelectedBiases(biases);
+    setCurrentPage(1);
+    updateURL(selectedSourceIds, biases, 1);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedSourceIds([]);
+    setSelectedBiases([]);
+    setCurrentPage(1);
+    router.push('/', { scroll: false });
+  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    updateURL(selectedSourceIds, selectedBiases, page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -110,12 +235,25 @@ export default function ArticlesPage() {
       <main className={styles.content}>
         <aside className={styles.sidebar}>
           <BiasDistribution articles={articles} />
+          <FilterPanel
+            availableSources={availableSources}
+            selectedSourceIds={selectedSourceIds}
+            selectedBiases={selectedBiases}
+            onSourceChange={handleSourceChange}
+            onBiasChange={handleBiasChange}
+            onClearFilters={handleClearFilters}
+          />
         </aside>
 
         <section className={styles.main}>
           {articles.length === 0 ? (
             <div className={styles.emptyState}>
               <p>No articles available at this time.</p>
+              {(selectedSourceIds.length > 0 || selectedBiases.length > 0) && (
+                <p className={styles.emptyStateHint}>
+                  Try adjusting your filters to see more articles.
+                </p>
+              )}
             </div>
           ) : (
             <>
@@ -135,6 +273,18 @@ export default function ArticlesPage() {
         </section>
       </main>
     </div >
+  );
+}
+
+export default function ArticlesPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading articles...</div>
+      </div>
+    }>
+      <ArticlesPageContent />
+    </Suspense>
   );
 }
 

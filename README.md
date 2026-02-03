@@ -2,11 +2,6 @@
 
 A news aggregation platform that provides multi-perspective coverage of current events, helping readers break out of information bubbles by presenting how different sources across the political spectrum cover the same stories.
 
-> **⚠️ V1 Deprecation Notice**  
-> The original V1 implementation (Node.js/Express/MongoDB) has been archived and is no longer under active development. It remains in the repository for reference purposes only. All current development is focused on V2.  
->
-> **V1 Documentation:** [V1/README.md](V1/README.md) | [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md)
-
 ---
 
 ## 🎯 Overview
@@ -31,9 +26,9 @@ News sources have bias. That's not inherently bad — it's human. What matters i
 
 Unbiased doesn't tell you what to think. It gives you the tools to see how different sources frame the same events, so you can think more critically about the news you consume.
 
-## 🛠 Tech Stack (V2)
+## 🛠 Tech Stack
 
-V2 is a complete rewrite using modern web technologies:
+Built with modern web technologies:
 
 - **Framework:** Next.js 16 (App Router) with React 19
 - **Language:** TypeScript
@@ -57,7 +52,7 @@ V2 is a complete rewrite using modern web technologies:
 
    ```bash
    git clone https://github.com/russellwinters/unbiased.git
-   cd unbiased/V2
+   cd unbiased
    ```
 
 2. **Install dependencies**
@@ -116,7 +111,7 @@ V2 is a complete rewrite using modern web technologies:
 
 ## ✨ Key Features
 
-### Current Features (V2)
+### Current Features
 
 - ✅ Modern Next.js 16 App Router architecture
 - ✅ PostgreSQL database with Prisma ORM
@@ -138,24 +133,20 @@ V2 is a complete rewrite using modern web technologies:
 
 ```
 unbiased/
-├── V1/                      # Legacy application (archived)
-├── V2/                      # Current development version
-│   ├── app/                # Next.js App Router
-│   │   ├── api/           # API routes (articles, sources)
-│   │   ├── layout.tsx     # Root layout
-│   │   ├── page.tsx       # Home page
-│   │   └── globals.scss   # Global styles
-│   ├── components/        # React components
-│   ├── lib/               # Business logic
-│   │   ├── db/           # Database utilities
-│   │   └── news/         # News aggregation
-│   ├── prisma/           # Database schema & migrations
-│   │   ├── schema.prisma # Prisma database schema
-│   │   └── seed.ts       # Database seeding script
-│   ├── public/           # Static assets
-│   └── package.json      # Dependencies
-├── docs/                  # Additional documentation
-└── README.md             # This file
+├── app/                # Next.js App Router
+│   ├── api/           # API routes (articles, sources)
+│   ├── layout.tsx     # Root layout
+│   ├── page.tsx       # Home page
+│   └── globals.scss   # Global styles
+├── lib/               # Business logic
+│   ├── db/           # Database utilities
+│   └── news/         # News aggregation
+├── prisma/           # Database schema & migrations
+│   ├── schema.prisma # Prisma database schema
+│   └── seed.ts       # Database seeding script
+├── public/           # Static assets
+├── docs/             # Additional documentation
+└── package.json      # Dependencies
 ```
 
 ## 🗄 Database Schema
@@ -186,7 +177,7 @@ Groups of related articles covering the same story.
 - Fields: `topic`, `mainEntity`, `firstSeenAt`
 - Relationships: Has many `Articles`
 
-See [V2/prisma/schema.prisma](V2/prisma/schema.prisma) for complete schema details.
+See [prisma/schema.prisma](prisma/schema.prisma) for complete schema details.
 
 ## 🛠 Development
 
@@ -224,37 +215,11 @@ Fetch new articles from RSS feeds and store them in the database.
 
 For detailed API documentation, see [docs/reference/API_REFERENCE.md](docs/reference/API_REFERENCE.md).
 
-### Monorepo Commands
-
-Run commands from the root directory:
-
-```bash
-# Run V2 in development
-npm run dev:v2
-
-# Build V2
-npm run build:v2
-
-# Or navigate to V2 directory
-cd V2
-npm run dev
-```
-
 ## 📚 Documentation
 
-### V2 Documentation
-
-- [V2/README.md](V2/README.md) - Detailed V2 setup and architecture
 - [docs/reference/API_REFERENCE.md](docs/reference/API_REFERENCE.md) - Complete API reference
-
-### V1 (Legacy)
-
-- [V1/README.md](V1/README.md) - V1 setup guide
-- [V1/V1_OVERVIEW.md](V1/V1_OVERVIEW.md) - Complete V1 technical documentation
-
-### Development Documentation
-
-- [work_plan.md](work_plan.md) - Migration and development work plan
+- [docs/archive](docs/archive) - Development history and archived documentation
+- [docs/future](docs/future) - Future feature plans and ideas
 
 ## 🔒 Security
 
@@ -270,23 +235,22 @@ npm run dev
 - Phase 1: Repository preparation & documentation
 - Phase 2: Branch migration (master → main)
 - Phase 3: V1 directory structure & preservation
-- Phase 4: V2 Next.js initialization with Prisma
+- Phase 4: Next.js initialization with Prisma
+- Phase 5: RSS feed aggregation and database seeding
 
-### 🔄 Current: Phase 5 - Core Features
+### 🔄 Current: Core Features Enhancement
 
-- RSS feed aggregation ✅
-- Database seeding ✅
 - Article browsing UI (in progress)
 - Source filtering (in progress)
 
-### 📋 Upcoming: Phase 6 - Multi-Perspective Views
+### 📋 Upcoming: Multi-Perspective Views
 
 - Story clustering implementation
 - Multi-perspective story display
 - Source bias visualization
 - Search and filtering
 
-### 🏁 Future: Phase 7 - Production
+### 🏁 Future: Production
 
 - Performance optimization
 - Caching layer
@@ -312,5 +276,5 @@ For questions or suggestions, please [open an issue](https://github.com/russellw
 
 ---
 
-**Current Status:** V2 Phase 5 - Core features under active development  
-**Last Updated:** January 2025
+**Current Status:** Core features under active development  
+**Last Updated:** February 2026

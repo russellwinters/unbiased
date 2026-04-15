@@ -1,12 +1,12 @@
-# Unbiased V2 API Reference
+# Unbiased API Reference
 
 ## Overview
 
-The Unbiased V2 API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 16.1.5, TypeScript, Prisma ORM, and PostgreSQL.
+The Unbiased API provides endpoints for retrieving and managing news articles from multiple sources across the political spectrum. The API is built with Next.js 16.1.5, TypeScript, Prisma ORM, and PostgreSQL.
 
 **Base URL:** `http://localhost:3000` (development)
 
-**Version:** V2
+**Version:** 2.0.0
 
 ---
 
@@ -700,7 +700,7 @@ Currently, the API does not implement rate limiting. In production, consider imp
 
 ## Versioning
 
-This is version 2 (V2) of the Unbiased API. The API version is indicated in the URL path structure and codebase organization.
+This is version 2.0.0 of the Unbiased API. The application has been fully restructured from the ground up with modern web technologies.
 
 ---
 
@@ -712,7 +712,7 @@ For issues, questions, or contributions, please refer to the project's GitHub re
 
 ## Changelog
 
-### V2 (Current)
+### Version 2.0.0 (Current)
 
 - Database-backed article storage with PostgreSQL and Prisma
 - Pagination support for GET endpoint

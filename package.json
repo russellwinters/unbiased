@@ -1,30 +1,45 @@
 {
-  "name": "unbiased-monorepo",
+  "name": "unbiased",
   "version": "2.0.0",
   "private": true,
-  "workspaces": [
-    "V1",
-    "V2"
-  ],
   "scripts": {
-    "dev:v1": "npm run dev --workspace=V1",
-    "dev:v2": "npm run dev --workspace=V2",
-    "build:v1": "npm run build --workspace=V1",
-    "build:v2": "npm run build --workspace=V2",
-    "server:v1": "npm run server --workspace=V1",
-    "client:v1": "npm run client --workspace=V1",
-    "start:v1": "npm start --workspace=V1",
-    "start:v2": "npm start --workspace=V2"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "tsx prisma/seed.ts"
   },
-  "description": "Unbiased news aggregator - V1 (legacy) and V2 (modern)",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/russellwinters/unbiased.git"
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
-  "author": "Russell Winters",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "@tanstack/react-query": "^5.90.20",
+    "axios": "^1.13.4",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "next": "16.1.6",
+    "pg": "^8.17.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.3",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "prisma": "^7.3.0",
+    "sass": "^1.97.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
   }
 }

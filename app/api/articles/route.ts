@@ -12,6 +12,8 @@ import {
 import { filterWithinRange, isValidUUID, parseIntParam, parseStringListParam, yesterdayAtMidnight } from "@/lib/utils"
 import type { Article, Source, Prisma } from '@prisma/client';
 
+const CRON_KEY = process.env.CRON_SECRET;
+
 /**
  * Response type for POST /api/articles
  */
@@ -86,7 +88,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   // TODO: refactor this function
   const cronSecret = request.headers.get('x-cron-secret');
-  if (cronSecret !== process.env.CRON_SECRET) {
+  if (cronSecret !== CRON_KEY) {
     console.error('Unauthorized attempt to update articles with invalid cron secret');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -116,7 +118,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ Rate limit check passed, starting update...');
 
     const historyRecord = await createUpdateHistory({
-      updateType: 'manual',
+      updateType: CRON_KEY ? 'scheduled' : 'manual',
     });
 
     const startTime = new Date();

@@ -83,7 +83,14 @@ export async function GET(request: NextRequest) {
  *   timestamp: string
  * }
  */
-export async function POST(_request: NextRequest) {
+export async function POST(request: NextRequest) {
+  // TODO: refactor this function
+  const cronSecret = request.headers.get('x-cron-secret');
+  if (cronSecret !== process.env.CRON_SECRET) {
+    console.error('Unauthorized attempt to update articles with invalid cron secret');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     console.log('🚀 Checking rate limit for article update...');
 
@@ -277,8 +284,8 @@ function parseQueryParams(params: URLSearchParams) {
   const limitParam = params.get('limit');
   const pageParam = params.get('page');
 
-  let sourceIdsFilter: string[] | null = parseArrayParam(sourceIdsParam, isValidUUID);
-  let biasFilter: BiasRating[] | null = parseArrayParam(biasParam, isValidBiasRating) as BiasRating[] | null;
+  const sourceIdsFilter: string[] | null = parseArrayParam(sourceIdsParam, isValidUUID);
+  const biasFilter: BiasRating[] | null = parseArrayParam(biasParam, isValidBiasRating) as BiasRating[] | null;
   const limit = parseIntParam(limitParam, 50);
   const page = parseIntParam(pageParam, 1);
 

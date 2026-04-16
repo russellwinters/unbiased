@@ -1,0 +1,30 @@
+.footer {
+  border-top: 1px solid var(--border);
+  padding: var(--spacing-lg) var(--spacing-md);
+
+  .container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+  }
+
+  .credit {
+    font-size: var(--font-size-sm);
+    color: var(--secondary);
+  }
+
+  .coffee {
+    font-size: var(--font-size-sm);
+    color: var(--secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}

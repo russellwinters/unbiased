@@ -117,6 +117,7 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Rate limit check passed, starting update...');
 
+    // TODO: consider if this is worth just hardcoding
     const historyRecord = await createUpdateHistory({
       updateType: CRON_KEY ? 'scheduled' : 'manual',
     });

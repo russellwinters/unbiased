@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 
 export async function upsertSources(rssSources: RSSSource[]): Promise<{ sourceMap: Map<string, string>, sourcesCreated: number, sourcesUpdated: number }> {
   console.log('💾 Upserting sources...');
-  let sourceMap = new Map<string, string>();
+  const sourceMap = new Map<string, string>();
   let sourcesCreated = 0;
   let sourcesUpdated = 0;
 

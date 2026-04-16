@@ -13,10 +13,12 @@ export function filterWithinRange(articles: ParsedArticle[], startDate: Date, en
  * Counts the number of unique sources from a list of articles
  */
 export function getUniqueSourceCount(articles: ParsedArticle[]): number {
+  // TODO: reconsider this function name -- getSourceCountUnique. Follow the invocations and ensuing constant names
   return new Set(articles.map(article => article.source.name)).size;
 }
 
 export function isValidUUID(uuid: string): boolean {
+  // TODO: rename to isUUIDValid
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(uuid);
 }
@@ -37,6 +39,7 @@ export function parseIntParam(param: string | null, defaultValue: number, minVal
 }
 
 export function yesterdayAtMidnight(): Date {
+  // TODO: rename this midnightPrevious or midnightPrior
   const now = new Date();
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);

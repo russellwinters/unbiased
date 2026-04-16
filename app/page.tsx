@@ -9,6 +9,8 @@ import Pagination from './components/Pagination';
 import FilterPanel from './components/FilterPanel';
 import styles from './page.module.scss';
 
+// TODO: consider using query strings to getch data -- can this not just be a server component?
+
 interface ApiResponse {
   articles: ParsedArticle[];
   count: number;

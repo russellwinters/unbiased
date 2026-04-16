@@ -37,7 +37,7 @@ export async function checkUpdateLimit(): Promise<RateLimitCheck> {
   const updatesInPreviousPeriod = recentUpdates.length;
   const isAllowed = updatesInPreviousPeriod < PERIOD_UPDATE_LIMIT;
 
-  let allowUpdateNext: Date | undefined = getNextAllowedTime(recentUpdates.map(update => update.requestedAt));
+  const allowUpdateNext: Date | undefined = getNextAllowedTime(recentUpdates.map(update => update.requestedAt));
 
   return {
     isAllowed,

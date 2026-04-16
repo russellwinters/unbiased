@@ -16,7 +16,7 @@ export async function createUpdateHistory(
   return await prisma.rSSUpdateHistory.create({
     data: {
       updateType: input.updateType,
-      requestedAt: now,
+      requestedAt: now, // TODO: consider this field --> seems redundant with startedAt
       startedAt: now,
       status: 'in_progress',
     },

@@ -57,6 +57,7 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
   }
 });
 
+// TODO: look into - understand - this type and the check below
 interface MediaContent {
   $?: {
     url?: string;
@@ -79,6 +80,7 @@ function isMediaContent(value: unknown): value is MediaContent {
  * Extracts image URL from RSS item
  */
 function extractImageUrl(item: CustomItem): string | null {
+  // TODO: look into - understand - this function in more depth
   // Try media:content
   if (item['media:content'] && isMediaContent(item['media:content'])) {
     const mediaContent = item['media:content'];
@@ -143,7 +145,6 @@ export async function parseRSSFeed(source: RSSSource): Promise<ParsedArticle[]> 
   try {
     const feed = await parser.parseURL(source.url);
 
-    // Validate bias rating
     if (!isValidBiasRating(source.biasRating)) {
       throw new Error(`Invalid bias rating for source ${source.name}: ${source.biasRating}`);
     }
@@ -181,7 +182,7 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
 
   const allArticles: ParsedArticle[] = [];
   const errors: FeedError[] = [];
-
+  // TODO: convert this to a reduce function, returning allArticles and errors in destructured const
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {
       allArticles.push(...result.value);
@@ -197,7 +198,6 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
     }
   });
 
-  // Sort by published date, newest first
   allArticles.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
   return {
@@ -206,7 +206,7 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
   };
 }
 
-export async function getRssData(): Promise<{ sources: RSSSource[], articles: ParsedArticle[], rssErrors: any[] }> {
+export async function getRssData(): Promise<{ sources: RSSSource[], articles: ParsedArticle[], rssErrors: FeedError[] }> {
   const rssSources = getAllSources() as RSSSource[];
   console.log(`📰 Found ${rssSources.length} RSS sources`);
 

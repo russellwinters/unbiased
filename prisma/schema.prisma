@@ -42,7 +42,7 @@ model Article {
   @@index([clusterId])
 }
 
-// Story cluster model
+// Story cluster model // TODO: consider deleting this - we're not there yet
 model Cluster {
   id          String    @id @default(uuid())
   topic       String

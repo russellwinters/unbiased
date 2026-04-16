@@ -21,6 +21,7 @@ export default function RootLayout({
           {children}
         </main>
       </body>
+      {/* TODO: add footer */}
     </html>
   );
 }

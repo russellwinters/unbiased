@@ -3,6 +3,13 @@
 > Auto-generated from code comments. Run `/collect-todos` to update.
 > Check off items as they are resolved and remove the line when done.
 
+## MVP / Pre-Deploy
+
+- [ ] UI tidy pass — review overall look and feel before launch
+- [ ] Update About page content
+- [ ] Add "Made with Love" section to footer
+- [ ] Add BuyMeACoffee integration to footer
+
 ## Uncategorized
 
 - [ ] consider using query strings to fetch data -- can this not just be a server component? (`app/page.tsx:12`)

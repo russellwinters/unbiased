@@ -46,3 +46,8 @@ next-env.d.ts
 # test scripts
 test-*.ts
 test-*.js
+
+
+# misc
+docs/TODO.md
+docs/plan.md

@@ -4,6 +4,7 @@ frontend:
     preBuild:
       commands:
         - npm ci --include=dev
+        - npx prisma generate
     build:
       commands:
         - npm run build

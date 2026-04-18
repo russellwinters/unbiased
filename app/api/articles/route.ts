@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
   // TODO: refactor this function
   const cronSecret = request.headers.get('x-cron-secret');
   if (cronSecret !== CRON_KEY) {
-    console.error('Unauthorized attempt to update articles with invalid cron secret');
+    console.error('Unauthorized attempt to update articles with invalid cron secret', {passed: cronSecret, expected: CRON_KEY });
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -1,62 +1,50 @@
-// Color palette
+@use './styles/variables' as *;
+
 :root {
   // Light mode colors
-  --background: #ffffff;
-  --foreground: #171717;
-  --card-bg: #f8f9fa;
-  --border: #e5e7eb;
-  --primary: #4D4063;
-  --primary-hover: #736194;
-  --secondary: #64748b;
-  --button-text: #ffffff;
+  --background: #{$background};
+  --foreground: #{$foreground};
+  --card-bg: #{$card-bg};
+  --border: #{$border};
+  --primary: #{$primary};
+  --primary-hover: #{$primary-hover};
+  --secondary: #{$secondary};
+  --button-text: #{$button-text};
 
   // Typography
-  --font-size-base: 16px;
-  --font-size-sm: 0.875rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 3rem;
-  --line-height-base: 1.6;
-  --line-height-tight: 1.4;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  --font-size-base: #{$font-size-base};
+  --font-size-sm: #{$font-size-sm};
+  --font-size-lg: #{$font-size-lg};
+  --font-size-xl: #{$font-size-xl};
+  --font-size-2xl: #{$font-size-2xl};
+  --font-size-3xl: #{$font-size-3xl};
+  --line-height-base: #{$line-height-base};
+  --line-height-tight: #{$line-height-tight};
+  --font-weight-normal: #{$font-weight-normal};
+  --font-weight-medium: #{$font-weight-medium};
+  --font-weight-semibold: #{$font-weight-semibold};
+  --font-weight-bold: #{$font-weight-bold};
 
   // Spacing
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  --spacing-3xl: 4rem;
+  --spacing-xs: #{$spacing-xs};
+  --spacing-sm: #{$spacing-sm};
+  --spacing-md: #{$spacing-md};
+  --spacing-lg: #{$spacing-lg};
+  --spacing-xl: #{$spacing-xl};
+  --spacing-2xl: #{$spacing-2xl};
+  --spacing-3xl: #{$spacing-3xl};
 
   // Layout
-  --max-width-content: 1400px;
-  --sidebar-width: 350px;
-  --border-radius-sm: 3px;
-  --border-radius: 6px;
-  --border-radius-lg: 8px;
-  --header-height-mobile: 80px;
-  --header-height-desktop: 100px;
-
-  // Breakpoints (reference only, use in media queries)
-  --breakpoint-sm: 768px;
-  --breakpoint-md: 1024px;
+  --max-width-content: #{$max-width-content};
+  --sidebar-width: #{$sidebar-width};
+  --border-radius-sm: #{$border-radius-sm};
+  --border-radius: #{$border-radius};
+  --border-radius-lg: #{$border-radius-lg};
+  --header-height-mobile: #{$header-height-mobile};
+  --header-height-desktop: #{$header-height-desktop};
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card-bg: #1a1a1a;
-    --border: #2d3748;
-    --primary: #3b82f6;
-    --primary-hover: #60a5fa;
-  }
-}
+
 
 * {
   box-sizing: border-box;
@@ -98,16 +86,25 @@ button {
   font-size: inherit;
 }
 
+main {
+  padding-top: var(--header-height-mobile);
+}
+
 @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #{$dark-background};
+    --foreground: #{$dark-foreground};
+    --card-bg: #{$dark-card-bg};
+    --border: #{$dark-border};
+  }
+
   html {
     color-scheme: dark;
   }
 }
 
-main {
-  padding-top: var(--header-height-mobile);
-
-  @media (min-width: 768px) {
+@include tablet {
+  main {
     padding-top: var(--header-height-desktop);
   }
 }

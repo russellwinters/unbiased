@@ -97,8 +97,3 @@ export const rssSources: Record<string, RSSSource> = {
 export const getAllSources = (): RSSSource[] => {
   return Object.values(rssSources);
 };
-
-// TODO: consider if this is necessary - seems like dead code
-export const getSourceByKey = (key: string): RSSSource | undefined => {
-  return rssSources[key];
-};

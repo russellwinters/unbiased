@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
+    <section className={styles.container}>
+      <div className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.heroTitle}>About <span>Unbiased</span></h1>
           <p className={styles.heroSubtitle}>
@@ -21,7 +21,7 @@ export default function AboutPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Breaking Out of Echo Chambers</h2>
           <p className={styles.sectionText}>
-            In today's media landscape, it's easier than ever to consume news that only confirms what we already believe.
+            In today&apos;s media landscape, it&apos;s easier than ever to consume news that only confirms what we already believe.
             Algorithms feed us content that matches our preferences, and we naturally gravitate toward sources that align
             with our views. This creates echo chambers—isolated information bubbles that reinforce our biases and deepen
             political divisions.
@@ -47,11 +47,11 @@ export default function AboutPage() {
               <strong>Bias Transparency:</strong> Each source is clearly labeled so you know where it falls on the political spectrum
             </li>
             <li className={styles.featureItem}>
-              <strong>No Algorithms:</strong> We don't hide or prioritize content based on your preferences
+              <strong>No Algorithms:</strong> We don&apos;t hide or prioritize content based on your preferences
             </li>
           </ul>
           <p className={styles.sectionText}>
-            Our goal isn't to tell you what to think—it's to give you the full picture so you can think for yourself.
+            Our goal isn&apos;t to tell you what to think—it&apos;s to give you the full picture so you can think for yourself.
           </p>
         </section>
 
@@ -61,7 +61,7 @@ export default function AboutPage() {
             View Latest Articles →
           </Link>
         </section>
-      </main>
-    </div>
+      </div>
+    </section>
   );
 }

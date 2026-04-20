@@ -1,12 +1,15 @@
+@use '../styles/variables' as *;
+
 .container {
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
 
   .main {
+    @include centered;
     max-width: 800px;
-    margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-3xl);
+    // margin: 0 auto;
+    // padding: var(--spacing-xl) var(--spacing-md) var(--spacing-3xl);
 
     .hero {
       text-align: center;
@@ -114,14 +117,14 @@
   }
 }
 
-@media (min-width: 768px) {
+@include tablet {
   .container {
     .headerPlaceholder {
       height: 100px;
     }
 
     .main {
-      padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
+      // padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
 
       .hero {
         padding: var(--spacing-xl) 0;
@@ -165,6 +168,15 @@
           font-size: var(--font-size-lg);
         }
       }
+    }
+  }
+}
+
+@include desktop {
+  .container {
+    .main {
+
+      margin: 0 auto;
     }
   }
 }

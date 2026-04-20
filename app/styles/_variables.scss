@@ -1,0 +1,93 @@
+// Light mode colors
+$background: #ffffff;
+$foreground: #171717;
+$card-bg: #f8f9fa;
+$border: #e5e7eb;
+$primary: #4D4063;
+$primary-hover: #736194;
+$secondary: #64748b;
+$button-text: #ffffff;
+
+// Typography
+$font-size-base: 16px;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2rem;
+$font-size-3xl: 3rem;
+$line-height-base: 1.6;
+$line-height-tight: 1.4;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+$spacing-4xl: 6rem;
+
+// Layout
+$max-width-content: 1200px;
+$sidebar-width: 350px;
+$border-radius-sm: 3px;
+$border-radius: 6px;
+$border-radius-lg: 8px;
+$header-height-mobile: 80px;
+$header-height-desktop: 100px;
+
+// Breakpoints (reference only, use in media queries)
+$breakpoint-sm: 768px;
+$breakpoint-md: 1024px;
+
+// Dark mode color overrides
+$dark-background: #0a0a0a;
+$dark-foreground: #ededed;
+$dark-card-bg: #1a1a1a;
+$dark-border: #2d3748;
+
+// Breakpoints (reference only, use in media queries)
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-desktop-xl: 1440px;
+
+@mixin tablet {
+  @media (min-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+    @media (min-width: $breakpoint-desktop) {
+        @content;
+    }
+}
+
+@mixin desktop-xl {
+    @media (min-width: $breakpoint-desktop-xl) {
+        @content;
+    }
+}
+
+
+@mixin centered {
+    margin: 0 $spacing-lg;
+    
+    @include tablet {
+        margin: 0 $spacing-3xl;
+    }
+    
+    @include desktop {
+        margin: 0 $spacing-4xl;
+    }
+
+    @include desktop-xl {
+        margin: 0 auto;
+        max-width: $max-width-content;
+    }
+}

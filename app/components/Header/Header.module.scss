@@ -1,3 +1,5 @@
+@use '../../styles/variables' as *;
+
 .header {
   position: fixed;
   top: 0;
@@ -9,10 +11,9 @@
   z-index: 1000;
 
   .container {
+    @include centered;
     max-width: var(--max-width-content);
     height: 100%;
-    margin: 0 auto;
-    padding: 0 var(--spacing-md);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -80,7 +81,7 @@
 }
 
 
-@media (min-width: 768px) {
+@include tablet {
   .header {
     height: var(--header-height-desktop);
 

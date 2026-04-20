@@ -1,17 +1,19 @@
+@use './styles/variables' as *;
+
+
 .container {
   min-height: 100vh;
   background: var(--background);
 
-
   .header {
     background: var(--primary);
     color: white;
-    padding: var(--spacing-2xl) var(--spacing-md);
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
     margin-bottom: var(--spacing-xl);
 
     .headerContent {
-      max-width: var(--max-width-content);
-      margin: 0 auto;
+      @include centered;
 
       .title {
         font-size: var(--font-size-2xl);
@@ -35,9 +37,7 @@
   }
 
   .content {
-    max-width: var(--max-width-content);
-    margin: 0 auto;
-    padding: 0 var(--spacing-md) var(--spacing-2xl);
+    @include centered;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
@@ -83,10 +83,11 @@
   }
 }
 
-@media (min-width: 768px) {
+@include tablet {
   .container {
     .header {
-      padding: var(--spacing-3xl) var(--spacing-lg);
+      padding-top: var(--spacing-3xl);
+      padding-bottom: var(--spacing-3xl);
 
       .headerContent {
         .title {
@@ -100,7 +101,7 @@
     }
 
     .content {
-      padding: 0 var(--spacing-lg) var(--spacing-3xl);
+      @include centered;
 
       .main {
         .articleGrid {
@@ -112,10 +113,9 @@
   }
 }
 
-@media (min-width: 1024px) {
+@include desktop {
   .container {
     .content {
-      padding: 0 var(--spacing-lg) var(--spacing-3xl);
       grid-template-columns: var(--sidebar-width) 1fr;
 
       .sidebar {

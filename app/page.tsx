@@ -9,8 +9,6 @@ import Pagination from './components/Pagination';
 import FilterPanel from './components/FilterPanel';
 import styles from './page.module.scss';
 
-// TODO: consider using query strings to getch data -- can this not just be a server component?
-
 interface ApiResponse {
   articles: ParsedArticle[];
   count: number;
@@ -219,8 +217,8 @@ function ArticlesPageContent() {
   }
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
+    <section className={styles.container}>
+      <section className={styles.header}>
         <div className={styles.headerContent}>
           <h1 className={styles.title}>News Articles</h1>
           <p className={styles.subtitle}>
@@ -232,9 +230,9 @@ function ArticlesPageContent() {
             </p>
           )}
         </div>
-      </header>
+      </section>
 
-      <main className={styles.content}>
+      <section className={styles.content}>
         <aside className={styles.sidebar}>
           <BiasDistribution articles={articles} />
           <FilterPanel
@@ -247,7 +245,7 @@ function ArticlesPageContent() {
           />
         </aside>
 
-        <section className={styles.main}>
+        <div className={styles.main}>
           {articles.length === 0 ? (
             <div className={styles.emptyState}>
               <p>No articles available at this time.</p>
@@ -272,9 +270,9 @@ function ArticlesPageContent() {
               />
             </>
           )}
-        </section>
-      </main>
-    </div >
+        </div>
+      </section>
+    </section>
   );
 }
 

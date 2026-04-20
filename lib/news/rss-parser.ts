@@ -57,7 +57,6 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
   }
 });
 
-// TODO: look into - understand - this type and the check below
 interface MediaContent {
   $?: {
     url?: string;
@@ -77,11 +76,9 @@ function isMediaContent(value: unknown): value is MediaContent {
 }
 
 /**
- * Extracts image URL from RSS item
+ * Extracts image URL from RSS item, through media:content, enclosure, or attempted HTML content extraction
  */
 function extractImageUrl(item: CustomItem): string | null {
-  // TODO: look into - understand - this function in more depth
-  // Try media:content
   if (item['media:content'] && isMediaContent(item['media:content'])) {
     const mediaContent = item['media:content'];
     if (mediaContent.$?.url) {
@@ -89,12 +86,10 @@ function extractImageUrl(item: CustomItem): string | null {
     }
   }
 
-  // Try enclosure
   if (item.enclosure?.url) {
     return item.enclosure.url;
   }
 
-  // Try to extract from content:encoded or description using regex
   const contentToSearch = item['content:encoded'] || item.description || '';
   if (typeof contentToSearch === 'string') {
     const imgMatch = contentToSearch.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -112,15 +107,13 @@ function extractImageUrl(item: CustomItem): string | null {
  * All content must be properly escaped when rendered in the browser.
  */
 function extractDescription(item: CustomItem): string | null {
-  // Prefer contentSnippet (cleaned text)
+  // Preferred/standard
   if (item.contentSnippet) {
     return item.contentSnippet.trim();
   }
 
-  // Fall back to description, remove HTML tags for plain text extraction
-  // This is not for sanitization - proper escaping must happen at render time
+  // Fallback
   if (item.description) {
-    // More robust HTML tag removal that handles broken tags
     const cleaned = item.description
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove style tags
@@ -182,6 +175,7 @@ export async function parseMultipleFeeds(sources: RSSSource[]): Promise<ParseMul
 
   const allArticles: ParsedArticle[] = [];
   const errors: FeedError[] = [];
+
   // TODO: convert this to a reduce function, returning allArticles and errors in destructured const
   results.forEach((result, index) => {
     if (result.status === 'fulfilled') {
@@ -210,7 +204,6 @@ export async function getRssData(): Promise<{ sources: RSSSource[], articles: Pa
   const rssSources = getAllSources() as RSSSource[];
   console.log(`📰 Found ${rssSources.length} RSS sources`);
 
-  // Fetch articles from RSS feeds
   console.log('📡 Fetching articles from RSS feeds...');
   const { articles, errors: fetchErrors } = await parseMultipleFeeds(rssSources);
 

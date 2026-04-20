@@ -86,92 +86,76 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  // TODO: refactor this function
-  const cronSecret = request.headers.get('x-cron-secret');
-  if (cronSecret !== CRON_KEY) {
-    console.error('Unauthorized attempt to update articles with invalid cron secret');
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const cronErrorResponse = getCronErrorResponse(request);
+  if (cronErrorResponse) {
+    return cronErrorResponse;
   }
 
+
+  console.log('🚀 Checking rate limit for article update...');
+  const rateLimitResponse = await getRateLimitResponse();
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+  console.log('✅ Rate limit check passed, starting update...');
+
+  // TODO: function to create this update history -- silent failure should not prevent update from proceeding, but any errors should be logged and reflected in the final update history record
+  const historyRecord = await createUpdateHistory({
+    updateType: CRON_KEY ? 'scheduled' : 'manual',
+  });
+  const [status, historyRecordResult] = await initHistoryRecord();
+  if (status === "error") {
+    return historyRecordResult as NextResponse;
+  }
+
+  const startTime = new Date();
+
   try {
-    console.log('🚀 Checking rate limit for article update...');
+    const { sources, articles, rssErrors } = await getRssData();
+    const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
 
-    const rateLimitCheck = await checkUpdateLimit();
+    const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
+    const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
 
-    if (!rateLimitCheck.isAllowed) {
-      console.log(`⚠️ Rate limit exceeded: ${rateLimitCheck.updatesInPreviousPeriod}/${rateLimitCheck.updateLimit} updates in 24h`);
-
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Rate limit exceeded',
-          message: `RSS feed updates are limited to ${rateLimitCheck.updateLimit} per 24-hour period. ${rateLimitCheck.updatesInPreviousPeriod} updates have already been performed.`,
-          updatesToday: rateLimitCheck.updatesInPreviousPeriod,
-          limit: rateLimitCheck.updateLimit,
-          nextAllowedTime: rateLimitCheck.allowUpdateNext?.toISOString(),
-          timestamp: new Date().toISOString(),
-        },
-        { status: 429 }
-      );
-    }
-
-    console.log('✅ Rate limit check passed, starting update...');
-
-    // TODO: consider if this is worth just hardcoding
-    const historyRecord = await createUpdateHistory({
-      updateType: CRON_KEY ? 'scheduled' : 'manual',
-    });
-
-    const startTime = new Date();
-
-    try {
-      const { sources, articles, rssErrors } = await getRssData();
-      const recentArticles = filterWithinRange(articles, yesterdayAtMidnight());
-
-      const { sourceMap, sourcesCreated, sourcesUpdated } = await upsertSources(sources);
-      const { articlesCreated, articlesUpdated, articlesSkipped } = await upsertArticles(recentArticles, sourceMap);
-
-      await completeUpdateHistory(
-        historyRecord.id,
-        {
-          sourcesCreated,
-          sourcesUpdated,
-          articlesCreated,
-          articlesUpdated,
-          articlesSkipped,
-          errorMessages: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
-        },
-        startTime
-      );
-
-      const response: ArticleUpdateResponse = {
-        success: true,
+    await completeUpdateHistory(
+      historyRecord.id,
+      {
         sourcesCreated,
         sourcesUpdated,
         articlesCreated,
         articlesUpdated,
         articlesSkipped,
-        errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
-        timestamp: new Date().toISOString(),
-      };
+        errorMessages: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+      },
+      startTime
+    );
+
+    const response: ArticleUpdateResponse = {
+      success: true,
+      sourcesCreated,
+      sourcesUpdated,
+      articlesCreated,
+      articlesUpdated,
+      articlesSkipped,
+      errors: rssErrors.map(e => `${e.sourceName}: ${e.error}`),
+      timestamp: new Date().toISOString(),
+    };
 
       console.log('🎉 Article update completed!');
       return NextResponse.json(response, { status: 200 });
 
-      // TODO: consider handler to prevent try/catch blocks. 
-      // Can model after Elixir {:error, message} | {:ok, result} pattern?
-    } catch (updateError) {
-      const errorMessage = updateError instanceof Error ? updateError.message : 'Unknown error';
-      await failUpdateHistory(historyRecord.id, errorMessage, startTime);
-      throw updateError;
-    }
-
-  } catch (error) {
-    console.error('❌ Error in POST /api/articles:', error);
-    return respondWith500Error({ err: error, message: 'Failed to update articles' });
+  } catch (updateError) {
+    const errorMessage = updateError instanceof Error ? updateError.message : 'Unknown error';
+    await failUpdateHistory(historyRecord.id, errorMessage, startTime);
+    return updateError instanceof Error
+      ? respondWith500Error({ err: updateError, message: 'Failed to update articles' })
+      : respondWith500Error({ message: 'Failed to update articles' });
   }
 }
 
+// -------------------------------- //
+// -------- GEENERAL UTILS ------- // 
+// -------------------------------- // 
 function respondWith500Error({ err, message }: { err?: unknown, message?: string }) {
   return NextResponse.json(
     {
@@ -181,6 +165,10 @@ function respondWith500Error({ err, message }: { err?: unknown, message?: string
     { status: 500 }
   );
 };
+
+// -------------------------------- //
+// ------ GET LOGIC AND UTILS ----- // 
+// -------------------------------- // 
 
 // TODO: update this so it's more like the post request
 // with the calls pulled from utils elsewhere in the codebase
@@ -305,4 +293,56 @@ function parseArrayParam(param: string | null, isValid: (item: string) => boolea
 
 function hasItems(target: string[] | null): boolean {
   return target !== null && target.length > 0;
+}
+
+
+// -------------------------------- //
+// ----- POST LOGIC AND UTILS ----- // 
+// -------------------------------- // 
+
+function getCronErrorResponse(request: NextRequest) {
+    const cronSecret = request.headers.get('x-cron-secret');
+  if (cronSecret !== CRON_KEY) {
+    console.error('Unauthorized attempt to update articles with invalid cron secret');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  return null
+}
+
+async function getRateLimitResponse() {
+   const rateLimitCheck = await checkUpdateLimit();
+
+    if (!rateLimitCheck.isAllowed) {
+      console.log(`⚠️ Rate limit exceeded: ${rateLimitCheck.updatesInPreviousPeriod}/${rateLimitCheck.updateLimit} updates in 24h`);
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Rate limit exceeded',
+          message: `RSS feed updates are limited to ${rateLimitCheck.updateLimit} per 24-hour period. ${rateLimitCheck.updatesInPreviousPeriod} updates have already been performed.`,
+          updatesToday: rateLimitCheck.updatesInPreviousPeriod,
+          limit: rateLimitCheck.updateLimit,
+          nextAllowedTime: rateLimitCheck.allowUpdateNext?.toISOString(),
+          timestamp: new Date().toISOString(),
+        },
+        { status: 429 }
+      );
+    }
+
+    return null;
+}
+
+async function initHistoryRecord() {
+      try {
+        const historyRecord = await createUpdateHistory({
+          updateType: CRON_KEY ? 'scheduled' : 'manual',
+        });
+
+        return ["ok", historyRecord];
+      } catch (err) {
+        console.error('Failed to create update history record:', err);
+        return ["error", NextResponse.json({ error: 'Failed to create update history record' }, { status: 500 })];
+      }
+
 }

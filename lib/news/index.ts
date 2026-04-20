@@ -1,5 +1,5 @@
 // News aggregation and RSS feed utilities
-export { rssSources, getAllSources, getSourceByKey } from './rss-sources';
+export { rssSources, getAllSources } from './rss-sources';
 export type { RSSSource } from './rss-sources';
 export { getRssData, parseRSSFeed, parseMultipleFeeds, isValidBiasRating } from './rss-parser';
 export type { ParsedArticle, FeedError, ParseMultipleFeedsResult, BiasRating } from './rss-parser';

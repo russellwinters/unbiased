@@ -7,7 +7,7 @@ export interface RateLimitCheck {
   allowUpdateNext?: Date;
 }
 
-const PERIOD_UPDATE_LIMIT = 3;
+const PERIOD_UPDATE_LIMIT = 4;
 const HOURS_IN_PERIOD = 24;
 const MILLISECONDS_IN_PERIOD = HOURS_IN_PERIOD * 60 * 60 * 1000;
 

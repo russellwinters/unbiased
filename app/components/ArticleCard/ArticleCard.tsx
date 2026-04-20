@@ -2,6 +2,7 @@ import { ParsedArticle } from '@/lib/news/rss-parser';
 import BiasIndicator from '../BiasIndicator';
 import styles from './ArticleCard.module.scss';
 import { formatDistanceToNow } from 'date-fns';
+import { BIAS_COLORS } from '@/lib/constants';
 
 interface ArticleCardProps {
   article: ParsedArticle;
@@ -9,18 +10,27 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article }: ArticleCardProps) {
   const timeAgo = formatDistanceToNow(article.publishedAt, { addSuffix: true });
+  const placeholderColor = BIAS_COLORS[article.source.biasRating] ?? '#6b7280';
 
   return (
     <article className={styles.articleCard}>
-      {article.imageUrl && (
-        <div className={styles.imageContainer}>
-          <img 
-            src={article.imageUrl} 
+      <div className={styles.imageContainer}>
+        {article.imageUrl ? (
+          <img
+            src={article.imageUrl || ""}
             alt={article.title}
             className={styles.image}
+            sizes="(max-width: 768px) 100vw, 400px"
           />
-        </div>
-      )}
+        ) : (
+          <div
+            className={styles.placeholder}
+            style={{ backgroundColor: placeholderColor }}
+          >
+            <span className={styles.placeholderInitial}>{article.source.name}</span>
+          </div>
+        )}
+      </div>
       
       <div className={styles.content}>
         <div className={styles.header}>

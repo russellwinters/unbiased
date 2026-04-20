@@ -33,24 +33,10 @@ model Article {
   fetchedAt   DateTime  @default(now())
   sourceId    String
   source      Source    @relation(fields: [sourceId], references: [id])
-  clusterId   String?
-  cluster     Cluster?  @relation(fields: [clusterId], references: [id])
   keywords    String[]
   
   @@index([publishedAt])
   @@index([sourceId])
-  @@index([clusterId])
-}
-
-// Story cluster model // TODO: consider deleting this - we're not there yet
-model Cluster {
-  id          String    @id @default(uuid())
-  topic       String
-  mainEntity  String    // Primary subject
-  firstSeenAt DateTime
-  articles    Article[]
-  
-  @@index([firstSeenAt])
 }
 
 // RSS Update History model for rate limiting

@@ -21,7 +21,7 @@
     "@prisma/adapter-neon": "^7.7.0",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
-    "@tanstack/react-query": "^5.90.20",
+    "@tanstack/react-query": "^5.99.2",
     "axios": "^1.13.4",
     "date-fns": "^4.1.0",
     "next": "16.1.6",

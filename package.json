@@ -39,7 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "prisma": "^7.3.0",
-    "sass": "^1.97.3",
+    "sass": "^1.99.0",
     "tsx": "^4.19.2",
     "typescript": "^5"
   }
